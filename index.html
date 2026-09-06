@@ -1,0 +1,1272 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PlayCombo Professional Arcade</title>
+<style>
+    .contenitore-arcade-spc {
+        width: 100% !important;
+        margin: 0 auto;
+        padding: 10px;
+        box-sizing: border-box;
+        font-family: sans-serif;
+    }
+
+    .sezione-ricerca-spc {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+        padding: 0 10px;
+    }
+
+    .input-ricerca-spc {
+        width: 100% !important;
+        max-width: 500px !important;
+        padding: 14px 20px !important;
+        font-size: 16px !important;
+        border: 2px solid rgba(255, 255, 255, 0.5) !important;
+        border-radius: 50px !important;
+        outline: none !important;
+        background: rgba(255, 255, 255, 0.15) !important;
+        color: #ffffff !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+        transition: border-color 0.3s, box-shadow 0.3s !important;
+        box-sizing: border-box !important;
+    }
+
+    .input-ricerca-spc::placeholder {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+
+    .input-ricerca-spc:focus {
+        border-color: #00aaff !important;
+        box-shadow: 0 4px 12px rgba(0, 170, 255, 0.3) !important;
+        background: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .box-selezione-spc {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+        padding: 0 10px;
+    }
+
+    #select-categoria-spc {
+        width: 100%;
+        max-width: 500px;
+        padding: 14px 20px;
+        font-size: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        border-radius: 50px;
+        outline: none;
+        background: rgba(255, 255, 255, 0.15);
+        background-color: rgba(255, 255, 255, 0.15) !important;
+        color: #ffffff;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        box-sizing: border-box;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    #select-categoria-spc:focus {
+        border-color: #00aaff;
+        box-shadow: 0 4px 12px rgba(0, 170, 255, 0.3);
+    }
+
+    #select-categoria-spc option {
+        background: #1a1a2e;
+        color: #ffffff;
+    }
+
+    /* === GIOSTRA DEI RECENTI === */
+    .sezione-recenti-spc {
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto 25px auto;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-sizing: border-box;
+    }
+
+    .titolo-recenti-spc {
+        color: #ffffff;
+        font-size: 15px;
+        margin: 0 0 12px 0;
+        font-weight: bold;
+        text-align: left;
+        opacity: 0.9;
+        letter-spacing: 0.5px;
+    }
+
+    .giostra-recenti-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+    }
+
+    .lista-recenti-scroll {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        flex: 1;
+    }
+
+    .lista-recenti-scroll::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Freccette trasparenti come il resto */
+    .btn-freccia-recenti {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff !important;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s, background 0.2s, border-color 0.3s;
+        flex-shrink: 0;
+    }
+
+    .btn-freccia-recenti:hover {
+        transform: scale(1.1);
+        background: rgba(255, 255, 255, 0.25);
+        border-color: #00aaff;
+    }
+
+    .nodo-recente-spc {
+        flex: 0 0 75px;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        position: relative;
+    }
+
+    .nodo-recente-spc:hover {
+        transform: scale(1.05);
+    }
+
+    .nodo-recente-spc img {
+        width: 75px;
+        height: 75px;
+        object-fit: cover;
+        border-radius: 14px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        display: block;
+    }
+
+    /* ========================== */
+
+    .griglia-giochi-spc {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)) !important;
+        gap: 10px !important;
+        padding: 10px !important;
+        width: 100% !important;
+        min-height: 50vh;
+        box-sizing: border-box;
+        background-color: transparent !important;
+    }
+
+    .scheda-gioco-figura {
+        cursor: pointer;
+        position: relative;
+        transition: transform 0.3s ease;
+    }
+
+    .scheda-gioco-figura img {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: 12px;
+        display: block;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .scheda-gioco-figura:hover {
+        transform: translateY(-5px) scale(1.03);
+    }
+
+    .scheda-gioco-figura:hover img {
+        box-shadow: 0 8px 16px rgba(0, 119, 190, 0.3);
+    }
+
+    .paginazione-spc {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 8px !important;
+        margin: 40px 0 !important;
+        font-family: sans-serif !important;
+        flex-wrap: nowrap !important;
+        width: 100% !important;
+        padding: 0 5px;
+        box-sizing: border-box;
+    }
+
+    .btn-paginazione {
+        background-color: #ff9900 !important;
+        color: white !important;
+        border: none !important;
+        padding: 10px 16px !important;
+        font-size: 14px !important;
+        font-weight: bold !important;
+        border-radius: 50px !important;
+        cursor: pointer !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+        transition: transform 0.3s ease, background 0.2s !important;
+        flex-shrink: 0 !important;
+    }
+
+    .btn-paginazione:hover:not(:disabled) {
+        transform: scale(1.05) !important;
+        background-color: #e08800 !important;
+    }
+
+    .btn-paginazione:disabled {
+        background-color: #ccc !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    #info-pagina {
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 5px !important;
+        flex-wrap: nowrap !important;
+        max-width: 70vw !important;
+    }
+
+    #info-pagina button,
+    #info-pagina strong,
+    #info-pagina span {
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 34px !important;
+        height: 34px !important;
+        border-radius: 50% !important;
+        font-size: 14px !important;
+        font-weight: bold !important;
+        font-family: sans-serif !important;
+        margin: 0 !important;
+        transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease !important;
+        box-sizing: border-box !important;
+        flex-shrink: 0 !important;
+    }
+
+    #info-pagina strong,
+    #info-pagina .pagina-attiva {
+        background-color: #ff9900 !important;
+        color: #000000 !important;
+        box-shadow: 0 4px 8px rgba(255, 153, 0, 0.4) !important;
+        cursor: default !important;
+        border: none !important;
+    }
+
+    #info-pagina button,
+    #info-pagina .pagina-button {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        cursor: pointer !important;
+    }
+
+    #info-pagina button:hover,
+    #info-pagina .pagina-button:hover {
+        transform: scale(1.1) !important;
+        background-color: #0077be !important;
+        color: #ffffff !important;
+        border-color: #0077be !important;
+    }
+
+    #info-pagina span.puntini {
+        border: none !important;
+        background: transparent !important;
+        color: rgba(255, 255, 255, 0.6) !important;
+        cursor: default !important;
+        width: auto !important;
+        height: auto !important;
+    }
+
+    /* CORNICE GIOCATORE */
+    #cornice-gioco {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #0077be, #00aaff);
+        z-index: 999999;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    #area-contenuto {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 20px;
+        color: white;
+        text-align: center;
+    }
+
+    .pulsante-chiudi {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(0, 0, 0, 0.3);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 28px;
+        cursor: pointer;
+        z-index: 9999999;
+    }
+
+    .btn-gioca {
+        background: #ff9900;
+        color: white;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 50px;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 20px;
+        cursor: pointer;
+    }
+
+    #spazio-gioco {
+        width: 100%;
+        height: 100%;
+        background-color: #0077be;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    #spazio-gioco iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    #spazio-info h3 {
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+
+    #box-descrizione {
+        font-size: 20px;
+        line-height: 1.6;
+    }
+</style>
+
+<div class="contenitore-arcade-spc">
+
+    <div class="sezione-ricerca-spc">
+        <input type="text" id="campoRicerca" class="input-ricerca-spc"
+            placeholder="🔍 Cerca tra i giochi di PlayCombo..." oninput="window.filtraGiochi()">
+    </div>
+
+    <div class="box-selezione-spc">
+        <select id="select-categoria-spc" aria-label="Seleziona la categoria"
+            onchange="if (this.value) location = this.value;">
+            <option value="">Seleziona la categoria</option>
+            <option value="https://playcombo.it">SPC</option>
+            <option value="https://playcombo.it/puzzle/">PUZZLE</option>
+            <option value="https://playcombo.it/sparabolle/">SPARABOLLE</option>
+            <option value="https://playcombo.it/arcade/">ARCADE</option>
+            <option value="https://playcombo.it/match-3/">MATCH-3</option>
+            <option value="https://playcombo.it/MAHJONG/">MAHJONG</option>
+            <option value="https://playcombo.it/quizzz/">QUIZZZ!</option>
+            <option value="https://playcombo.it/GIRLS/">GIRLS</option>
+            <option value="https://playcombo.it/SPORT/">SPORT</option>
+            <option value="https://playcombo.it/giochi-di-corse/">GIOCHI DI CORSA</option>
+            <option value="https://playcombo.it/carte-e-memory/">CARTE E MEMORI</option>
+            <option value="https://playcombo.it/super-bubble-shot/">SUPER BUBBLE SHOT</option>
+            <option value="https://www.playcombo.it/giochi-davventura/">GIOCHI D' AVENTURA</option>
+            <option value="https://www.playcombo.it/giochi-platform//">GIOCHI PLATFORM</option>
+        </select>
+    </div>
+
+    <div id="blocco-recenti-spc" class="sezione-recenti-spc" style="display: none;">
+        <p class="titolo-recenti-spc">🎮 Ultimi giocati in questa pagina:</p>
+        <div class="giostra-recenti-wrapper">
+            <button id="freccia-sx-recenti" class="btn-freccia-recenti" onclick="scorriMieiRecenti(-1)"
+                aria-label="Scorri a sinistra">◀</button>
+            <div id="lista-recenti-spc" class="lista-recenti-scroll"></div>
+            <button id="freccia-dx-recenti" class="btn-freccia-recenti" onclick="scorriMieiRecenti(1)"
+                aria-label="Scorri a destra">▶</button>
+        </div>
+    </div>
+
+    <div class="griglia-giochi-spc"></div>
+
+    <div class="paginazione-spc">
+        <button id="btn-precedente" class="btn-paginazione" onclick="window.cambiaPagina(-1)">◀</button>
+        <span id="info-pagina"></span>
+        <button id="btn-successiva" class="btn-paginazione" onclick="window.cambiaPagina(1)">▶</button>
+    </div>
+
+    <div id="cornice-gioco">
+        <button class="pulsante-chiudi" onclick="window.chiudiGiocatore()">×</button>
+        <div id="area-contenuto">
+            <div id="spazio-info"></div>
+            <button id="btn-avvia" class="btn-gioca" onclick="window.avviaGioco()" style="display:none;">GIOCA
+                ORA</button>
+        </div>
+        <div id="spazio-gioco"></div>
+    </div>
+
+</div>
+
+<script>
+    // Funzione per estrarre la categoria dal URL
+    function ottieniCategoriaDalURL() {
+        const pathSegments = window.location.pathname.split('/').filter(s => s);
+        if (pathSegments.length > 0 && pathSegments[0] !== 'page') {
+            return pathSegments[0]; // 'puzzle', 'sparabolle', 'arcade', ecc.
+        }
+        return 'spc'; // categoria default (home)
+    }
+
+    // Funzione per ottenere il numero pagina
+    function ottieniNumeroPagina() {
+        let pagina = "1";
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('paged')) {
+            pagina = urlParams.get('paged');
+        } else {
+            const pathSegments = window.location.pathname.split('/');
+            const pageIndex = pathSegments.indexOf('page');
+            if (pageIndex !== -1 && pathSegments[pageIndex + 1]) {
+                pagina = pathSegments[pageIndex + 1];
+            }
+        }
+        return pagina;
+    }
+
+    // Scorrimento freccette
+    window.scorriMieiRecenti = function (direzione) {
+        const lista = document.getElementById('lista-recenti-spc');
+        if (lista) {
+            lista.scrollLeft += (direzione * 160);
+        }
+    };
+
+    // Al caricamento della pagina
+    document.addEventListener("DOMContentLoaded", function () {
+        const categoria = ottieniCategoriaDalURL();
+        const numeroPagina = ottieniNumeroPagina();
+        const chiaveStorage = 'recenti_playcombo_' + categoria + '_' + numeroPagina;
+
+        // RENDER BLOCCO RECENTI
+        try {
+            let recenti = JSON.parse(localStorage.getItem(chiaveStorage)) || [];
+            const container = document.getElementById('blocco-recenti-spc');
+            const listaRecenti = document.getElementById('lista-recenti-spc');
+            const fSx = document.getElementById('freccia-sx-recenti');
+            const fDx = document.getElementById('freccia-dx-recenti');
+
+            if (recenti.length > 0 && container && listaRecenti) {
+                container.style.display = 'block';
+                listaRecenti.innerHTML = '';
+
+                // Freccette visibili solo se più di 5 giochi salvati
+                if (recenti.length > 5 && fSx && fDx) {
+                    fSx.style.display = 'flex';
+                    fDx.style.display = 'flex';
+                }
+
+                recenti.forEach(function (gioco) {
+                    const div = document.createElement('div');
+                    div.className = 'nodo-recente-spc';
+                    div.title = gioco.titolo || 'Gioca';
+
+                    const img = document.createElement('img');
+                    img.src = gioco.img || '';
+                    img.alt = gioco.titolo || 'Gioco';
+
+                    div.onclick = function () {
+                        if (typeof window.apriAnteprima === 'function') {
+                            window.apriAnteprima(gioco);
+                        }
+                    };
+
+                    div.appendChild(img);
+                    listaRecenti.appendChild(div);
+                });
+            }
+        } catch (e) {
+            console.error("Errore render recenti:", e);
+        }
+
+        // SALVATAGGIO QUANDO SI AVVIA UN GIOCO
+        const btnAvvia = document.getElementById('btn-avvia');
+        if (btnAvvia) {
+            btnAvvia.addEventListener('click', function () {
+                try {
+                    const spazioInfo = document.getElementById('spazio-info');
+                    if (!spazioInfo) return;
+
+                    const h3 = spazioInfo.querySelector('h3');
+                    if (!h3) return;
+
+                    const titoloGioco = h3.textContent;
+
+                    let giocoTrovato = null;
+                    if (window.listaGiochi && Array.isArray(window.listaGiochi)) {
+                        giocoTrovato = window.listaGiochi.find(function (g) {
+                            return g.titolo === titoloGioco;
+                        });
+                    }
+
+                    if (giocoTrovato) {
+                        let recenti = JSON.parse(localStorage.getItem(chiaveStorage)) || [];
+
+                        // Rimuovi eventuale duplicato
+                        recenti = recenti.filter(function (g) {
+                            return g.titolo !== giocoTrovato.titolo;
+                        });
+
+                        // Aggiungi in cima
+                        recenti.unshift({
+                            titolo: giocoTrovato.titolo,
+                            img: giocoTrovato.img,
+                            url: giocoTrovato.url
+                        });
+
+                        // Massimo 20 giochi salvati per categoria
+                        if (recenti.length > 20) recenti.pop();
+
+                        localStorage.setItem(chiaveStorage, JSON.stringify(recenti));
+                    }
+                } catch (e) {
+                    console.error("Errore salvataggio recenti:", e);
+                }
+            }, { passive: true });
+        }
+    });
+</script>
+
+
+<script>
+    // La tua lista dei giochi
+    var listaGiochi = [
+        {
+            "titolo": "The Floor Is Lying",
+            "url": "https://play.gamepix.com/the-floor-is-lying/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/the-floor-is-lying/icon/the-floor-is-lying.png?w=105",
+            "desc": "Descrizione disponibile",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Super Billy Boy",
+            "url": "https://play.gamepix.com/super-billy-boy/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/super-billy-boy/icon/super-billy-boy.png?w=105",
+            "desc": "Embark on a thrilling journey with Super Billy Boy as you navigate a pixelated world filled with traps and alien foes. Rescue your friend by mastering platformer challenges that demand precision and clever strategies. Dive into this nostalgic adventure where each level brings new excitement and unexpected twists.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Super Oliver World",
+            "url": "https://play.gamepix.com/super-oliver-world/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/super-oliver-world/icon/super-oliver-world.png?w=105",
+            "desc": "Guide Oliver through perilous realms filled with traps and foes in Super Oliver World. Smash blocks for surprises, collect coins, and uncover hidden power-ups to outsmart enemies. With retro pixel graphics and strategic gameplay, it's an exhilarating journey for arcade enthusiasts seeking thrilling action and unexpected challenges.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Mice Hunt",
+            "url": "https://play.gamepix.com/mice-hunt/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/mice-hunt/icon/mice-hunt.png?w=105",
+            "desc": "Dive into the exhilarating world of Mice Hunt, where you play as a swift owl in a frantic race against a pursuing dragon. Capture mice to extend your lives and aim for a high score, collecting tantalizing potion power-ups for an edge in this relentless, heart-pounding chase.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Baby Chicco Adventures",
+            "url": "https://play.gamepix.com/baby-chicco-adventures/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/baby-chicco-adventures/icon/baby-chicco-adventures.png?w=105",
+            "desc": "Guide Baby Chicco, the brave penguin, through enchanting pixel worlds as you dodge foes and collect treasures. With retro charm and Mario-style platforming, each level offers new thrills and tricky challenges. Leap, dash, and uncover secret wonders in this captivating icy adventure.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Super Steve World",
+            "url": "https://play.gamepix.com/super-steve-world/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/super-steve-world/icon/super-steve-world.png?w=105",
+            "desc": "Embark on an adventurous journey as Steve, battling foes by jumping on their heads. Race against time, collecting coins and uncovering secret areas for extra lives. Enjoy the thrill of familiar platforming mechanics with a twist, as you navigate vibrant levels filled with excitement and hidden wonders.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Ringo Starfish",
+            "url": "https://play.gamepix.com/ringo-starfish/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/ringo-starfish/icon/ringo-starfish.png?w=105",
+            "desc": "Embark on an underwater quest with Ringo Starfish, discovering hidden treasures on a mystical island. Master platform dynamics, wield impressive firepower, and navigate treacherous traps. Use strategic checkpoints and harness Ringo's extraordinary abilities to overcome foes and collect shimmering crystals in this action-packed, retro arcade adventure.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "The Black And White",
+            "url": "https://play.gamepix.com/the-black-and-white/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/the-black-and-white/icon/the-black-and-white.png?w=105",
+            "desc": "Immerse yourself in The Black And White, where two unlikely heroes use their unique abilities to solve mind-bending puzzles. Navigate through a captivating, portal-filled world, unraveling mysteries with strategic thinking and teamwork. Immerse in stunning visuals as you help them find their way home.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Adventure Bot",
+            "url": "https://play.gamepix.com/adventure-bot-action-platformer/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/adventure-bot-action-platformer/icon/adventure-bot-action-platformer.png?w=105",
+            "desc": "Embark on a thrilling retro adventure with Adventure Bot, where nostalgic pixel art meets challenging platformer action. Guide Bot through diverse terrains, mastering gravity-defying jumps and strategic attacks. Collect nuts for powerful upgrades, all while enjoying a classic chiptune soundtrack. Can you navigate these evolving landscapes and conquer mechanized foes?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Super Onion Boy",
+            "url": "https://play.gamepix.com/super-onion-boy/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/super-onion-boy/icon/super-onion-boy.png?w=105",
+            "desc": "Embark on a thrilling quest in Super Onion Boy, a nostalgic platformer where you leap, coin-collect, and battle menacing foes to rescue your beloved. With 15 dynamic levels, intuitive controls, and charming retro appeal, honing your skills for a high score offers endless gameplay excitement.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Super Willie World",
+            "url": "https://play.gamepix.com/super-willie-world/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/super-willie-world/icon/super-willie-world.png?w=105",
+            "desc": "Guide Willie the mouse through a whimsical platforming adventure back to his steamboat. Traverse slow-paced, peril-filled levels, collecting coins and strategically jumping on enemies. With only one life per level, deliberate movement and precise timing ensure success. Help Willie rediscover his riverbound joy, one careful step at a time.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Super Onion Boy 2",
+            "url": "https://play.gamepix.com/super-onion-boy-2/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/super-onion-boy-2/icon/super-onion-boy-2.png?w=105",
+            "desc": "Embark on a thrilling adventure with Super Onion Boy 2, where vibrant levels and retro charm await. Transform with superpowers, uncover hidden treasures, and outsmart enemies in a quest to rescue your friend from a powerful beast. Face formidable bosses and explore secret paths for an exhilarating experience.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Snail Odyssey - Hardest Game",
+            "url": "https://play.gamepix.com/snail-odyssey-hardest-game/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/snail-odyssey-hardest-game/icon/snail-odyssey-hardest-game.png?w=105",
+            "desc": "Guide a brave snail through a vibrant, trap-filled world in Snail Odyssey. Outsmart a clever AI, dodge ingenious obstacles, and master clever strategies in this thrilling puzzle adventure. Each level demands sharp timing and wits. Can you complete this exhilarating journey and conquer its challenges?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Super Droid Adventure",
+            "url": "https://play.gamepix.com/super-droid-adventure/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/super-droid-adventure/icon/super-droid-adventure.png?w=105",
+            "desc": "Embark on a thrilling journey with Super Droid Adventure! Navigate treacherous traps and battle fierce enemies as a courageous robot. Unleash firepower, unlock surprises by breaking blocks, and collect power-ups and coins. Strategize your moves to conquer the ultimate boss and reclaim your castle.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Sprunki Ice Mod - Aqua",
+            "url": "https://play.gamepix.com/sprunki-ice-mod-aqua/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/sprunki-ice-mod-aqua/icon/sprunki-ice-mod-aqua.png?w=105",
+            "desc": "Guide Aqua through melting ice blocks in this whimsical platformer. Solve puzzles as you race to your frozen treat, mastering each level before the path melts away. Can you conquer all 20 challenges and help Aqua satisfy their ice cream craving?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Baboe",
+            "url": "https://play.gamepix.com/baboe-gun-game/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/baboe-gun-game/icon/baboe-gun-game.png?w=105",
+            "desc": "Descrizione disponibile",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Red Ball Rolling 2",
+            "url": "https://play.gamepix.com/red-ball-rolling-2/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/red-ball-rolling-2/icon/red-ball-rolling-2.png?w=105",
+            "desc": "Embark on an exciting journey with Red Ball Rolling 2, where vibrant worlds and complex obstacles test your skills. Use strategic jumps and master new abilities alongside your companion to uncover hidden secrets. Every level presents dynamic challenges that require clever tactics and precise maneuvers. Enjoy the adventure!",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Traigon",
+            "url": "https://play.gamepix.com/traigon/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/traigon/icon/traigon.png?w=105",
+            "desc": "In Traigon's nostalgic pixelated universe, engage in adrenaline-pumping platforming as you skillfully navigate challenging terrains. Master precise jumps to dodge deadly obstacles and conquer progressively tough levels. This intense journey rewards strategic finesse and patience, promising an exhilarating gaming adventure. Will you become a Traigon master?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Noob's Great Escape",
+            "url": "https://play.gamepix.com/noob-s-great-escape/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/noob-s-great-escape/icon/noob-s-great-escape.png?w=105",
+            "desc": "Embark on Noob's wild escape adventure through 100 cleverly designed levels. Sharpen your wits and reflexes to guide him to freedom, navigating tricky puzzles and unexpected twists. Can you outsmart the challenges and lead Noob to victory?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Kofi Adventure",
+            "url": "https://play.gamepix.com/kofi-adventure/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/kofi-adventure/icon/kofi-adventure.png?w=105",
+            "desc": "Embark on a captivating platform adventure with Kofi, as you traverse enchanted forests and mysterious caves. Face magical creatures and unravel Dreamland's secrets using clever strategies and timing. With vibrant landscapes and challenging puzzles, each choice leads you to a new ending in this heartwarming quest. ",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Purrrification",
+            "url": "https://play.gamepix.com/purrrification/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/purrrification/icon/purrrification.png?w=105",
+            "desc": "Dive into \"Purrrification,\" a haunting retro venture filled with eerie glitches and mysterious creatures. Unravel its unsettling narrative as you navigate through chilling surprises. Can you endure the unsettling atmosphere and overcome the challenges of this enigmatic '80s creation? Prepare for a spine-tingling experience.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Blue Chameleon",
+            "url": "https://play.gamepix.com/blue-chameleon/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/blue-chameleon/icon/blue-chameleon.png?w=105",
+            "desc": "Dodge one-eyed monsters and gather gold coins in Blue Chameleon. Strategically collect hearts to boost health as you navigate thrilling stages. How long can you survive and thrive in this colorful world of daring challenges?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Escape from the Dungeon",
+            "url": "https://play.gamepix.com/escape-from-the-dungeon/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/escape-from-the-dungeon/icon/escape-from-the-dungeon.png?w=105",
+            "desc": "Dive into the heart-pounding depths of a medieval dungeon where survival hinges on your wits and timing. Navigate tricky traps, uncover secret paths, and collect keys to escape. With its nostalgic pixel-art charm and increasingly intricate puzzles, this adventure challenges you to perfect your escape strategy.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Ninja Frog Adventure",
+            "url": "https://play.gamepix.com/frog-adventure/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/frog-adventure/icon/frog-adventure.png?w=105",
+            "desc": "Ninja Frog Adventure invites you to hop through vibrant, pixelated worlds as a nimble frog on a mission. Master agile jumps, collect fruits, and outsmart enemies across creatively designed levels. With each stage offering new challenges, this journey tests your reflexes and strategic moves for ultimate fun.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Memory Lane",
+            "url": "https://play.gamepix.com/memory-lane/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/memory-lane/icon/memory-lane.png?w=105",
+            "desc": "Navigate a world where memory is your greatest ally. In Memory Lane, master the art of recall as you transition from seeing to believing, piecing together invisible paths to advance. Test your wits and timing in this challenging adventure, where each successful leap depends wholly on your mind’s eye.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Unbroken Soul",
+            "url": "https://play.gamepix.com/unbroken-soul/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/unbroken-soul/icon/unbroken-soul.png?w=105",
+            "desc": "In Unbroken Soul, guide King Tyrion's spirit through a vibrant 2D realm, overcoming perilous traps and foes. Master your reflexes to conquer cunning monsters and gather power to reclaim life and defeat the necromancer Elaniof, all while upgrading Tyrion's arsenal with found treasures. Adventure awaits!",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Tox Sprunki Mod",
+            "url": "https://play.gamepix.com/tox-sprunki-mod/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/tox-sprunki-mod/icon/tox-sprunki-mod.png?w=105",
+            "desc": "Navigate through a toxic world as Sprunki Tox, racing against time to avoid your own poison trails. Quick thinking is key as you strategize your every move across 24 captivating levels. Will you outsmart the hazards and reach the barrel in time?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Chicken Dash",
+            "url": "https://play.gamepix.com/chicken-dash/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/chicken-dash/icon/chicken-dash.png?w=105",
+            "desc": "Guide a speedy chicken through thrilling platformer challenges! Navigate spikes and gaps with perfect timing, while collecting coins for extra excitement. With each level, brace for increasing difficulty and adrenaline-pumping action. Can you master every jump and dash your way to victory?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Rage Maze Troll Hardest Platformer",
+            "url": "https://play.gamepix.com/rage-maze-troll-hardest-platformer/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/rage-maze-troll-hardest-platformer/icon/rage-maze-troll-hardest-platformer.png?w=105",
+            "desc": "Dive into Rage Maze, where relentless traps and mind-bending puzzles await. Test your skills with impossible jumps as you outsmart troll mechanics designed to frustrate. Unlock characters, conquer 15 brutal levels, and tackle Speedrun Mode for the ultimate platformer challenge. Can you triumph over the chaos?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "It's Coming Jump!",
+            "url": "https://play.gamepix.com/its-coming-jump/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/its-coming-jump/icon/its-coming-jump.png?w=105",
+            "desc": "Control a nimble yellow ball in \"It's Coming, Jump!\" as you dash through a festive cave filled with glittering gold. Evade relentless skull enemies, overcome tricky obstacles, and reach the flag. Test your reflexes as each level amps up the challenge. Can you master the jump?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Melody's Adventure 2",
+            "url": "https://play.gamepix.com/melody-s-adventure-2/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/melody-s-adventure-2/icon/melody-s-adventure-2.png?w=105",
+            "desc": "Embark on an enchanting rhythmic adventure in Melody's Adventure 2. Navigate through 32 intricately designed levels, leveraging music-powered moves to outsmart foes and uncover hidden paths. With captivating landscapes and an immersive soundtrack, every jump and beat sync elevates your platforming prowess to exhilarating heights.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Golem Adventure",
+            "url": "https://play.gamepix.com/golem-adventure/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/golem-adventure/icon/golem-adventure.png?w=105",
+            "desc": "Guide a mighty golem through enchanted lands, battling mythical foes in Golem Adventure. Engage in strategic combat, mastering your reflexes to overcome escalating challenges. Experience thrilling action and explore a magical universe as you climb the high-score leaderboard and face relentless monsters.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Blue Rabbit",
+            "url": "https://play.gamepix.com/blue-rabbit/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/blue-rabbit/icon/blue-rabbit.png?w=105",
+            "desc": "Hop into adventure with Blue Rabbit! Collect gold coins while dodging sneaky cats and frogs. Restore your health by finding hidden hearts to keep the excitement alive. Can you master the challenge and stay in the game?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "The Knight's Fantastic Dream",
+            "url": "https://play.gamepix.com/the-knight-s-fantastic-dream/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/the-knight-s-fantastic-dream/icon/the-knight-s-fantastic-dream.png?w=105",
+            "desc": "Guide a valiant knight through a mystical, eternal night, collecting keys and dodging slimes to uncover secrets. With intuitive controls and an enchanting soundtrack, master agility and strategy to outsmart obstacles, beat the clock, and climb the leaderboard. Can you emerge victorious in this dreamy platform adventure?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Rock Monster Warrior",
+            "url": "https://play.gamepix.com/rock-monster-warrior/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/rock-monster-warrior/icon/rock-monster-warrior.png?w=105",
+            "desc": "Navigate perilous traps and battle formidable rock monsters on your quest to victory. Survive with strategic moves and quick reflexes to reach the triumphant win button. Challenge yourself to replay and master the journey, unleashing endless fun in this thrilling adventure.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Robot Dimensions",
+            "url": "https://play.gamepix.com/robot-dimensions/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/robot-dimensions/icon/robot-dimensions.png?w=105",
+            "desc": "Embark on a strategic adventure with a dimension-shifting robot. Alter environments, solve intricate puzzles, and navigate challenging terrains. Master unique mechanics in this captivating journey, blending adventure and strategy in a compact, immersive world.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Platformer Hell Reupload",
+            "url": "https://play.gamepix.com/platformer-hell-reupload/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/platformer-hell-reupload/icon/platformer-hell-reupload.png?w=105",
+            "desc": "Plunge into the adrenaline-pumping world of Platformer Hell Reupload, where speed and precision rule. Navigate devilishly designed levels filled with treacherous traps and foes. Crisp visuals and immersive audio merge to offer a thrilling challenge, testing your platforming prowess and rewarding determination with exhilarating success.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Frog Adventure The Hero Journey",
+            "url": "https://play.gamepix.com/frog-adventurethe-hero-journey/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/frog-adventurethe-hero-journey/icon/frog-adventurethe-hero-journey.png?w=105",
+            "desc": "Descrizione disponibile",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Armored Knight",
+            "url": "https://play.gamepix.com/armored-knight/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/armored-knight/icon/armored-knight.png?w=105",
+            "desc": "Descrizione disponibile",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Chamber Challenge",
+            "url": "https://play.gamepix.com/chamber-challenge/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/chamber-challenge/icon/chamber-challenge.png?w=105",
+            "desc": "Chamber Challenge plunges players into an exhilarating quest through enigmatic chambers teeming with devious traps and cerebral puzzles. Combine split-second reflexes and strategic insight to unearth hidden keys and progress. Each chamber ratchets up the intensity, demanding precision and ingenuity. Are you ready to outwit the labyrinth?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Ball Platformer Red and Blue",
+            "url": "https://play.gamepix.com/ball-platformer-red-and-blue/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/ball-platformer-red-and-blue/icon/ball-platformer-red-and-blue.png?w=105",
+            "desc": "Navigate puzzles in Ball Platformer Red and Blue as a lively ball, maneuvering through clever obstacles and locating hidden keys. Jump to defeat foes and unlock new levels. Explore creative emoji skins that add flair and power-ups to your journey. A thrilling test of strategy and finesse awaits!",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Chicken Scream",
+            "url": "https://play.gamepix.com/chicken-scream/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/chicken-scream/icon/chicken-scream.png?w=105",
+            "desc": "Guide a spirited chicken through entertaining obstacles using only your voice! Whisper for a gentle stroll or shout for a leap, mastering vocal precision to tackle escalating challenges. Dive into laughter-filled gameplay that offers endless amusement and tests your vocal prowess in this whimsical and interactive adventure.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Mighty Run",
+            "url": "https://play.gamepix.com/mighty-run/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/mighty-run/icon/mighty-run.png?w=105",
+            "desc": "Embark on an exhilarating platforming adventure in Mighty Run. Navigate vibrant levels, dodge cunning foes, and collect valuable gifts and diamonds. Master intuitive controls and clever strategies as challenges escalate. Discover hidden shortcuts and harness power-ups to conquer each stage in this addictive quest. Can you find every hidden treasure?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Run Away from Sprunki Eater",
+            "url": "https://play.gamepix.com/run-away-from-sprunki-eater/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/run-away-from-sprunki-eater/icon/run-away-from-sprunki-eater.png?w=105",
+            "desc": "Dash through daring levels in Run Away from Sprunki Eater, as the relentless Devourer closes in. Test your reflexes and agility, navigating dynamic platforms while evading perilous spikes. Choose your favorite Sprunki, master quick decisions, and experience the escalating thrill of this fast-paced platformer. Will you survive the chase?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Laser Marathon",
+            "url": "https://play.gamepix.com/laser-marathon-alpha/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/laser-marathon-alpha/icon/laser-marathon-alpha.png?w=105",
+            "desc": "Dive into the electrifying chaos of Laser Marathon, a fast-paced platformer where razor-sharp reflexes are your only allies. Navigate an ever-changing labyrinth of perilous lasers and cunning traps, promising an adrenaline-pumping test of skill and strategy. Can you survive the marathon of mayhem?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "SpinWhisker",
+            "url": "https://play.gamepix.com/spinwhisker/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/spinwhisker/icon/spinwhisker.png?w=105",
+            "desc": "Descrizione disponibile",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Pet Runner - Dinosaur Jump",
+            "url": "https://play.gamepix.com/pet-runner-daily-challenges/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/pet-runner-daily-challenges/icon/pet-runner-daily-challenges.png?w=105",
+            "desc": "Dive into the exhilarating world of Pet Runner - Dinosaur Jump, where your furry friend races through vibrant landscapes. Master jumps, dodge obstacles, and collect coins to unlock adorable companions. With exciting modes and intuitive controls, each run is thrilling and packed with endless fun for all ages.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Hoppy Harvest",
+            "url": "https://play.gamepix.com/hoppy-harvest/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/hoppy-harvest/icon/hoppy-harvest.png?w=105",
+            "desc": "Leap into colorful orchards with your lively rabbit companion in Hoppy Harvest. Navigate lush landscapes, collect juicy rewards, and dodge dynamic obstacles. Each hop unlocks surprises and power-ups, propelling you to new heights in this endlessly engaging adventure, perfect for satisfying your quest for fun and high scores.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "MCBros PixelCraft",
+            "url": "https://play.gamepix.com/mcbros-pixelcraft/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/mcbros-pixelcraft/icon/mcbros-pixelcraft.png?w=105",
+            "desc": "Embark on a pixelated adventure with Steve and Alex in MCBros PixelCraft. Navigate treacherous obstacles, outsmart lurking monsters, and master double jumps. Collect shiny coins and crucial keys as you switch seamlessly between characters, guiding them to safety through exhilarating levels filled with danger and discovery.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Square Monsters",
+            "url": "https://play.gamepix.com/square-monsters-1/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/square-monsters-1/icon/square-monsters-1.png?w=105",
+            "desc": "Square Monsters is a captivating puzzle game where you strategize and manipulate pixel creatures across 24 increasingly challenging levels. Engage your analytical skills to unlock exciting stages, all while enjoying nostalgic pixel-themed graphics and intuitive controls that keep the focus on fun and mind-bending gameplay.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Farmer Noob Super Hero",
+            "url": "https://play.gamepix.com/farmer-noob-super-hero/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/farmer-noob-super-hero/icon/farmer-noob-super-hero.png?w=105",
+            "desc": "Help a farmer reunite with his lost barnyard pals in \"Farmer Noob Super Hero.\" Explore vibrant forests, dodge lurking monsters, and enjoy exciting double-jump maneuvers. Embark on a thrilling quest to bring your beloved animals back home, offering mystique and creativity at every turn, both on PC and mobile.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Outline Switch",
+            "url": "https://play.gamepix.com/outline-switch/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/outline-switch/icon/outline-switch.png?w=105",
+            "desc": "Descrizione disponibile",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Healthy Hero",
+            "url": "https://play.gamepix.com/healthy-hero/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/healthy-hero/icon/healthy-hero.png?w=105",
+            "desc": "Embark on a colorful adventure where you dodge junk food and harness the power of fresh fruits. Jump, dash, and outsmart unhealthy foes as you power up across vibrant levels in your quest to become a true Healthy Hero.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Slime Jump",
+            "url": "https://play.gamepix.com/slime-jump/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/slime-jump/icon/slime-jump.png?w=105",
+            "desc": "Bounce, stick, and strategize in Slime Jump! Master your jumping prowess as a blue slime, navigating perilous platforms and dodging crafty enemies. Balance energy wisely while sticking to walls and avoid instant death from spikes. Touch the ground to recharge and perfect your precision jumps to survive.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Foxy Adventure",
+            "url": "https://play.gamepix.com/foxy-adventure/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/foxy-adventure/icon/foxy-adventure.png?w=105",
+            "desc": "Embark on a whirlwind quest as Foxy in vibrant landscapes, where your agility and precision face ever-changing challenges. Enjoy dynamic platforming with intuitive controls and exhilarating obstacles. Race against time, uncover hidden secrets, and let the thrilling soundtrack propel you through each captivating level.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Rotate Platformer",
+            "url": "https://play.gamepix.com/rotate-platformer/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/rotate-platformer/icon/rotate-platformer.png?w=105",
+            "desc": " Embark on a thrilling 360° multiplayer platformer adventure in Rotate Platformer, where quick reflexes and strategic maneuvers are key. Race through rotating stages, dodging lava and spikes, as you aim for the finish flag. Engage, compete, and chat with friends, ensuring endless fun with each run.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Rabbit Samurai 3",
+            "url": "https://play.gamepix.com/rabbit-samurai-3/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/rabbit-samurai-3/icon/rabbit-samurai-3.png?w=105",
+            "desc": "Guide your heroic rabbit samurai through a vibrant world using a versatile grappling hook to conquer puzzles and traverse diverse landscapes. Strategically plan your swings to scale heights and explore depths, all while nurturing curious jellyfish companions. Experience the thrill of precision and timing in every leap and swing. ",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Super Pizza Quest",
+            "url": "https://play.gamepix.com/super-pizza-quest/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/super-pizza-quest/icon/super-pizza-quest.png?w=105",
+            "desc": "Embark on a hilarious quest to reclaim your stolen pizza from a greedy dragon! Traverse whimsical worlds and outwit quirky foes through action-packed levels. Collect coins, dodge hazards, and savor cheesy power-ups. With charming visuals and intuitive controls, Super Pizza Quest delivers platforming fun for everyone. Will you save pizza night?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Lava Cre",
+            "url": "https://play.gamepix.com/lava-cre/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/lava-cre/icon/lava-cre.png?w=105",
+            "desc": "Navigate perilous platforms, racing to the helicopter before the lava consumes you. Your quirky companion is more trickster than ally, adding a playful twist to each challenge. Select unique characters to embark on this fiery adventure, blending lighthearted mischief with thrilling treachery.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "The Blue-Haired Warrior vs. the Red Mushroom Monsters",
+            "url": "https://play.gamepix.com/the-blue-haired-warrior-vs-the-red-mushroom-monsters/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/the-blue-haired-warrior-vs-the-red-mushroom-monsters/icon/the-blue-haired-warrior-vs-the-red-mushroom-monsters.png?w=105",
+            "desc": "Navigate perilous traps and face off against formidable red mushroom monsters in an epic quest for victory. Boost your health by collecting coins and strategically restart battles to refine your approach. Can you guide the blue-haired warrior to triumph in this thrilling adventure?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Virology",
+            "url": "https://play.gamepix.com/virology/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/virology/icon/virology.png?w=105",
+            "desc": "Sneak, dodge, and strategize as a clever virus in Virology, the inventive 2D platformer blending classic charm with modern artistry. Master intricate mazes and perfect your timing to silently infect targets. It’s a thrilling cat-and-mouse chase that tests your agility and cunning. Will you outsmart your prey?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Hand-to-Hand Boxing",
+            "url": "https://play.gamepix.com/hand-to-hand-boxing/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/hand-to-hand-boxing/icon/hand-to-hand-boxing.png?w=105",
+            "desc": "Descrizione disponibile",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Lily Adventure",
+            "url": "https://play.gamepix.com/lily-adventure/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/lily-adventure/icon/lily-adventure.png?w=105",
+            "desc": "Navigate through an enchanting world in Lily Adventure, collecting magical crystals and outsmarting devious traps. Swift reflexes are key as danger lurks in every corner—an enemy encounter spells instant defeat. Enjoy this thrilling platformer on mobile and computer, guiding Lily to triumph wherever you are!",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Green Orb Adventure",
+            "url": "https://play.gamepix.com/green-orb-adventure/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/green-orb-adventure/icon/green-orb-adventure.png?w=105",
+            "desc": "Embark on a thrilling pixelated quest in Green Orb Adventure! Master tight platforming and clever puzzles as you hunt for a hidden key to unlock your escape. Navigate tricky traps, face formidable foes, and unravel secrets, all while a captivating retro soundtrack spurs you onward. Can you conquer the labyrinth?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Nightstrike Archery",
+            "url": "https://play.gamepix.com/nightstrike-archery/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/nightstrike-archery/icon/nightstrike-archery.png?w=105",
+            "desc": "Leap into a thrilling archery adventure with Nightstrike Archery! Navigate perilous levels by jumping on arrows, battling enemies, and searching for keys to unlock new stages. Master your aim and strategy in this captivating game where precision meets excitement. Can you conquer the challenges and emerge victorious?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Blocks - Platformer",
+            "url": "https://play.gamepix.com/blocks-platformer/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/blocks-platformer/icon/blocks-platformer.png?w=105",
+            "desc": "Navigate a vibrant block-based world where your agility and strategy will be tested. Avoid the perilous red blocks, aim for the victory flag, and customize your journey with unique skins. Tackle the challenge, explore, and have fun as you speed through this engaging platformer adventure.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "TrollHead to Face",
+            "url": "https://play.gamepix.com/trollhead-to-face/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/trollhead-to-face/icon/trollhead-to-face.png?w=105",
+            "desc": "Race against the clock in TrollHead to Face, navigating as a whimsical troll-faced stick character. Leap across sky-high platforms, collecting gold and mastering double jumps while dodging obstacles. This humorous, fast-paced parkour adventure tests your agility and strategy as you strive to reach the elusive black portal.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Aidan in Danger",
+            "url": "https://play.gamepix.com/aidan-in-danger/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/aidan-in-danger/icon/aidan-in-danger.png?w=105",
+            "desc": "Join Aidan, a brave elf with a slingshot, on a thrilling quest to save Drakor, Earth's last dragon. Navigate time-twisting levels, battle fierce monsters, and conquer epic boss fights in this retro platformer. With intuitive controls and chiptune beats, experience a nostalgic adventure like no other.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Turtle Quest",
+            "url": "https://play.gamepix.com/turtle-quest/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/turtle-quest/icon/turtle-quest.png?w=105",
+            "desc": "Embark on a thrilling mission as a ninja turtle, navigating treacherous platforms and outsmarting cunning foes to rescue your poisoned Master. Combine quick reflexes with strategic attacks using boomerangs and ropes, while uncovering hidden paths in a world full of surprises and tactical challenges. Can you save the day?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Trap Dungeon",
+            "url": "https://play.gamepix.com/trap-dungeon/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/trap-dungeon/icon/trap-dungeon.png?w=105",
+            "desc": "Enter a sinister dungeon where every room is a cunning puzzle. Navigate deadly traps, face unexpected challenges, and engage with mysterious NPCs. Precision and quick thinking are your only allies in this relentless platformer. Survive at your peril—one misstep leads to instant death. Are you the chosen one? ",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "The Knight's Tower",
+            "url": "https://play.gamepix.com/the-knight-s-tower/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/the-knight-s-tower/icon/the-knight-s-tower.png?w=105",
+            "desc": "Embark on a daring ascent in The Knight's Tower, a nostalgic 2D platformer. Navigate a knight through a charming, pixelated world filled with clever traps and hidden paths. Master timing and strategy to triumph over challenges, all while enjoying the enchanting retro atmosphere. Will you reach the top?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Alex Meets Ally Spring",
+            "url": "https://play.gamepix.com/alex-meets-ally-spring/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/alex-meets-ally-spring/icon/alex-meets-ally-spring.png?w=105",
+            "desc": "Guide Alex through intriguing platformer levels filled with monsters and mind-bending puzzles. Race against time to collect stars, unlocking Ally's cage. Strategically deploy bombs, utilize lifts, and press buttons to navigate this delightfully addictive adventure. Can you reunite the friends before time runs out?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Dream Hopping Courier",
+            "url": "https://play.gamepix.com/dream-hopping-courier/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/dream-hopping-courier/icon/dream-hopping-courier.png?w=105",
+            "desc": "Descrizione disponibile",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Blip",
+            "url": "https://play.gamepix.com/blip/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/blip/icon/blip.png?w=105",
+            "desc": "Embark on a lively pixelated journey in Blip, where a heartwarming square character navigates mesmerizing landscapes. Collect shimmering coins and gems while dodging tricky spikes and cunning traps. Perfect for quick escapades, this vibrant adventure combines simple yet addictive platforming with whimsical charm. Help Blip recover his cherished taco!",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Alex Meets Ally Exotica",
+            "url": "https://play.gamepix.com/alex-meets-ally-exotica/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/alex-meets-ally-exotica/icon/alex-meets-ally-exotica.png?w=105",
+            "desc": "Join Alex on a whimsical adventure to reunite with Ally in vibrant settings. Master intuitive swinging mechanics, collect stars, and overcome obstacles with precision. Race against time to boost your score, enjoying delightful graphics and an energetic atmosphere in this captivating journey. Can you bridge the gap?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Moonlight Valley",
+            "url": "https://play.gamepix.com/moonlight-valley/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/moonlight-valley/icon/moonlight-valley.png?w=105",
+            "desc": "Embark on an enchanting journey in Moonlight Valley, a mystical multiplayer platformer teeming with vibrant landscapes and thrilling challenges. Gather coins, discover hidden secrets for bonus rewards, and utilize strategic tools like parachutes to navigate safely. Team coordination and exploration make each adventure uniquely captivating.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Lara",
+            "url": "https://play.gamepix.com/lara/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/lara/icon/lara.png?w=105",
+            "desc": "Guide Lara through a mesmerizing world of the dead, where every step challenges your wits and bravery. Solve devious puzzles and engage with spectral beings amid shadowy landscapes. Unravel secrets, dodge perilous traps, and make spine-chilling choices in this unforgettable quest to bring Lara back to life.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Obby Barry Prison Run",
+            "url": "https://play.gamepix.com/obby-barry-prison-run/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/obby-barry-prison-run/icon/obby-barry-prison-run.png?w=105",
+            "desc": "Escape a high-security prison in Obby Barry Prison Run! Navigate complex obstacles, collect essential gasoline cans, and outsmart vigilant guards in this nostalgic pixel art adventure. Carefully plan your path, expertly maneuver through dangers, and reach the helicopter pad for a triumphant victory. Can you make the perfect escape?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Blob Adventures",
+            "url": "https://play.gamepix.com/blob-adventures/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/blob-adventures/icon/blob-adventures.png?w=105",
+            "desc": "Leap into a thrilling challenge with Blob Adventures. Master precise jumps to dodge perilous spikes and perfect your skills across increasingly difficult levels. Test your reflexes and strategy in this captivating, checkpoint-free journey where mistakes mean starting over. Can you conquer the ultimate test of agility?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Whipsaw Roll",
+            "url": "https://play.gamepix.com/whipsaw-run/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/whipsaw-run/icon/whipsaw-run.png?w=105",
+            "desc": "Conquer the fierce world of Whipsaw Run, where your glowing orb must deftly overcome perilous landscapes. Master gravity-defying tricks, navigate ever-changing environments, and outsmart formidable foes. Harness momentum and quick reflexes to survive harrowing obstacles and climb the leaderboards in this thrilling platforming challenge.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Tiny Crate",
+            "url": "https://play.gamepix.com/tiny-crate/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/tiny-crate/icon/tiny-crate.png?w=105",
+            "desc": "Descrizione disponibile",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Color Platform",
+            "url": "https://play.gamepix.com/color-platform/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/color-platform/icon/color-platform.png?w=105",
+            "desc": "Descrizione disponibile",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Donut Adventure",
+            "url": "https://play.gamepix.com/donut-adventure/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/donut-adventure/icon/donut-adventure.png?w=105",
+            "desc": "Descrizione disponibile",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "PoP UP",
+            "url": "https://play.gamepix.com/pop-up/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/pop-up/icon/pop-up.png?w=105",
+            "desc": "Descrizione disponibile",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Double Jump DX!",
+            "url": "https://play.gamepix.com/double-jump-dx/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/double-jump-dx/icon/double-jump-dx.png?w=105",
+            "desc": "Descrizione disponibile",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Hopless",
+            "url": "https://play.gamepix.com/hopless/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/hopless/icon/hopless.png?w=105",
+            "desc": "Leap into action with Hopless, a challenging precision platformer where the ground is your enemy. Navigate through intricate levels using sharp skills and determination. Test your patience as you soar through the air, dodging perilous obstacles in a relentless pursuit of victory. Will you master the art of the hop?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Jump Into the Hell Inferno Leap",
+            "url": "https://play.gamepix.com/jump-into-the-hell-inferno-leap/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/jump-into-the-hell-inferno-leap/icon/jump-into-the-hell-inferno-leap.png?w=105",
+            "desc": "Jump into the fiery chaos as Bones, a daring skeleton on a soulful quest. Navigate hellish landscapes with nimble leaps, dodge treacherous traps, and outsmart relentless demons in this humorous 2D platformer adventure. Can you reclaim what’s lost amidst the infernal madness?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Chase the Stars",
+            "url": "https://play.gamepix.com/chase-the-stars/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/chase-the-stars/icon/chase-the-stars.png?w=105",
+            "desc": "Dive into \"Chase the Stars,\" a captivating platformer where precision and skill are your allies. Master tricky jumps, conquer 17 challenging levels, and race against the clock. Collect hidden treasures and push your limits in exhilarating time trials. Will you reach the stars?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Arrow Survival - 15 Seconds",
+            "url": "https://play.gamepix.com/arrow-survival-15-seconds/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/arrow-survival-15-seconds/icon/arrow-survival-15-seconds.png?w=105",
+            "desc": "Survive frenetic action in Arrow Survival: 15 Seconds! Master 40 relentless, pixelated levels as a quick-thinking archer. Dodge hazards, unleash rapid-fire precision, and conquer the clock in a pulse-pounding platformer challenge!",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Bloom in the Dark",
+            "url": "https://play.gamepix.com/bloom-in-the-dark/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/bloom-in-the-dark/icon/bloom-in-the-dark.png?w=105",
+            "desc": "Guide a bird through a monochrome world, collecting precious water droplets to nurture a lonely flower. Navigate intricate levels across 12 stages with nostalgic 1-bit charm and captivating platform puzzles, bringing life to the shadows.",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "One Two Start",
+            "url": "https://play.gamepix.com/one-two-start/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/one-two-start/icon/one-two-start.png?w=105",
+            "desc": "Embark on your journey as a rookie runner aiming for 5km. Test your limits with each record-breaking sprint, gaining speed and stamina. Overcome obstacles with jumps and slides, and grab water bottles to keep your momentum. Can you conquer the 5km challenge? Let the race begin!",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Seedfall - Defend the Last Tree",
+            "url": "https://play.gamepix.com/seedfall-defend-the-last-tree/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/seedfall-defend-the-last-tree/icon/seedfall-defend-the-last-tree.png?w=105",
+            "desc": "In Seedfall - Defend the Last Tree, wield nature's power in an endless side-scrolling battle to protect the final magical tree. Strategize with natural defenses, enchanted upgrades, and fend off waves of encroaching corrupted creatures in a beautifully haunting forest. Can you master the art of survival?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "CloneUp - Stack Yourself",
+            "url": "https://play.gamepix.com/cloneup-stack-yourself/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/cloneup-stack-yourself/icon/cloneup-stack-yourself.png?w=105",
+            "desc": "CloneUp - Stack Yourself is a captivating 2D pixel-art platformer where you cleverly use your clones to maneuver around deadly obstacles. Strategically stack your replicas to scale new heights and outsmart dangers, crafting a unique path to each exit door. Embrace creativity in this innovative self-stacking adventure!",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "The Castle",
+            "url": "https://play.gamepix.com/the-castle/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/the-castle/icon/the-castle.png?w=105",
+            "desc": "Embark on a perilous journey through a mysterious castle. Conquer menacing traps and formidable foes using your sword and sharp skills. Face thrilling challenges as you fight your way to an epic showdown with the ultimate boss. Will you emerge victorious? Adventure and danger await at every corner!",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Kidnapped Again",
+            "url": "https://play.gamepix.com/kidnapped-again/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/kidnapped-again/icon/kidnapped-again.png?w=105",
+            "desc": "Embark on a whimsical rescue mission to save the princess from a persistently villainous wizard. Engage in strategic combat by precisely timing your shield to fend off foes and navigate knockback from crafty animals in this charmingly humorous adventure. Can you end the endless cycle of kidnappings?",
+            "categoria": "platformer"
+        },
+        {
+            "titolo": "Penguino",
+            "url": "https://play.gamepix.com/penguino/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/penguino/icon/penguino.png?w=105",
+            "desc": "Embark on a frosty adventure with Penguino! Leap and glide across icy terrains, grabbing fish to satisfy your hunger and boost your score. Master tricky combos, dodge perilous waters and orcas, and snag power-ups from presents. Time is of the essence as ice melts beneath your feet!",
+            "categoria": "platformer"
+        }
+    ];
+
+
+
+
+
+
+
+
+
+</script>
+
+<!-- Il filo che abbiamo appena collegato -->
+<!-- Vedi quel ?v=2 alla fine? Inganna il browser e lo costringe a scaricare il file nuovo! -->
+<script src="https://playcombo.it/js/motore-playcombo.js?v=2"></script>
+
+<script>
+    // E via, si parte!
+    window.inizializzaGiochi();
+</script>

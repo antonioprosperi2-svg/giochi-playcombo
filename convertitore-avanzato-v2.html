@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Convertitore Avanzato PlayCombo (Con Validazione)</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            background: #f0f4f8;
+            color: #333;
+        }
+
+        .box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            font-family: monospace;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background: #ff9900;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #e08800;
+        }
+
+        pre {
+            background: #222;
+            color: #fff;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            max-height: 250px;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        .warning {
+            color: #ff6b00;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .error {
+            color: #cc0000;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        .info-feed {
+            color: #0077be;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .categoria-container {
+            background: #fff;
+            border-left: 6px solid #0077be;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .categoria-titolo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0077be;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+        }
+
+        .btn-copia-cat {
+            background: #0077be;
+            margin-bottom: 10px;
+            margin-right: 10px;
+        }
+
+        .btn-copia-cat:hover {
+            background: #005a9c;
+        }
+
+        .btn-pulisci {
+            background: #cc0000;
+        }
+
+        .btn-pulisci:hover {
+            background: #990000;
+        }
+
+        .btn-verifica {
+            background: #00aa00;
+        }
+
+        .btn-verifica:hover {
+            background: #008800;
+        }
+
+        .conteggio-tag {
+            background: #e1f0fa;
+            color: #0077be;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+
+        .problem-section {
+            background: #fff3cd;
+            border-left: 6px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .problem-titolo {
+            font-size: 18px;
+            font-weight: bold;
+            color: #856404;
+            margin: 0 0 10px 0;
+        }
+
+        .game-item {
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #ffc107;
+        }
+
+        .game-info {
+            flex-grow: 1;
+        }
+
+        .game-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .load-indicator {
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-top: 5px;
+        }
+
+        .badge-duplicate {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .badge-broken {
+            background: #cc0000;
+            color: white;
+        }
+
+        .badge-missing {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .select-all-container {
+            margin: 10px 0;
+        }
+
+        .remove-selected-btn {
+            background: #cc0000;
+            margin-top: 15px;
+        }
+
+        .remove-selected-btn:hover {
+            background: #990000;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Convertitore Intelligente PlayCombo (Con Validazione)</h2>
+    <p>Riconosce il feed, inserisce tag "categoria" e <strong>identifica doppioni + giochi non funzionanti</strong>.</p>
+
+    <div class="box">
+        <h3>1. Incolla qui il testo del feed</h3>
+        <textarea id="inputJson" placeholder="Incolla qui il JSON di GamePix o GameMonetize..."></textarea>
+        <button onclick="convertiEDividiFeedUniversale()">Converti e Prepara per WordPress</button>
+    </div>
+
+    <div id="risultatoGlobale" class="box" style="display:none;">
+        <h3>2. Risultato della Conversione</h3>
+        <p id="tipoFeedRilevato" class="info-feed"></p>
+        <p id="infoConteggioTotale" class="success"></p>
+
+        <!-- SEZIONE PROBLEMI -->
+        <div id="sezioneProblem" style="display:none;">
+            <div class="problem-section">
+                <div class="problem-titolo">🔍 Problemi Rilevati</div>
+                <div id="problemList"></div>
+                <div class="select-all-container">
+                    <input type="checkbox" id="selectAllProblems" onchange="toggleAllProblems()">
+                    <label for="selectAllProblems"><strong>Seleziona tutti i problematici</strong></label>
+                </div>
+                <button class="remove-selected-btn" onclick="rimuoviSelezionati()">Rimuovi Selezionati</button>
+                <button class="btn-verifica" style="margin-left: 10px;" onclick="testaPrimiUrl()">Test URL (Primi
+                    5)</button>
+            </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+        <div id="areaCategorie"></div>
+    </div>
+
+    <script>
+        let listaGiociGlobale = []; // Store globale per i giochi
+        let problematiSelezionati = []; // Traccia quali problemi selezionare per rimozione
+
+        function convertiEDividiFeedUniversale() {
+            const inputTesto = document.getElementById('inputJson').value.trim();
+            if (!inputTesto) { alert('Incolla prima il testo del feed!'); return; }
+
+            try {
+                const dati = JSON.parse(inputTesto);
+                let elencoGiochi = [];
+                let tipoFeed = "Sconosciuto";
+
+                if (Array.isArray(dati)) {
+                    elencoGiochi = dati;
+                    if (dati.length > 0 && (dati[0].thumb || dati[0].thumb1)) {
+                        tipoFeed = "GameMonetize o HTML5 (Lista Diretta)";
+                    } else {
+                        tipoFeed = "Lista Standard";
+                    }
+                } else if (dati.data && Array.isArray(dati.data)) {
+                    elencoGiochi = dati.data;
+                    tipoFeed = "GamePix (Formato Partner / Data)";
+                } else if (dati.games && Array.isArray(dati.games)) {
+                    elencoGiochi = dati.games;
+                    tipoFeed = "GamePix (Formato Standard / Games)";
+                } else if (dati.items && Array.isArray(dati.items)) {
+                    elencoGiochi = dati.items;
+                    tipoFeed = "Formato Alternativo (Items)";
+                } else {
+                    alert('Struttura dati non riconosciuta.');
+                    return;
+                }
+
+                const categorieRaggruppate = {};
+                let totaleGiochi = 0;
+                listaGiociGlobale = [];
+                problematiSelezionati = [];
+
+                elencoGiochi.forEach(gioco => {
+                    let imgUrl = '';
+
+                    if (gioco.thumb1 && typeof gioco.thumb1 === 'string') {
+                        imgUrl = gioco.thumb1;
+                    } else if (gioco.thumb && typeof gioco.thumb === 'string') {
+                        imgUrl = gioco.thumb;
+                    } else if (gioco.image) {
+                        imgUrl = gioco.image;
+                    } else if (gioco.thumbnailUrl) {
+                        imgUrl = gioco.thumbnailUrl;
+                    } else if (gioco.thumb && typeof gioco.thumb === 'object') {
+                        imgUrl = gioco.thumb.url || gioco.thumb.large || '';
+                    }
+
+                    if (imgUrl) {
+                        imgUrl = imgUrl.replace(/\\/g, '');
+                    }
+
+                    let descrizione = gioco.desc_it || gioco.description || '';
+                    if (!descrizione && gioco.instructions) {
+                        descrizione = gioco.instructions;
+                    }
+                    if (!descrizione) {
+                        descrizione = 'del gioco completa';
+                    }
+
+                    let catNome = gioco.category || 'Altri';
+                    catNome = catNome.trim();
+
+                    const datiGioco = {
+                        "titolo": gioco.title || gioco.name || 'Gioco senza titolo',
+                        "url": gioco.url || gioco.embed_url || '',
+                        "img": imgUrl,
+                        "desc": descrizione,
+                        "categoria": catNome,
+                        "id": Math.random().toString(36).substr(2, 9)
+                    };
+
+                    listaGiociGlobale.push(datiGioco);
+
+                    if (!categorieRaggruppate[catNome]) {
+                        categorieRaggruppate[catNome] = [];
+                    }
+                    categorieRaggruppate[catNome].push(datiGioco);
+                    totaleGiochi++;
+                });
+
+                // RILEVAMENTO PROBLEMI
+                const problemi = rilevaProblemi(listaGiociGlobale);
+
+                document.getElementById('tipoFeedRilevato').textContent = "Sorgente Rilevata: " + tipoFeed;
+                document.getElementById('infoConteggioTotale').textContent = 'Conversione riuscita! Rilevati ' + totaleGiochi + ' giochi totali.';
+
+                // Mostra problemi se presenti
+                if (problemi.length > 0) {
+                    mostraProblemi(problemi);
+                } else {
+                    document.getElementById('sezioneProblem').style.display = 'none';
+                }
+
+                // Mostra categorie
+                const areaCategorie = document.getElementById('areaCategorie');
+                areaCategorie.innerHTML = '';
+
+                let idContatore = 0;
+                for (const [nomeCategoria, listaGiochi] of Object.entries(categorieRaggruppate)) {
+                    idContatore++;
+                    const idPre = 'codice_cat_' + idContatore;
+                    const stringaCodice = "const listaGiochi = " + JSON.stringify(listaGiochi, null, 4) + ";";
+
+                    const divCategoria = document.createElement('div');
+                    divCategoria.className = 'categoria-container';
+                    divCategoria.innerHTML = `
+                        <div class="categoria-titolo">${nomeCategoria} <span class="conteggio-tag">${listaGiochi.length} giochi</span></div>
+                        <button class="btn-copia-cat" onclick="window.copiaCodiceSpecifico('${idPre}', '${nomeCategoria}')">Copia codice</button>
+                        <pre><code id="${idPre}"></code></pre>
+                    `;
+                    areaCategorie.appendChild(divCategoria);
+                    document.getElementById(idPre).textContent = stringaCodice;
+                }
+
+                document.getElementById('risultatoGlobale').style.display = 'block';
+                document.getElementById('risultatoGlobale').scrollIntoView({ behavior: 'smooth' });
+
+            } catch (e) {
+                alert('Errore di lettura JSON: ' + e.message);
+            }
+        }
+
+        function rilevaProblemi(listaGiochi) {
+            const problemi = [];
+            const titoli = {};
+            const urls = {};
+
+            listaGiochi.forEach((gioco, index) => {
+                const problemaGioco = {
+                    id: gioco.id,
+                    titolo: gioco.titolo,
+                    url: gioco.url,
+                    index: index,
+                    problemi: []
+                };
+
+                // 1. Rilevamento doppioni per titolo
+                const titoloNorm = gioco.titolo.toLowerCase().trim();
+                if (titoli[titoloNorm]) {
+                    problemaGioco.problemi.push("DUPLICATO: stesso titolo di " + titoli[titoloNorm]);
+                } else {
+                    titoli[titoloNorm] = gioco.titolo;
+                }
+
+                // 2. Rilevamento doppioni per URL
+                if (gioco.url) {
+                    if (urls[gioco.url]) {
+                        problemaGioco.problemi.push("DUPLICATO: stesso URL di " + urls[gioco.url]);
+                    } else {
+                        urls[gioco.url] = gioco.titolo;
+                    }
+                }
+
+                // 3. Rilevamento giochi "rotti" (senza URL o immagine)
+                if (!gioco.url || gioco.url.trim() === '') {
+                    problemaGioco.problemi.push("MANCANTE: URL non presente");
+                }
+
+                if (!gioco.img || gioco.img.trim() === '') {
+                    problemaGioco.problemi.push("MANCANTE: Immagine (thumb) non presente");
+                }
+
+                // 4. URL sospetto (non è un link valido)
+                if (gioco.url && !isUrlValido(gioco.url)) {
+                    problemaGioco.problemi.push("SOSPETTO: URL potrebbe non essere valido");
+                }
+
+                if (problemaGioco.problemi.length > 0) {
+                    problemi.push(problemaGioco);
+                }
+            });
+
+            return problemi;
+        }
+
+        function isUrlValido(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch (e) {
+                return false;
+            }
+        }
+
+        function mostraProblemi(problemi) {
+            const sezioneProblem = document.getElementById('sezioneProblem');
+            const problemList = document.getElementById('problemList');
+
+            problemList.innerHTML = '<p class="warning">⚠️ Trovati ' + problemi.length + ' giochi con problemi:</p>';
+
+            problemi.forEach(problema => {
+                const divGioco = document.createElement('div');
+                divGioco.className = 'game-item';
+
+                const badges = problema.problemi.map(p => {
+                    let badgeClass = 'badge-broken';
+                    if (p.includes('DUPLICATO')) badgeClass = 'badge-duplicate';
+                    if (p.includes('MANCANTE')) badgeClass = 'badge-missing';
+                    return `<div class="badge ${badgeClass}">${p}</div>`;
+                }).join('');
+
+                divGioco.innerHTML = `
+                    <div class="game-info">
+                        <strong>${problema.titolo}</strong>
+                        <div style="font-size: 12px; color: #666; margin-top: 5px;">${badges}</div>
+                        <div style="font-size: 11px; color: #999; margin-top: 5px;">URL: ${problema.url || '(nessuno)'}</div>
+                    </div>
+                    <input type="checkbox" class="game-checkbox problema-checkbox" data-id="${problema.id}" onchange="aggiornaProblematiSelezionati()">
+                `;
+                problemList.appendChild(divGioco);
+            });
+
+            sezioneProblem.style.display = 'block';
+        }
+
+        function toggleAllProblems() {
+            const selectAll = document.getElementById('selectAllProblems').checked;
+            const checkboxes = document.querySelectorAll('.problema-checkbox');
+            checkboxes.forEach(cb => {
+                cb.checked = selectAll;
+            });
+            aggiornaProblematiSelezionati();
+        }
+
+        function aggiornaProblematiSelezionati() {
+            const checkboxes = document.querySelectorAll('.problema-checkbox:checked');
+            problematiSelezionati = Array.from(checkboxes).map(cb => cb.dataset.id);
+        }
+
+        function rimuoviSelezionati() {
+            if (problematiSelezionati.length === 0) {
+                alert('Seleziona almeno un gioco da rimuovere.');
+                return;
+            }
+
+            if (confirm('Rimuovere ' + problematiSelezionati.length + ' giochi problematici?')) {
+                listaGiociGlobale = listaGiociGlobale.filter(g => !problematiSelezionati.includes(g.id));
+                problematiSelezionati = [];
+                alert('Rimozione completata! Ora converti di nuovo per vedere il risultato.');
+                document.getElementById('selectAllProblems').checked = false;
+
+                // Ricrea la visualizzazione
+                convertiEDividiFeedUniversale();
+            }
+        }
+
+        function testaPrimiUrl() {
+            const problematiElements = document.querySelectorAll('.problema-checkbox');
+            let conteggioTest = 0;
+
+            problematiElements.forEach(elem => {
+                if (conteggioTest < 5) {
+                    const idGioco = elem.dataset.id;
+                    const gioco = listaGiociGlobale.find(g => g.id === idGioco);
+                    if (gioco && gioco.url) {
+                        testUrlRaggiungibilita(gioco.url, gioco.titolo);
+                        conteggioTest++;
+                    }
+                }
+            });
+
+            if (conteggioTest === 0) {
+                alert('Nessun URL da testare.');
+            }
+        }
+
+        function testUrlRaggiungibilita(url, titolo) {
+            fetch(url, { method: 'HEAD', mode: 'no-cors' })
+                .then(response => {
+                    console.log(titolo + ': URL raggiungibile ✓');
+                })
+                .catch(error => {
+                    console.log(titolo + ': URL NON raggiungibile ✗ - ' + error.message);
+                });
+        }
+
+        window.copiaCodiceSpecifico = function (idElemento, nomeCat) {
+            const codice = document.getElementById(idElemento).textContent;
+            navigator.clipboard.writeText(codice);
+            alert('Codice della categoria "' + nomeCat + '" copiato!');
+        }
+    </script>
+</body>
+
+</html>

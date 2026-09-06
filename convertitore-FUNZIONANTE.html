@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Convertitore Avanzato PlayCombo</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            background: #f0f4f8;
+            color: #333;
+        }
+
+        .box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            font-family: monospace;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background: #ff9900;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #e08800;
+        }
+
+        pre {
+            background: #222;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            max-height: 250px;
+            font-size: 12px;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        .info-feed {
+            color: #0077be;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .categoria-container {
+            background: #fff;
+            border-left: 6px solid #0077be;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .categoria-titolo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0077be;
+            margin: 0 0 10px 0;
+            text-transform: uppercase;
+        }
+
+        .btn-copia-cat {
+            background: #0077be;
+            margin-bottom: 10px;
+        }
+
+        .btn-copia-cat:hover {
+            background: #005a9c;
+        }
+
+        .conteggio-tag {
+            background: #e1f0fa;
+            color: #0077be;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>🎮 Convertitore Intelligente PlayCombo</h2>
+    <p>Riconosce il feed e inserisce tag <strong>"categoria"</strong> per attivare i filtri live su WordPress.</p>
+
+    <div class="box">
+        <h3>1. Incolla qui il testo del feed</h3>
+        <textarea id="inputJson" placeholder="Incolla qui il JSON di GamePix o GameMonetize..."></textarea>
+        <button onclick="converti()">✅ Converti e Prepara per WordPress</button>
+    </div>
+
+    <div id="risultatoGlobale" class="box" style="display:none;">
+        <h3>2. Risultato della Conversione</h3>
+        <p id="tipoFeedRilevato" class="info-feed"></p>
+        <p id="infoConteggioTotale" class="success"></p>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+        <div id="areaCategorie"></div>
+    </div>
+
+    <script>
+        function converti() {
+            const inputTesto = document.getElementById('inputJson').value.trim();
+            
+            if (!inputTesto) {
+                alert('❌ Incolla prima il testo del feed!');
+                return;
+            }
+
+            try {
+                console.log('Parsing JSON...');
+                const dati = JSON.parse(inputTesto);
+                
+                let elencoGiochi = [];
+                let tipoFeed = "Sconosciuto";
+
+                if (Array.isArray(dati)) {
+                    elencoGiochi = dati;
+                    tipoFeed = "Lista Diretta (Array)";
+                } else if (dati.data && Array.isArray(dati.data)) {
+                    elencoGiochi = dati.data;
+                    tipoFeed = "GamePix (data)";
+                } else if (dati.games && Array.isArray(dati.games)) {
+                    elencoGiochi = dati.games;
+                    tipoFeed = "GamePix (games)";
+                } else if (dati.items && Array.isArray(dati.items)) {
+                    elencoGiochi = dati.items;
+                    tipoFeed = "Formato Alternativo (items)";
+                } else {
+                    alert('❌ Struttura JSON non riconosciuta!\n\nDeve contenere:\n- Un array diretto\n- "data": [...]\n- "games": [...]\n- "items": [...]');
+                    return;
+                }
+
+                if (elencoGiochi.length === 0) {
+                    alert('❌ Nessun gioco trovato nel feed!');
+                    return;
+                }
+
+                console.log('Giochi trovati:', elencoGiochi.length);
+
+                const categorieRaggruppate = {};
+                let totaleGiochi = 0;
+
+                elencoGiochi.forEach((gioco, idx) => {
+                    try {
+                        let imgUrl = gioco.thumb1 || gioco.thumb || gioco.image || gioco.thumbnailUrl || '';
+                        
+                        if (imgUrl && typeof imgUrl === 'object') {
+                            imgUrl = imgUrl.url || imgUrl.large || '';
+                        }
+
+                        if (imgUrl) {
+                            imgUrl = String(imgUrl).replace(/\\/g, '');
+                        }
+
+                        let descrizione = gioco.desc_it || gioco.description || gioco.instructions || 'Descrizione disponibile';
+
+                        const catNome = (gioco.category || 'Altri').trim();
+
+                        const datiGioco = {
+                            titolo: gioco.title || gioco.name || 'Gioco senza titolo',
+                            url: gioco.url || gioco.embed_url || '',
+                            img: imgUrl,
+                            desc: descrizione,
+                            categoria: catNome
+                        };
+
+                        if (!categorieRaggruppate[catNome]) {
+                            categorieRaggruppate[catNome] = [];
+                        }
+                        
+                        categorieRaggruppate[catNome].push(datiGioco);
+                        totaleGiochi++;
+                    } catch (e) {
+                        console.warn('Errore gioco ' + idx + ':', e.message);
+                    }
+                });
+
+                document.getElementById('tipoFeedRilevato').textContent = "✅ Sorgente: " + tipoFeed;
+                document.getElementById('infoConteggioTotale').textContent = 'Conversione riuscita! ' + totaleGiochi + ' giochi processati.';
+
+                const areaCategorie = document.getElementById('areaCategorie');
+                areaCategorie.innerHTML = '';
+
+                let idContatore = 0;
+                for (const [nomeCategoria, listaGiochi] of Object.entries(categorieRaggruppate)) {
+                    idContatore++;
+                    const idPre = 'codice_' + idContatore;
+                    const stringaCodice = "const listaGiochi = " + JSON.stringify(listaGiochi, null, 2) + ";";
+
+                    const divCategoria = document.createElement('div');
+                    divCategoria.className = 'categoria-container';
+                    
+                    const html = `
+                        <div class="categoria-titolo">${nomeCategoria} <span class="conteggio-tag">${listaGiochi.length}</span></div>
+                        <button class="btn-copia-cat" onclick="copiaCodice('${idPre}', '${nomeCategoria}')">📋 Copia</button>
+                        <pre><code id="${idPre}"></code></pre>
+                    `;
+                    
+                    divCategoria.innerHTML = html;
+                    areaCategorie.appendChild(divCategoria);
+                    document.getElementById(idPre).textContent = stringaCodice;
+                }
+
+                document.getElementById('risultatoGlobale').style.display = 'block';
+                document.getElementById('risultatoGlobale').scrollIntoView({ behavior: 'smooth' });
+
+            } catch (e) {
+                console.error('ERRORE:', e);
+                alert('❌ Errore JSON:\n\n' + e.message + '\n\nVerifica con jsonlint.com');
+            }
+        }
+
+        function copiaCodice(idElemento, nomeCat) {
+            const codice = document.getElementById(idElemento).textContent;
+            navigator.clipboard.writeText(codice).then(() => {
+                alert('✅ Codice di "' + nomeCat + '" copiato!');
+            }).catch(err => {
+                alert('❌ Errore: ' + err);
+            });
+        }
+    </script>
+</body>
+
+</html>
