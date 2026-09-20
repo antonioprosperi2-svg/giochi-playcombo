@@ -1,172 +1,246 @@
-// Motore di gioco ottimizzato per grandi liste
-const GIOCHI_PER_PAGINA = 80;
+const GIOCHI_PER_PAGINA = 60;
+const EAGER_COUNT = 6;                 // poche immagini caricate subito
+const DEBOUNCE_MS = 250;
 let paginaCorrente = 1;
-let giochiFiltrati = [];
 let categoriaAttuale = 'Tutti';
-let _listaNormalizzata = [];
+let lista = Array.isArray(window.listaGiochi) ? window.listaGiochi.slice() : [];
+let giochiFiltrati = [];
+let searchTimeout = null;
+let imageObserver = null;
 
-// Observer globale per immagini lazy
-const _observerOpzioni = { root: null, rootMargin: '150px 0px', threshold: 0.01 };
-const imageObserver = new IntersectionObserver((entries, obs) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const img = entry.target;
-            if (img.dataset.src) {
-                img.src = img.dataset.src;
-                img.removeAttribute('data-src');
-            }
-            obs.unobserve(img);
-        }
-    });
-}, _observerOpzioni);
-
-window.inizializzaGiochi = function () {
-    if (typeof listaGiochi !== 'undefined' && Array.isArray(listaGiochi)) {
-        // Normalizzare una volta: campi lowercase usati nei filtri
-        _listaNormalizzata = listaGiochi.map(g => ({
-            ...g,
-            titoloLower: g.titolo ? g.titolo.toLowerCase() : '',
-            categoriaLower: g.categoria ? g.categoria.toLowerCase() : ''
-        }));
-        giochiFiltrati = _listaNormalizzata.slice();
-        paginaCorrente = 1;
-        window.mostraPagina(paginaCorrente);
-    }
-};
-
-function _clampPagina(p) {
-    const totale = Math.max(1, Math.ceil(giochiFiltrati.length / GIOCHI_PER_PAGINA));
-    if (p < 1) return 1;
-    if (p > totale) return totale;
-    return p;
+// normalize once for fast searches
+function normalizeList(arr) {
+    return arr.map((g, i) => Object.assign({}, g, {
+        __titleLower: (g.titolo || '').toLowerCase(),
+        __catLower: (g.categoria || '').toLowerCase(),
+        __idx: i
+    }));
 }
 
-window.mostraPagina = function (pagina) {
-    pagina = _clampPagina(pagina);
-    paginaCorrente = pagina;
+function createImageObserver() {
+    if (imageObserver) return imageObserver;
+    imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const img = entry.target;
+            const data = img.dataset.src;
+            if (data) {
+                img.src = data;
+                delete img.dataset.src;
+            }
+            imageObserver.unobserve(img);
+        });
+    }, { root: null, rootMargin: '300px 0px', threshold: 0.01 });
+    return imageObserver;
+}
 
+function tinyPlaceholder() {
+    return 'data:image/svg+xml;utf8,' +
+        encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="100%" height="100%" fill="#222"/></svg>');
+}
+
+function imgErrorHandler() {
+    this.onerror = null;
+    this.src = 'data:image/svg+xml;utf8,' +
+        encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100%" height="100%" fill="#222"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#666" font-family="sans-serif" font-size="12">No Img</text></svg>');
+}
+
+// safe text content for preview (avoid innerHTML)
+function buildPreviewContent(gioco) {
+    const titolo = gioco.titolo || 'Gioco';
+    const desc = gioco.desc || 'Gioca gratis!';
+    const container = document.createElement('div');
+    const h3 = document.createElement('h3');
+    h3.textContent = titolo;
+    const box = document.createElement('div');
+    box.id = 'box-descrizione';
+    box.textContent = desc;
+    container.appendChild(h3);
+    container.appendChild(box);
+    return container;
+}
+
+function renderPagination(totalePagine) {
+    const infoPagina = document.getElementById('info-pagina');
+    if (!infoPagina) return;
+    // build minimal DOM once
+    const frag = document.createDocumentFragment();
+    const current = paginaCorrente;
+    const last = totalePagine || 1;
+
+    const makePageNode = (i, isCurrent) => {
+        const node = document.createElement(isCurrent ? 'strong' : 'button');
+        node.type = isCurrent ? undefined : 'button';
+        node.className = isCurrent ? 'pagina-attiva' : 'pagina-button';
+        node.textContent = String(i);
+        if (!isCurrent) node.dataset.page = String(i);
+        return node;
+    };
+
+    let addedDots = false;
+    for (let i = 1; i <= last; i++) {
+        if (i === 1 || i === last || (i >= current - 2 && i <= current + 2)) {
+            frag.appendChild(makePageNode(i, i === current));
+            addedDots = false;
+        } else if (!addedDots && (i === current - 3 || i === current + 3)) {
+            const dots = document.createElement('span');
+            dots.className = 'puntini';
+            dots.textContent = '...';
+            frag.appendChild(dots);
+            addedDots = true;
+        }
+    }
+    infoPagina.innerHTML = '';
+    infoPagina.appendChild(frag);
+}
+
+function mostraPagina(pagina) {
     const griglia = document.querySelector('.griglia-giochi-spc');
     if (!griglia) return;
-    griglia.innerHTML = '';
+    // normalize page bounds
+    const totalePagine = Math.max(1, Math.ceil(giochiFiltrati.length / GIOCHI_PER_PAGINA));
+    pagina = Math.min(Math.max(1, pagina), totalePagine);
+    paginaCorrente = pagina;
 
     const inizio = (pagina - 1) * GIOCHI_PER_PAGINA;
     const fine = inizio + GIOCHI_PER_PAGINA;
     const giochiDaMostrare = giochiFiltrati.slice(inizio, fine);
 
-    const fragment = document.createDocumentFragment();
+    // defer heavy DOM work to idle if possible
+    const work = () => {
+        griglia.innerHTML = '';
+        const fragment = document.createDocumentFragment();
+        const observer = createImageObserver();
 
-    giochiDaMostrare.forEach((gioco, indice) => {
-        const div = document.createElement('div');
-        div.className = 'scheda-gioco-figura';
+        giochiDaMostrare.forEach((gioco, idx) => {
+            const div = document.createElement('div');
+            div.className = 'scheda-gioco-figura';
+            div.tabIndex = 0;
+            // store index relative to giochiFiltrati for delegation
+            div.dataset.index = String(inizio + idx);
 
-        const titoloSicuro = gioco.titolo ? gioco.titolo.replace(/"/g, '&quot;') : 'Gioco';
-        const tipoCaricamento = (indice < 15) ? 'eager' : 'lazy';
+            const img = document.createElement('img');
+            img.alt = (gioco.titolo || 'Gioco');
+            img.decoding = 'async';
+            img.style.contentVisibility = 'auto';
+            img.style.width = '100%';
+            img.style.height = 'auto';
+            img.loading = (idx < EAGER_COUNT) ? 'eager' : 'lazy';
 
-        const img = document.createElement('img');
-        img.alt = titoloSicuro;
-        img.decoding = 'async';
-        img.style.contentVisibility = 'auto';
-
-        if (tipoCaricamento === 'eager') {
-            img.src = gioco.img || '';
-            img.setAttribute('loading', 'eager');
-            img.setAttribute('data-no-lazy', '1');
-            img.className = 'no-lazy';
-        } else {
-            if (gioco.img) img.dataset.src = gioco.img;
-            img.setAttribute('loading', 'lazy');
-            imageObserver.observe(img);
-        }
-
-        img.onerror = function () {
-            this.onerror = null;
-            this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100%" height="100%" fill="%23222"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23666" font-family="sans-serif" font-size="12">No Img</text></svg>';
-        };
-
-        div.appendChild(img);
-        div.onclick = function () { window.apriAnteprima(gioco); };
-        fragment.appendChild(div);
-    });
-
-    griglia.appendChild(fragment);
-
-    const totalePagine = Math.ceil(giochiFiltrati.length / GIOCHI_PER_PAGINA) || 1;
-    const infoPagina = document.getElementById('info-pagina');
-
-    if (infoPagina) {
-        let htmlNumeri = '';
-        for (let i = 1; i <= totalePagine; i++) {
-            if (i === 1 || i === totalePagine || (i >= pagina - 2 && i <= pagina + 2)) {
-                if (i === pagina) {
-                    htmlNumeri += '<strong>' + i + '</strong>';
-                } else {
-                    htmlNumeri += '<span onclick="window.cambiaPaginaDiretta(' + i + ')">' + i + '</span>';
-                }
-            } else if (i === pagina - 3 || i === pagina + 3) {
-                htmlNumeri += '<span class="puntini">...</span>';
+            const src = gioco.img || '';
+            if (idx < EAGER_COUNT) {
+                img.src = src || tinyPlaceholder();
+            } else {
+                // lightweight placeholder, real src in data-src
+                img.src = tinyPlaceholder();
+                img.dataset.src = src || '';
+                observer.observe(img);
             }
-        }
-        infoPagina.innerHTML = htmlNumeri;
+
+            img.onerror = imgErrorHandler;
+            div.appendChild(img);
+            fragment.appendChild(div);
+        });
+
+        griglia.appendChild(fragment);
+        renderPagination(totalePagine);
+
+        const btnPrec = document.getElementById('btn-precedente');
+        const btnSucc = document.getElementById('btn-successiva');
+        if (btnPrec) btnPrec.disabled = (pagina === 1);
+        if (btnSucc) btnSucc.disabled = (pagina === totalePagine);
+    };
+
+    if ('requestIdleCallback' in window) {
+        requestIdleCallback(() => work(), { timeout: 500 });
+    } else {
+        setTimeout(work, 0);
     }
+}
 
-    const btnPrec = document.getElementById('btn-precedente');
-    const btnSucc = document.getElementById('btn-successiva');
-    if (btnPrec) btnPrec.disabled = (pagina === 1);
-    if (btnSucc) btnSucc.disabled = (pagina === totalePagine);
-};
+// event delegation for grid clicks
+function setupDelegation() {
+    const griglia = document.querySelector('.griglia-giochi-spc');
+    if (!griglia) return;
+    griglia.addEventListener('click', (ev) => {
+        const card = ev.target.closest('.scheda-gioco-figura');
+        if (!card) return;
+        const idx = Number(card.dataset.index);
+        const gioco = giochiFiltrati[idx];
+        if (gioco) apriAnteprima(gioco);
+    }, { passive: true });
+    // keyboard accessibility (Enter)
+    griglia.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter') {
+            const card = ev.target.closest('.scheda-gioco-figura');
+            if (!card) return;
+            const idx = Number(card.dataset.index);
+            const gioco = giochiFiltrati[idx];
+            if (gioco) apriAnteprima(gioco);
+        }
+    });
+    // pagination delegation
+    const infoPagina = document.getElementById('info-pagina');
+    if (infoPagina) {
+        infoPagina.addEventListener('click', (ev) => {
+            const btn = ev.target.closest('button[data-page]');
+            if (!btn) return;
+            const p = Number(btn.dataset.page) || 1;
+            cambiaPaginaDiretta(p);
+        }, { passive: true });
+    }
+}
 
-let searchTimeout;
-window.filtraGiochi = function () {
+// fast filter using precomputed lowercase fields
+function filtraGiochi() {
     clearTimeout(searchTimeout);
     searchTimeout = setTimeout(() => {
         const campo = document.getElementById('campoRicerca');
-        const testoCercato = campo ? campo.value.toLowerCase().trim() : '';
+        const testo = (campo && campo.value) ? campo.value.toLowerCase().trim() : '';
+        const cat = categoriaAttuale === 'Tutti' ? null : categoriaAttuale.toLowerCase();
 
-        if (!_listaNormalizzata.length) {
-            giochiFiltrati = [];
+        if (!testo && !cat) {
+            giochiFiltrati = lista.slice();
         } else {
-            giochiFiltrati = _listaNormalizzata.filter(gioco => {
-                const matchTitolo = gioco.titoloLower ? gioco.titoloLower.includes(testoCercato) : false;
-                const matchCategoria = (categoriaAttuale === 'Tutti' || (gioco.categoriaLower === (categoriaAttuale || '').toLowerCase()));
+            giochiFiltrati = lista.filter(g => {
+                const matchTitolo = testo ? g.__titleLower.includes(testo) : true;
+                const matchCategoria = cat ? g.__catLower === cat : true;
                 return matchTitolo && matchCategoria;
             });
         }
 
         paginaCorrente = 1;
-        window.mostraPagina(paginaCorrente);
-    }, 200);
-};
+        mostraPagina(paginaCorrente);
+    }, DEBOUNCE_MS);
+}
 
-window.filtraCategoria = function (categoria, bottone) {
-    categoriaAttuale = categoria;
+function filtraCategoria(categoria, bottone) {
+    categoriaAttuale = categoria || 'Tutti';
     document.querySelectorAll('.btn-categoria-spc').forEach(btn => btn.classList.remove('attivo'));
     if (bottone) bottone.classList.add('attivo');
-    window.filtraGiochi();
+    filtraGiochi();
     window.scrollTo({ top: 0, behavior: 'smooth' });
-};
+}
 
-window.cambiaPagina = function (direzione) {
-    paginaCorrente = _clampPagina(paginaCorrente + direzione);
-    window.mostraPagina(paginaCorrente);
+function cambiaPagina(delta) {
+    mostraPagina(paginaCorrente + delta);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-};
+}
 
-window.cambiaPaginaDiretta = function (numeroPagina) {
-    paginaCorrente = _clampPagina(numeroPagina);
-    window.mostraPagina(paginaCorrente);
+function cambiaPaginaDiretta(numeroPagina) {
+    mostraPagina(numeroPagina);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-};
+}
 
 let currentUrl = '';
-window.apriAnteprima = function (gioco) {
+
+function apriAnteprima(gioco) {
     currentUrl = gioco.url || '';
-    let titolo = gioco.titolo || 'Gioco';
-    let descrizioneCompleta = gioco.desc || 'Gioca gratis!';
-    let contenutoHtml = '<h3>' + titolo + '</h3><div id="box-descrizione">' + descrizioneCompleta + '</div>';
-
     const spazioInfo = document.getElementById('spazio-info');
-    if (spazioInfo) spazioInfo.innerHTML = contenutoHtml;
-
+    if (spazioInfo) {
+        spazioInfo.innerHTML = '';
+        spazioInfo.appendChild(buildPreviewContent(gioco));
+    }
     const btnAvvia = document.getElementById('btn-avvia');
     if (btnAvvia) btnAvvia.style.display = 'block';
 
@@ -178,28 +252,64 @@ window.apriAnteprima = function (gioco) {
 
     const corniceGioco = document.getElementById('cornice-gioco');
     if (corniceGioco) corniceGioco.style.display = 'flex';
-};
+}
 
-window.avviaGioco = function () {
+function avviaGioco() {
     const areaContenuto = document.getElementById('area-contenuto');
     if (areaContenuto) areaContenuto.style.display = 'none';
 
     const gameDiv = document.getElementById('spazio-gioco');
     if (gameDiv) {
-        gameDiv.innerHTML = '<iframe src="' + currentUrl + '" width="100%" height="100%" frameborder="0" allowfullscreen loading="lazy"></iframe>';
+        // create iframe lazily and avoid heavy features to reduce CPU
+        gameDiv.innerHTML = '';
+        const iframe = document.createElement('iframe');
+        iframe.width = '100%';
+        iframe.height = '100%';
+        iframe.frameBorder = '0';
+        iframe.loading = 'lazy';
+        iframe.allowFullscreen = true;
+        iframe.referrerPolicy = 'no-referrer';
+        // optional sandbox could be added depending on needs:
+        // iframe.sandbox = "allow-scripts allow-same-origin allow-forms";
+        iframe.src = currentUrl || '';
+        gameDiv.appendChild(iframe);
         gameDiv.style.display = 'block';
     }
-};
+}
 
-window.chiudiGiocatore = function () {
+function chiudiGiocatore() {
     const corniceGioco = document.getElementById('cornice-gioco');
     if (corniceGioco) corniceGioco.style.display = 'none';
 
     const gameDiv = document.getElementById('spazio-gioco');
-    if (gameDiv) gameDiv.innerHTML = '';
+    if (gameDiv) {
+        gameDiv.innerHTML = '';
+        gameDiv.style.display = 'none';
+    }
+    // hint GC
+    currentUrl = '';
+}
+
+// public API
+window.inizializzaGiochi = function () {
+    lista = normalizeList(Array.isArray(window.listaGiochi) ? window.listaGiochi : []);
+    giochiFiltrati = lista.slice();
+    createImageObserver();
+    setupDelegation();
+    mostraPagina(paginaCorrente);
+    // attach control functions
+    window.filtraGiochi = filtraGiochi;
+    window.filtraCategoria = filtraCategoria;
+    window.cambiaPagina = cambiaPagina;
+    window.cambiaPaginaDiretta = cambiaPaginaDiretta;
+    window.apriAnteprima = apriAnteprima;
+    window.avviaGioco = avviaGioco;
+    window.chiudiGiocatore = chiudiGiocatore;
 };
 
-// Se listaGiochi è già definita in pagina, inizializza
-if (typeof listaGiochi !== 'undefined' && listaGiochi.length > 0) {
-    window.inizializzaGiochi();
+// auto init if data present
+if (Array.isArray(window.listaGiochi) && window.listaGiochi.length > 0) {
+    // schedule init in idle to avoid blocking main thread during page load
+    if ('requestIdleCallback' in window) requestIdleCallback(window.inizializzaGiochi, { timeout: 500 });
+    else setTimeout(window.inizializzaGiochi, 50);
 }
