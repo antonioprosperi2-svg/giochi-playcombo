@@ -511,6 +511,9 @@
                     const img = document.createElement('img');
                     img.src = gioco.img || '';
                     img.alt = gioco.titolo || 'Gioco';
+                    img.loading = "lazy"; // <--- AGGIUNGI QUESTA RIGA QUI!
+                    img.width = 75;
+                    img.height = 75;
 
                     div.onclick = function () {
                         if (typeof window.apriAnteprima === 'function') {
