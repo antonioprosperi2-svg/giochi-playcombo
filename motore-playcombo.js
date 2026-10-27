@@ -1,5 +1,5 @@
 const GIOCHI_PER_PAGINA = 60;
-const EAGER_COUNT = 6;                 // poche immagini caricate subito
+const EAGER_COUNT = 6;                 // poche immagini caricate subito
 const DEBOUNCE_MS = 250;
 let paginaCorrente = 1;
 let categoriaAttuale = 'Tutti';
