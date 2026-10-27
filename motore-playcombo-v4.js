@@ -1,5 +1,5 @@
 const GIOCHI_PER_PAGINA = 60;
-const EAGER_COUNT = 6;                 // poche immagini caricate subito
+const EAGER_COUNT = 12;                 // poche immagini caricate subito
 const DEBOUNCE_MS = 250;
 let paginaCorrente = 1;
 let categoriaAttuale = 'Tutti';
@@ -39,7 +39,21 @@ function tinyPlaceholder() {
         encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="100%" height="100%" fill="#222"/></svg>');
 }
 
+// Copertine ridimensionate e convertite in WebP da wsrv.nl
+function ottimizzaImg(url) {
+    if (!url || url.indexOf('http') !== 0) return url;
+    // gamepix le manda gia' piccole: le lasciamo cosi'
+    if (url.indexOf('img.gamepix.com') !== -1) return url;
+    return 'https://wsrv.nl/?url=' + encodeURIComponent(url) + '&w=240&output=webp&q=75';
+}
+
 function imgErrorHandler() {
+    // se wsrv.nl non risponde, riprova con l'immagine originale
+    if (this.dataset.orig && this.src.indexOf('wsrv.nl') !== -1) {
+        this.src = this.dataset.orig;
+        delete this.dataset.orig;
+        return;
+    }
     this.onerror = null;
     this.src = 'data:image/svg+xml;utf8,' +
         encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100%" height="100%" fill="#222"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#666" font-family="sans-serif" font-size="12">No Img</text></svg>');
@@ -122,12 +136,15 @@ function mostraPagina(pagina) {
             const img = document.createElement('img');
             img.alt = (gioco.titolo || 'Gioco');
             img.decoding = 'async';
-            img.style.contentVisibility = 'auto';
+            img.width = 105;
+            img.height = 105;
             img.style.width = '100%';
             img.style.height = 'auto';
             img.loading = (idx < EAGER_COUNT) ? 'eager' : 'lazy';
+            if (idx < EAGER_COUNT) img.fetchPriority = 'high';
 
-            const src = gioco.img || '';
+            const src = ottimizzaImg(gioco.img || '');
+            if (gioco.img) img.dataset.orig = gioco.img;
             if (idx < EAGER_COUNT) {
                 img.src = src || tinyPlaceholder();
             } else {
@@ -151,10 +168,11 @@ function mostraPagina(pagina) {
         if (btnSucc) btnSucc.disabled = (pagina === totalePagine);
     };
 
-    if ('requestIdleCallback' in window) {
-        requestIdleCallback(() => work(), { timeout: 500 });
+    // prima pagina subito (LCP), le successive quando il browser e' libero
+    if (pagina === 1 || !('requestIdleCallback' in window)) {
+        work();
     } else {
-        setTimeout(work, 0);
+        requestIdleCallback(() => work(), { timeout: 500 });
     }
 }
 
@@ -235,6 +253,7 @@ function cambiaPaginaDiretta(numeroPagina) {
 let currentUrl = '';
 
 function apriAnteprima(gioco) {
+    window.giocoCorrente = gioco;
     currentUrl = gioco.url || '';
     const spazioInfo = document.getElementById('spazio-info');
     if (spazioInfo) {
@@ -278,6 +297,7 @@ function avviaGioco() {
 }
 
 function chiudiGiocatore() {
+    window.giocoCorrente = null;
     const corniceGioco = document.getElementById('cornice-gioco');
     if (corniceGioco) corniceGioco.style.display = 'none';
 
@@ -292,6 +312,8 @@ function chiudiGiocatore() {
 
 // public API
 window.inizializzaGiochi = function () {
+    if (window.__giochiPronti) return;   // evita doppio avvio
+    window.__giochiPronti = true;
     lista = normalizeList(Array.isArray(window.listaGiochi) ? window.listaGiochi : []);
     giochiFiltrati = lista.slice();
     createImageObserver();
@@ -309,7 +331,7 @@ window.inizializzaGiochi = function () {
 
 // auto init if data present
 if (Array.isArray(window.listaGiochi) && window.listaGiochi.length > 0) {
-    // schedule init in idle to avoid blocking main thread during page load
-    if ('requestIdleCallback' in window) requestIdleCallback(window.inizializzaGiochi, { timeout: 500 });
-    else setTimeout(window.inizializzaGiochi, 50);
+    // avvio subito: le copertine sono l'elemento LCP
+    window.inizializzaGiochi();
 }
+
