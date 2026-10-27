@@ -406,111 +406,129 @@
         margin: 0;
     }
 
-    /* Neon solo da tablet in su: il mobile tiene colori, misure e layout attuali */
+    /* Neon su tutti i formati: solo colore, bordo e glow. Sul mobile lo spessore resta quello di base. */
+    .input-ricerca-spc {
+        border-color: rgba(255, 45, 214, 0.7) !important;
+        background: rgba(22, 8, 40, 0.38) !important;
+        box-shadow: 0 0 14px rgba(168, 85, 247, 0.28) !important;
+        backdrop-filter: blur(14px) saturate(140%) !important;
+        -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
+    }
+
+    .input-ricerca-spc:focus {
+        border-color: #ff2bd6 !important;
+        box-shadow: 0 0 16px rgba(255, 45, 214, 0.45) !important;
+        background: rgba(22, 8, 40, 0.5) !important;
+    }
+
+    #select-categoria-spc {
+        border-color: rgba(192, 132, 252, 0.7);
+        background: rgba(22, 8, 40, 0.38);
+        background-color: rgba(22, 8, 40, 0.38) !important;
+        box-shadow: 0 0 14px rgba(168, 85, 247, 0.28);
+        backdrop-filter: blur(14px) saturate(140%);
+        -webkit-backdrop-filter: blur(14px) saturate(140%);
+    }
+
+    #select-categoria-spc:focus {
+        border-color: #ff2bd6;
+        box-shadow: 0 0 16px rgba(255, 45, 214, 0.45);
+    }
+
+    #select-categoria-spc option {
+        background: #160828;
+    }
+
+    .sezione-recenti-spc {
+        background: rgba(22, 8, 40, 0.4);
+        border-color: rgba(192, 132, 252, 0.65);
+        box-shadow: 0 0 16px rgba(168, 85, 247, 0.28);
+        backdrop-filter: blur(14px) saturate(140%);
+        -webkit-backdrop-filter: blur(14px) saturate(140%);
+    }
+
+    .btn-freccia-recenti {
+        background: rgba(22, 8, 40, 0.45);
+        border-color: rgba(255, 45, 214, 0.75);
+        box-shadow: 0 0 10px rgba(255, 45, 214, 0.4);
+    }
+
+    .btn-freccia-recenti:hover {
+        background: rgba(168, 85, 247, 0.35);
+        border-color: #ff2bd6;
+        box-shadow: 0 0 14px rgba(255, 45, 214, 0.6);
+    }
+
+    .scheda-gioco-figura:hover img {
+        box-shadow: 0 0 8px rgba(255, 45, 214, 0.85), 0 0 18px rgba(168, 85, 247, 0.75), 0 0 28px rgba(255, 45, 214, 0.35);
+    }
+
+    .btn-paginazione {
+        background: rgba(22, 8, 40, 0.5) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 0 1px rgba(255, 45, 214, 0.8), 0 0 12px rgba(255, 45, 214, 0.4) !important;
+    }
+
+    .btn-paginazione:hover:not(:disabled) {
+        background: rgba(168, 85, 247, 0.4) !important;
+        box-shadow: 0 0 0 1px rgba(255, 45, 214, 0.9), 0 0 16px rgba(192, 132, 252, 0.7) !important;
+    }
+
+    .btn-paginazione:disabled {
+        background: rgba(255, 255, 255, 0.06) !important;
+        color: rgba(255, 255, 255, 0.35) !important;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16) !important;
+    }
+
+    #info-pagina strong,
+    #info-pagina .pagina-attiva {
+        background: linear-gradient(135deg, #ff2bd6, #a855f7) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 12px rgba(255, 45, 214, 0.65) !important;
+    }
+
+    #info-pagina button,
+    #info-pagina .pagina-button {
+        background: rgba(22, 8, 40, 0.45) !important;
+        color: #ffffff !important;
+        border-color: rgba(192, 132, 252, 0.6) !important;
+        box-shadow: 0 0 8px rgba(168, 85, 247, 0.3) !important;
+    }
+
+    #info-pagina button:hover,
+    #info-pagina .pagina-button:hover {
+        background: rgba(168, 85, 247, 0.5) !important;
+        border-color: #ff2bd6 !important;
+        box-shadow: 0 0 12px rgba(255, 45, 214, 0.55) !important;
+    }
+
+    #titolo-categoria-spc {
+        text-shadow: 0 0 8px rgba(255, 45, 214, 0.55), 0 0 18px rgba(168, 85, 247, 0.45);
+    }
+
     @media (min-width: 768px) {
-        .input-ricerca-spc {
-            border: 1px solid rgba(255, 45, 214, 0.7) !important;
-            background: rgba(22, 8, 40, 0.38) !important;
-            box-shadow: 0 0 14px rgba(168, 85, 247, 0.28) !important;
-            backdrop-filter: blur(14px) saturate(140%) !important;
-            -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
-        }
-
-        .input-ricerca-spc:focus {
-            border-color: #ff2bd6 !important;
-            box-shadow: 0 0 16px rgba(255, 45, 214, 0.45) !important;
-            background: rgba(22, 8, 40, 0.5) !important;
-        }
-
-        #select-categoria-spc {
-            border: 1px solid rgba(192, 132, 252, 0.7);
-            background: rgba(22, 8, 40, 0.38);
-            background-color: rgba(22, 8, 40, 0.38) !important;
-            box-shadow: 0 0 14px rgba(168, 85, 247, 0.28);
-            backdrop-filter: blur(14px) saturate(140%);
-            -webkit-backdrop-filter: blur(14px) saturate(140%);
-        }
-
-        #select-categoria-spc:focus {
-            border-color: #ff2bd6;
-            box-shadow: 0 0 16px rgba(255, 45, 214, 0.45);
-        }
-
-        #select-categoria-spc option {
-            background: #160828;
-        }
-
-        .sezione-recenti-spc {
-            background: rgba(22, 8, 40, 0.4);
-            border: 1px solid rgba(192, 132, 252, 0.65);
-            box-shadow: 0 0 16px rgba(168, 85, 247, 0.28);
-            backdrop-filter: blur(14px) saturate(140%);
-            -webkit-backdrop-filter: blur(14px) saturate(140%);
-        }
-
+        .input-ricerca-spc,
+        #select-categoria-spc,
         .btn-freccia-recenti {
-            background: rgba(22, 8, 40, 0.45);
-            border: 1px solid rgba(255, 45, 214, 0.75);
-            box-shadow: 0 0 10px rgba(255, 45, 214, 0.4);
-        }
-
-        .btn-freccia-recenti:hover {
-            background: rgba(168, 85, 247, 0.35);
-            border-color: #ff2bd6;
-            box-shadow: 0 0 14px rgba(255, 45, 214, 0.6);
+            border-width: 1px !important;
         }
 
         .scheda-gioco-figura:hover {
             transform: scale(1.05);
         }
 
-        .scheda-gioco-figura:hover img {
-            box-shadow: 0 0 8px rgba(255, 45, 214, 0.85), 0 0 18px rgba(168, 85, 247, 0.75), 0 0 28px rgba(255, 45, 214, 0.35);
-        }
-
         .btn-paginazione {
-            background: rgba(22, 8, 40, 0.5) !important;
-            color: #ffffff !important;
             border: 1px solid rgba(255, 45, 214, 0.8) !important;
             box-shadow: 0 0 12px rgba(255, 45, 214, 0.4) !important;
         }
 
         .btn-paginazione:hover:not(:disabled) {
-            background: rgba(168, 85, 247, 0.4) !important;
             box-shadow: 0 0 16px rgba(192, 132, 252, 0.7) !important;
         }
 
         .btn-paginazione:disabled {
-            background: rgba(255, 255, 255, 0.06) !important;
-            color: rgba(255, 255, 255, 0.35) !important;
             border: 1px solid rgba(255, 255, 255, 0.16) !important;
             box-shadow: none !important;
-        }
-
-        #info-pagina strong,
-        #info-pagina .pagina-attiva {
-            background: linear-gradient(135deg, #ff2bd6, #a855f7) !important;
-            color: #ffffff !important;
-            box-shadow: 0 0 12px rgba(255, 45, 214, 0.65) !important;
-        }
-
-        #info-pagina button,
-        #info-pagina .pagina-button {
-            background: rgba(22, 8, 40, 0.45) !important;
-            color: #ffffff !important;
-            border: 1px solid rgba(192, 132, 252, 0.6) !important;
-            box-shadow: 0 0 8px rgba(168, 85, 247, 0.3) !important;
-        }
-
-        #info-pagina button:hover,
-        #info-pagina .pagina-button:hover {
-            background: rgba(168, 85, 247, 0.5) !important;
-            border-color: #ff2bd6 !important;
-            box-shadow: 0 0 12px rgba(255, 45, 214, 0.55) !important;
-        }
-
-        #titolo-categoria-spc {
-            text-shadow: 0 0 8px rgba(255, 45, 214, 0.55), 0 0 18px rgba(168, 85, 247, 0.45);
         }
     }
 </style>
