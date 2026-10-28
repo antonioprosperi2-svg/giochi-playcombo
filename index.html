@@ -775,43 +775,22 @@
             console.error("Errore render recenti:", e);
         }
 
-        // SALVATAGGIO QUANDO SI AVVIA UN GIOCO
+        // SALVATAGGIO QUANDO SI AVVIA UN GIOCO (funziona con e senza id)
         const btnAvvia = document.getElementById('btn-avvia');
         if (btnAvvia) {
             btnAvvia.addEventListener('click', function () {
                 try {
-                    const corrente = window.giocoCorrente;
-                    if (!corrente) return;
+                    const g = window.giocoCorrente;
+                    if (!g) return;
+                    const chiave = function (x) { return x.id || x.url || x.titolo; };
+                    const k = chiave(g);
+                    if (!k) return;
 
-                    let giocoTrovato = null;
-                    if (window.listaGiochi && Array.isArray(window.listaGiochi)) {
-                        giocoTrovato = window.listaGiochi.find(function (g) {
-                            return corrente.id ? g.id === corrente.id : g.titolo === corrente.titolo;
-                        });
-                    }
-
-                    if (giocoTrovato) {
-                        let recenti = JSON.parse(localStorage.getItem(chiaveStorage)) || [];
-
-                        // Rimuovi eventuale duplicato (per id, o per titolo se il salvataggio è vecchio)
-                        recenti = recenti.filter(function (g) {
-                            if (g.id && giocoTrovato.id) return g.id !== giocoTrovato.id;
-                            return g.titolo !== giocoTrovato.titolo;
-                        });
-
-                        // Aggiungi in cima
-                        recenti.unshift({
-                            id: giocoTrovato.id,
-                            titolo: giocoTrovato.titolo,
-                            img: giocoTrovato.img,
-                            url: giocoTrovato.url
-                        });
-
-                        // Massimo 20 giochi salvati per categoria
-                        if (recenti.length > 20) recenti.pop();
-
-                        localStorage.setItem(chiaveStorage, JSON.stringify(recenti));
-                    }
+                    let recenti = JSON.parse(localStorage.getItem(chiaveStorage)) || [];
+                    recenti = recenti.filter(function (x) { return chiave(x) !== k; });
+                    recenti.unshift({ id: g.id || '', titolo: g.titolo, img: g.img, url: g.url, desc: g.desc || '' });
+                    if (recenti.length > 20) recenti.length = 20;
+                    localStorage.setItem(chiaveStorage, JSON.stringify(recenti));
                 } catch (e) {
                     console.error("Errore salvataggio recenti:", e);
                 }
