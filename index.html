@@ -781,12 +781,12 @@
             btnAvvia.addEventListener('click', function () {
                 try {
                     const corrente = window.giocoCorrente;
-                    if (!corrente || !corrente.id) return;
+                    if (!corrente) return;
 
                     let giocoTrovato = null;
                     if (window.listaGiochi && Array.isArray(window.listaGiochi)) {
                         giocoTrovato = window.listaGiochi.find(function (g) {
-                            return g.id === corrente.id;
+                            return corrente.id ? g.id === corrente.id : g.titolo === corrente.titolo;
                         });
                     }
 
