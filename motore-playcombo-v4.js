@@ -1,3 +1,4 @@
+
 const GIOCHI_PER_PAGINA = 60;
 const EAGER_COUNT = 12;                 // poche immagini caricate subito
 const DEBOUNCE_MS = 250;
@@ -177,22 +178,21 @@ function mostraPagina(pagina) {
 }
 
 // ===== HOME A RIGHE (stile Poki): attiva solo sulla home e solo senza ricerca =====
-const RIGA_MAX = 15;   // giochi mostrati per ogni riga
-// key = valore del campo "categoria" nei giochi (maiuscole e trattini non contano)
+const RIGA_MAX = 30;   // 30 giochi mostrati per ogni riga
 const CATEGORIE_HOME = [
     { key: 'puzzle', titolo: 'Puzzle', url: 'https://playcombo.it/puzzle/' },
-    { key: 'sparabolle', titolo: 'Sparabolle', url: 'https://playcombo.it/sparabolle/' },
+    { key: 'shooter', titolo: 'Sparabolle', url: 'https://playcombo.it/sparabolle/' },
     { key: 'arcade', titolo: 'Arcade', url: 'https://playcombo.it/arcade/' },
     { key: 'match-3', titolo: 'Match-3', url: 'https://playcombo.it/match-3/' },
-    { key: 'mahjong', titolo: 'Mahjong', url: 'https://playcombo.it/MAHJONG/' },
-    { key: 'quizzz', titolo: 'Quizzz!', url: 'https://playcombo.it/quizzz/' },
-    { key: 'girls', titolo: 'Girls', url: 'https://playcombo.it/GIRLS/' },
-    { key: 'sport', titolo: 'Sport', url: 'https://playcombo.it/SPORT/' },
-    { key: 'giochi-di-corse', titolo: 'Giochi di corse', url: 'https://playcombo.it/giochi-di-corse/' },
-    { key: 'carte-e-memory', titolo: 'Carte e memory', url: 'https://playcombo.it/carte-e-memory/' },
+    { key: 'memory', titolo: 'Mahjong', url: 'https://playcombo.it/MAHJONG/' },
+    { key: 'trivia', titolo: 'Quizzzz!', url: 'https://playcombo.it/quizzzz/' },
+    { key: 'gamesforgirls', titolo: 'Girls', url: 'https://playcombo.it/GIRLS/' },
+    { key: 'sports', titolo: 'Sport', url: 'https://playcombo.it/SPORT/' },
+    { key: 'racing', titolo: 'Giochi di corse', url: 'https://playcombo.it/giochi-di-corse/' },
+    { key: 'card', titolo: 'Carte e memory', url: 'https://playcombo.it/carte-e-memory/' },
     { key: 'super-bubble-shot', titolo: 'Super Bubble Shot', url: 'https://playcombo.it/super-bubble-shot/' },
-    { key: 'giochi-davventura', titolo: "Giochi d'avventura", url: 'https://playcombo.it/giochi-davventura/' },
-    { key: 'giochi-platform', titolo: 'Giochi platform', url: 'https://www.playcombo.it/giochi-platform/' },
+    { key: 'adventure', titolo: "Giochi d'avventura", url: 'https://playcombo.it/giochi-davventura/' },
+    { key: 'platformer', titolo: 'Giochi platform', url: 'https://www.playcombo.it/giochi-platform/' },
     { key: '2048', titolo: 'Giochi 2048', url: 'https://www.playcombo.it/2048-online-gratis-gioca-subito-su-spc/' }
 ];
 let righeHomeEl = null;
@@ -201,7 +201,6 @@ function normChiave(s) {
     return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
 }
 
-// stessa logica di ottieniCategoriaDalURL(): home = nessun segmento (o /page/...)
 function eHome() {
     const seg = window.location.pathname.split('/').filter(s => s);
     return seg.length === 0 || seg[0] === 'page';
@@ -216,7 +215,7 @@ function iniettaStileHome() {
         '.riga-testata-spc{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}' +
         '.riga-titolo-spc{color:#fff;font-size:18px;font-weight:bold;text-decoration:none;text-shadow:0 0 8px rgba(255,45,214,.55),0 0 18px rgba(168,85,247,.45)}' +
         '.riga-frecce-spc{display:flex;gap:6px}' +
-        '.riga-freccia-spc{width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,45,214,.75);background:rgba(22,8,40,.45);color:#fff;cursor:pointer;font-size:13px;box-shadow:0 0 10px rgba(255,45,214,.4)}' +
+        '.riga-freccia-spc{width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,45,214,.75);background:rgba(22,8,40,.45);color:#fff;cursor:pointer;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;font-family:Arial,sans-serif;box-shadow:0 0 10px rgba(255,45,214,.4)}' +
         '.riga-freccia-spc:hover{background:rgba(168,85,247,.35);border-color:#ff2bd6}' +
         '.riga-scroll-spc{display:flex;gap:10px;overflow-x:auto;scroll-behavior:smooth;scrollbar-width:none;-ms-overflow-style:none;padding:4px 2px 8px}' +
         '.riga-scroll-spc::-webkit-scrollbar{display:none}' +
@@ -231,27 +230,125 @@ function iniettaStileHome() {
 
 function costruisciRigheHome() {
     if (righeHomeEl) return righeHomeEl;
+    if (costruisciRigheHome.fallito) return null;
     const griglia = document.querySelector('.griglia-giochi-spc');
     if (!griglia || !griglia.parentNode) return null;
     iniettaStileHome();
 
-    const gruppi = {};
+    // Unisce tutte le 35 sottocategorie dentro le righe della Home
+    const SINONIMI_CAT = {
+        'puzzle': ['puzzle', 'brain', 'block', 'hiddenobject', 'drawing'],
+        'shooter': ['shooter', 'sparabolle', 'ball', 'firstpersonshooter'],
+        'arcade': ['arcade', 'retro', 'snake', 'fun', 'robots', 'io', 'casual', 'hypercasual', 'clicker', 'idle'],
+        'match3': ['match-3', 'match3'],
+        'memory': ['memory', 'mahjong', 'board'],
+        'trivia': ['trivia', 'quizzzz', 'math', 'educational', 'quiz'],
+        'gamesforgirls': ['gamesforgirls', 'girls', 'cats', 'animal'],
+        'sports': ['sports', 'sport', 'basketball', 'golf', 'ball'],
+        'racing': ['racing', 'giochidicorse', 'car', 'airplane'],
+        'card': ['card', 'carteememory', 'cards', 'board'],
+        'superbubbleshot': ['super-bubble-shot', 'ball', 'shooter'],
+        'adventure': ['adventure', 'giochidavventura', 'stickman', 'christmas', 'strategy', 'farming', 'building', 'simulation', 'zombie', 'battle', 'fighting', 'tanks'],
+        'platformer': ['platformer', 'giochiplatform', 'runner'],
+        '2048': ['2048']
+    };
+
+    const gruppiLocali = {};
     lista.forEach(g => {
         const k = normChiave(g.categoria);
-        (gruppi[k] = gruppi[k] || []).push(g);
+        (gruppiLocali[k] = gruppiLocali[k] || []).push(g);
     });
+
+    const prendiLocali = (catKey) => {
+        const kBase = normChiave(catKey);
+        const chiaviDaCercare = SINONIMI_CAT[kBase] || [kBase];
+        const trovati = [];
+        const visti = new Set();
+        chiaviDaCercare.forEach(k => {
+            const arr = gruppiLocali[normChiave(k)] || [];
+            arr.forEach(g => {
+                const idUnico = g.url || g.titolo;
+                if (!visti.has(idUnico)) {
+                    visti.add(idUnico);
+                    trovati.push(g);
+                }
+            });
+        });
+        return trovati;
+    };
+
+    // Se una riga ha pochi giochi nella Home, li legge da sola dalla pagina della categoria!
+    const pescaDaPaginaCategoria = (urlCat, fallbackLocali) => {
+        if (!urlCat) return Promise.resolve(fallbackLocali);
+        const pathRelativo = urlCat.replace(/^https?:\/\/(www\.)?playcombo\.it/i, '');
+        return fetch(pathRelativo)
+            .then(r => r.ok ? r.text() : Promise.reject())
+            .then(html => {
+                const match = html.match(/(?:var|let|const)\s+listaGiochi\s*=\s*(\[[\s\S]*?\]);/);
+                if (!match || !match[1]) return fallbackLocali;
+                const estratti = (new Function('return ' + match[1]))();
+                return (Array.isArray(estratti) && estratti.length > fallbackLocali.length)
+                    ? estratti.slice(0, RIGA_MAX)
+                    : fallbackLocali;
+            })
+            .catch(() => fallbackLocali);
+    };
 
     const wrap = document.createElement('div');
     wrap.id = 'righe-home-spc';
     const observer = createImageObserver();
-    let primaRiga = true;
+    const giochiRiga = [];
+    let inAttesa = CATEGORIE_HOME.length;
+    let righeVisibili = 0;
+
+    const fineCaricamento = () => {
+        inAttesa--;
+        if (inAttesa > 0 || righeVisibili > 0) return;
+        costruisciRigheHome.fallito = true;
+        if (righeHomeEl) righeHomeEl.style.display = 'none';
+        righeHomeEl = null;
+        const pag = document.querySelector('.paginazione-spc');
+        [griglia, pag].forEach(el => { if (el) el.style.removeProperty('display'); });
+        mostraPagina(1);
+    };
+
+    const riempiRiga = (cat, sezione, scroll, giochi) => {
+        if (!giochi || !giochi.length) { fineCaricamento(); return; }
+        giochi.slice(0, RIGA_MAX).forEach(gioco => {
+            const card = document.createElement('div');
+            card.className = 'card-riga-spc';
+            card.tabIndex = 0;
+            card.dataset.index = String(giochiRiga.length);
+            giochiRiga.push(gioco);
+
+            const img = document.createElement('img');
+            img.alt = gioco.titolo || 'Gioco';
+            img.decoding = 'async';
+            img.width = 105;
+            img.height = 105;
+            const src = ottimizzaImg(gioco.img || '');
+            if (gioco.img) img.dataset.orig = gioco.img;
+            img.src = tinyPlaceholder();
+            img.dataset.src = src || '';
+            observer.observe(img);
+            img.onerror = imgErrorHandler;
+            card.appendChild(img);
+            scroll.appendChild(card);
+        });
+        const altro = document.createElement('a');
+        altro.className = 'card-altro-spc';
+        altro.href = cat.url;
+        altro.textContent = 'Mostra di più ›';
+        scroll.appendChild(altro);
+        sezione.style.display = '';
+        righeVisibili++;
+        fineCaricamento();
+    };
 
     CATEGORIE_HOME.forEach(cat => {
-        const giochi = gruppi[normChiave(cat.key)];
-        if (!giochi || !giochi.length) return;
-
         const sezione = document.createElement('section');
         sezione.className = 'riga-home-spc';
+        sezione.style.display = 'none';
 
         const testata = document.createElement('div');
         testata.className = 'riga-testata-spc';
@@ -261,11 +358,10 @@ function costruisciRigheHome() {
         titolo.textContent = cat.titolo;
         const frecce = document.createElement('div');
         frecce.className = 'riga-frecce-spc';
-
         const scroll = document.createElement('div');
         scroll.className = 'riga-scroll-spc';
 
-        [['◀', -1], ['▶', 1]].forEach(([simbolo, dir]) => {
+        [['‹', -1], ['›', 1]].forEach(([simbolo, dir]) => {
             const b = document.createElement('button');
             b.type = 'button';
             b.className = 'riga-freccia-spc';
@@ -276,54 +372,23 @@ function costruisciRigheHome() {
         });
         testata.appendChild(titolo);
         testata.appendChild(frecce);
-
-        giochi.slice(0, RIGA_MAX).forEach((gioco, idx) => {
-            const card = document.createElement('div');
-            card.className = 'card-riga-spc';
-            card.tabIndex = 0;
-            card.dataset.index = String(gioco.__idx);   // posizione in "lista"
-
-            const img = document.createElement('img');
-            img.alt = gioco.titolo || 'Gioco';
-            img.decoding = 'async';
-            img.width = 105;
-            img.height = 105;
-            const src = ottimizzaImg(gioco.img || '');
-            if (gioco.img) img.dataset.orig = gioco.img;
-            if (primaRiga && idx < 8) {
-                img.src = src || tinyPlaceholder();
-            } else {
-                img.src = tinyPlaceholder();
-                img.dataset.src = src || '';
-                observer.observe(img);
-            }
-            img.onerror = imgErrorHandler;
-            card.appendChild(img);
-            scroll.appendChild(card);
-        });
-
-        const altro = document.createElement('a');
-        altro.className = 'card-altro-spc';
-        altro.href = cat.url;
-        altro.textContent = 'Mostra di più ›';
-        scroll.appendChild(altro);
-
         sezione.appendChild(testata);
         sezione.appendChild(scroll);
         wrap.appendChild(sezione);
-        primaRiga = false;
+
+        const locali = prendiLocali(cat.key);
+        if (locali.length >= 15) {
+            riempiRiga(cat, sezione, scroll, locali);
+        } else {
+            pescaDaPaginaCategoria(cat.url, locali)
+                .then(giochi => riempiRiga(cat, sezione, scroll, giochi));
+        }
     });
-
-    // utile per capire se qualche categoria dei giochi non ha una riga
-    const nonMappate = Object.keys(gruppi).filter(k => !CATEGORIE_HOME.some(c => normChiave(c.key) === k));
-    if (nonMappate.length) console.info('[PlayCombo] categorie senza riga in home:', nonMappate);
-
-    if (!wrap.children.length) return null;   // nessuna riga: resta la griglia normale
 
     const apri = (ev) => {
         const card = ev.target.closest('.card-riga-spc');
         if (!card) return;
-        const gioco = lista[Number(card.dataset.index)];
+        const gioco = giochiRiga[Number(card.dataset.index)];
         if (gioco) apriAnteprima(gioco);
     };
     wrap.addEventListener('click', apri, { passive: true });
@@ -333,7 +398,6 @@ function costruisciRigheHome() {
     righeHomeEl = wrap;
     return wrap;
 }
-
 // attiva = true: righe (se possibile). attiva = false: griglia normale. Ritorna true se le righe sono visibili.
 function mostraVistaHome(attiva) {
     if (!eHome()) return false;
@@ -512,4 +576,3 @@ if (Array.isArray(window.listaGiochi) && window.listaGiochi.length > 0) {
     // avvio subito: le copertine sono l'elemento LCP
     window.inizializzaGiochi();
 }
-
