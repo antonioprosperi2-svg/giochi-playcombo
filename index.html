@@ -549,6 +549,7 @@
     }
 
     @media (min-width: 768px) {
+
         .input-ricerca-spc,
         #select-categoria-spc,
         .btn-freccia-recenti {
@@ -775,22 +776,43 @@
             console.error("Errore render recenti:", e);
         }
 
-        // SALVATAGGIO QUANDO SI AVVIA UN GIOCO (funziona con e senza id)
+        // SALVATAGGIO QUANDO SI AVVIA UN GIOCO
         const btnAvvia = document.getElementById('btn-avvia');
         if (btnAvvia) {
             btnAvvia.addEventListener('click', function () {
                 try {
-                    const g = window.giocoCorrente;
-                    if (!g) return;
-                    const chiave = function (x) { return x.id || x.url || x.titolo; };
-                    const k = chiave(g);
-                    if (!k) return;
+                    const corrente = window.giocoCorrente;
+                    if (!corrente || !corrente.id) return;
 
-                    let recenti = JSON.parse(localStorage.getItem(chiaveStorage)) || [];
-                    recenti = recenti.filter(function (x) { return chiave(x) !== k; });
-                    recenti.unshift({ id: g.id || '', titolo: g.titolo, img: g.img, url: g.url, desc: g.desc || '' });
-                    if (recenti.length > 20) recenti.length = 20;
-                    localStorage.setItem(chiaveStorage, JSON.stringify(recenti));
+                    let giocoTrovato = null;
+                    if (window.listaGiochi && Array.isArray(window.listaGiochi)) {
+                        giocoTrovato = window.listaGiochi.find(function (g) {
+                            return g.id === corrente.id;
+                        });
+                    }
+
+                    if (giocoTrovato) {
+                        let recenti = JSON.parse(localStorage.getItem(chiaveStorage)) || [];
+
+                        // Rimuovi eventuale duplicato (per id, o per titolo se il salvataggio è vecchio)
+                        recenti = recenti.filter(function (g) {
+                            if (g.id && giocoTrovato.id) return g.id !== giocoTrovato.id;
+                            return g.titolo !== giocoTrovato.titolo;
+                        });
+
+                        // Aggiungi in cima
+                        recenti.unshift({
+                            id: giocoTrovato.id,
+                            titolo: giocoTrovato.titolo,
+                            img: giocoTrovato.img,
+                            url: giocoTrovato.url
+                        });
+
+                        // Massimo 20 giochi salvati per categoria
+                        if (recenti.length > 20) recenti.pop();
+
+                        localStorage.setItem(chiaveStorage, JSON.stringify(recenti));
+                    }
                 } catch (e) {
                     console.error("Errore salvataggio recenti:", e);
                 }
@@ -799,6 +821,7 @@
     });
 </script>
 <script>
+
 
     // La tua lista dei giochi
     var listaGiochi = [
@@ -811,17 +834,823 @@
             "desc": "Dive into Merge Royal, where Solitaire strategy meets 2048 thrill. Effortlessly merge matching cards, aiming for higher numbers while unlocking dazzling visuals. Perfect for relaxing yet challenging gameplay that tests your logic and speed. Can you master the ultimate card puzzle adventure?",
             "categoria": "2048",
             "id": "yjf4z0cyh"
+        },
+
+
+        {
+            "titolo": "Prism Match 3D",
+            "url": "https://play.gamepix.com/prism-match-3d/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/prism-match-3d/icon/prism-match-3d.png?w=105",
+            "desc": "Dive into a mesmerizing 3D cube universe where vibrant prisms challenge your logic and timing. Rotate and explore intricately designed levels while relaxing your mind. Perfect your skills to conquer endless creative stages, offering a refreshing blend of relaxation and mental exercise.",
+            "categoria": "match-3",
+            "id": "qw0lsua0a"
+        },
+        {
+            "titolo": "Match Mystery",
+            "url": "https://play.gamepix.com/match-mystery/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/match-mystery/icon/match-mystery.png?w=105",
+            "desc": "Immerse yourself in Match Mystery, a match-3 puzzle adventure with endless challenges and a captivating storyline. Dive into stunning visuals, where each strategic move unravels new plots. With infinite levels and increasing difficulty, it's a delightful test of your puzzle-solving skills. Perfect for all ages seeking brain-teasing fun.",
+            "categoria": "match-3",
+            "id": "o7paj0mmi"
+        },
+
+        {
+            "titolo": "Drop Planets",
+            "url": "https://play.gamepix.com/drop-planets/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/drop-planets/icon/drop-planets.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "puzzle",
+            "id": "fq45dw5ze"
+        },
+        {
+            "titolo": "Seat the Guests",
+            "url": "https://play.gamepix.com/seat-the-guests/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/seat-the-guests/icon/seat-the-guests.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "puzzle",
+            "id": "1dpqml1ww"
+        },
+        {
+            "titolo": "Robot Band - Find the differences",
+            "url": "https://play.gamepix.com/robot-band-find-the-differences/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/robot-band-find-the-differences/icon/robot-band-find-the-differences.png?w=105",
+            "desc": "Enter a whimsical world of musical robots in Robot Band - Find the Differences. Test your observation skills as you uncover subtle discrepancies in images. Progress through engaging levels with a keen eye and patience. Dive into this charming adventure where every discovery counts!",
+            "categoria": "puzzle",
+            "id": "uc3itvz2p"
+        },
+        {
+            "titolo": "Gravity Merge",
+            "url": "https://play.gamepix.com/gravity-merge/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/gravity-merge/icon/gravity-merge.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "puzzle",
+            "id": "xlwz3ocaz"
+        },
+        {
+            "titolo": "Everything Forge",
+            "url": "https://play.gamepix.com/everything-forge/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/everything-forge/icon/everything-forge.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "puzzle",
+            "id": "mnj3g6hlh"
+        },
+
+        {
+            "titolo": "Defend the Castle",
+            "url": "https://play.gamepix.com/defend-the-castle/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/defend-the-castle/icon/defend-the-castle.png?w=105",
+            "desc": "Fortify your kingdom in Defend the Castle! Strategically build and upgrade defenses with gold and wood to resist relentless enemy waves. Deploy cunning tactics with cannons and archers. Can you protect the King and let your stronghold stand the test of time?",
+            "categoria": "strategy",
+            "id": "k2r0ou8fe"
+        },
+        {
+            "titolo": "Perimeter - Legate Edition",
+            "url": "https://play.gamepix.com/perimeter/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/perimeter/icon/perimeter.png?w=105",
+            "desc": "Command the Exodus civilization in a groundbreaking RTS where strategic terraforming reshapes battlefields. Build defensive perimeters and seize territories in a dynamic, evolving environment. Adapt, survive, and lead your people to victory in a world where earth's future rests in your hands.",
+            "categoria": "strategy",
+            "id": "2v7ktspoq"
+        },
+
+        {
+            "titolo": "Garden Master",
+            "url": "https://play.gamepix.com/garden-master/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/garden-master/icon/garden-master.png?w=105",
+            "desc": "Step into the shoes of a industrious gnome in Garden Master! Nurture your plants with care, fend off mischievous gophers, and gather golden seeds to unlock exciting upgrades. Cultivate a lush paradise and prove your gardening prowess in this delightful and challenging adventure.",
+            "categoria": "farming",
+            "id": "l5y7akdfn"
+        },
+
+        {
+            "titolo": "Quarantine Zombies",
+            "url": "https://play.gamepix.com/quarantine-zombies/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/quarantine-zombies/icon/quarantine-zombies.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "zombie",
+            "id": "5laxhr1ok"
+        },
+
+        {
+            "titolo": "Stack Rocket",
+            "url": "https://play.gamepix.com/stack-rocket/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stack-rocket/icon/stack-rocket.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "building",
+            "id": "6581j2z38"
+        },
+
+        {
+            "titolo": "Nova Hop",
+            "url": "https://play.gamepix.com/nova-hop/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/nova-hop/icon/nova-hop.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "hyper-casual",
+            "id": "7nq9xb1p9"
+        },
+
+        {
+            "titolo": "Boost Balloon",
+            "url": "https://play.gamepix.com/boost-balloon/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/boost-balloon/icon/boost-balloon.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "casual",
+            "id": "t3t5ukhsw"
+        },
+        {
+            "titolo": "Dodge the Bull",
+            "url": "https://play.gamepix.com/dodge-the-bull/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/dodge-the-bull/icon/dodge-the-bull.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "casual",
+            "id": "o0s6fzspa"
+        },
+        {
+            "titolo": "Dispatch Panic",
+            "url": "https://play.gamepix.com/dispatch-panic/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/dispatch-panic/icon/dispatch-panic.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "casual",
+            "id": "st7sqhzlr"
+        },
+
+        {
+            "titolo": "Billiards on Ice",
+            "url": "https://play.gamepix.com/billiards-on-ice/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/billiards-on-ice/icon/billiards-on-ice.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "sports",
+            "id": "xi9eiao9d"
+        },
+        {
+            "titolo": "Penalty Kick Wiz",
+            "url": "https://play.gamepix.com/penalty-kick-wiz/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/penalty-kick-wiz/icon/penalty-kick-wiz.png?w=105",
+            "desc": "Step into the adrenaline-filled duel of Penalty Kick Wiz, where every shot and save is a crucial dance of precision and anticipation. Master the art of split-second decisions, outwit your opponent, and seize victory through strategic plays that test both your mental and physical reflexes.",
+            "categoria": "sports",
+            "id": "to47rchpz"
+        },
+        {
+            "titolo": "Ultimate Flying Car",
+            "url": "https://play.gamepix.com/ultimate-flying-car/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/ultimate-flying-car/icon/ultimate-flying-car.png?w=105",
+            "desc": "Race at breakneck speeds and soar through the skies in Ultimate Flying Car. Merge reality with fantasy as you navigate urban landscapes in sleek, aerodynamic vehicles. Challenge friends in thrilling multiplayer races, and explore expansive environments in style with daring stunts and strategic use of power boosts.",
+            "categoria": "sports",
+            "id": "kys7x0ef4"
+        },
+
+        {
+            "titolo": "Combat Landing",
+            "url": "https://play.gamepix.com/combat-landing/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/combat-landing/icon/combat-landing.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "airplane",
+            "id": "tcabrmd64"
+        },
+
+        {
+            "titolo": "Vegan Quest",
+            "url": "https://play.gamepix.com/vegan-quest/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/vegan-quest/icon/vegan-quest.png?w=105",
+            "desc": "Guide your vegan hero through a cascade of food in Vegan Quest! Collect delicious vegan treats to boost your score, while dodging non-vegan pitfalls. With straightforward controls and ever-increasing challenges, this arcade adventure delivers endless entertainment, demanding precision and quick decision-making as obstacles intensify.",
+            "categoria": "arcade",
+            "id": "cufpt6qy2"
+        },
+        {
+            "titolo": "Parmesan Partisan",
+            "url": "https://play.gamepix.com/parmesan-partisan/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/parmesan-partisan/icon/parmesan-partisan.png?w=105",
+            "desc": "Step into the shoes of a cheese guardian in Parmesan Partisan, where you must fend off relentless rat invasions with blazing shotgun action. Balance strategy and speed to protect your cheesy realm, wield powerful upgrades, and prove yourself the ultimate hero in this thrilling defense adventure.",
+            "categoria": "arcade",
+            "id": "wcln4bulj"
+        },
+        {
+            "titolo": "Gelatino",
+            "url": "https://play.gamepix.com/gelatino/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/gelatino/icon/gelatino.png?w=105",
+            "desc": "Guide a courageous popsicle on a cooling adventure in Gelatino! Swing past traps, snag ice cubes, and dodge bushels of blazing heat to extend your minty fresh expedition. Precise movement and on-the-fly strategy keep the popsicle intact as you zigzag through sun-soaked lands. Will you melt or prevail?",
+            "categoria": "arcade",
+            "id": "81erw4y2v"
+        },
+        {
+            "titolo": "Morphit",
+            "url": "https://play.gamepix.com/morphit/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/morphit/icon/morphit.png?w=105",
+            "desc": "Morphit is an exhilarating arcade challenge where you must quickly morph your shape to overcome incoming obstacles. Engage your reflexes and precision in a vibrant, fast-paced environment, mastering the art of timing in a world that tests your adaptability at every turn. Stay alert, adapt, and survive the thrill!",
+            "categoria": "arcade",
+            "id": "3g7565il2"
+        },
+        {
+            "titolo": "Epic Duck",
+            "url": "https://play.gamepix.com/epic-duck/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/epic-duck/icon/epic-duck.png?w=105",
+            "desc": "Embark on an adventurous journey with Epic Duck, where clever exploration and precise timing lead to success. Navigate charming levels, uncover hidden keys, and unlock doorways to progress, all while honing your puzzle-solving skills. With engaging challenges and delightful visuals, it's a delightful test of strategy and reflexes.",
+            "categoria": "arcade",
+            "id": "hon4taoqi"
+        },
+        {
+            "titolo": "Injection Invasion",
+            "url": "https://play.gamepix.com/injection-invasion/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/injection-invasion/icon/injection-invasion.png?w=105",
+            "desc": "Dodge and weave in Injection Invasion, an exciting platformer where quick reflexes and strategy are essential. Guide a boy through a perilous world filled with incoming injections, using precision and timing to survive. Master the art of evasive maneuvers and see how long you can last!",
+            "categoria": "arcade",
+            "id": "331nhtdoh"
+        },
+        {
+            "titolo": "Car Crash Test",
+            "url": "https://play.gamepix.com/car-crash-test/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/car-crash-test/icon/car-crash-test.png?w=105",
+            "desc": "Unleash chaos in Car Crash Test, where the thrill of spectacular automotive destruction meets real-time physics and stunning 3D graphics. Earn coins through strategic demolition, unlock new cars, and explore challenging tracks. Master time dilation and unleash explosive wrecks in this endlessly enticing and adrenaline-pumping experience.",
+            "categoria": "arcade",
+            "id": "yvkab1nn3"
+        },
+        {
+            "titolo": "Run & Jump Jumbo Runner",
+            "url": "https://play.gamepix.com/ran-and-jump-jambo-runner/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/ran-and-jump-jambo-runner/icon/ran-and-jump-jambo-runner.png?w=105",
+            "desc": "Race through dynamic terrains in Run & Jump Jumbo Runner, where precision and timing are your allies. As you fly and dodge obstacles, each quick tap unlocks faster speeds and thrilling challenges. Master the exhilarating arcade action and discover the addictive thrills of gravity-defying runs and flights.",
+            "categoria": "arcade",
+            "id": "tsmvvgx6m"
+        },
+        {
+            "titolo": "Strike Galaxy Attack",
+            "url": "https://play.gamepix.com/strike-galaxy-attack/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/strike-galaxy-attack/icon/strike-galaxy-attack.png?w=105",
+            "desc": "Take command of a lone, powerful spaceship in Strike Galaxy Attack. Dodge and weave through endless waves of colorful space birds while unleashing streams of gunfire. Collect upgrades to enhance your ship and outmaneuver enemies as you aim to dominate the galaxy in this thrilling 2D arcade shooter.",
+            "categoria": "arcade",
+            "id": "68ei82ed6"
+        },
+        {
+            "titolo": "Bouncing Egg",
+            "url": "https://play.gamepix.com/bouncing-egg/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/bouncing-egg/icon/bouncing-egg.png?w=105",
+            "desc": "Guide a fragile egg through a vibrant pixel-art world, bouncing on rotating circles to smash menacing faces. With its simple tap controls and addictive gameplay, every moment demands precision, patience, and perfect timing. Can you master the escalating challenge and keep your egg intact?",
+            "categoria": "arcade",
+            "id": "680rozzw2"
+        },
+        {
+            "titolo": "Evil Invader",
+            "url": "https://play.gamepix.com/evil-invader/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/evil-invader/icon/evil-invader.png?w=105",
+            "desc": "Evil Invader plunges you into a dystopian battlefield overrun by monstrous foes. Engage in heart-pounding, fast-paced shooting action as you fight relentless enemies with an arsenal of weapons. Strategize with power-ups, master enemy patterns, and level up to unlock devastating firepower in this intense survival challenge.",
+            "categoria": "arcade",
+            "id": "eg1wg5vtt"
+        },
+
+        {
+            "titolo": "Kobadoo Emojis",
+            "url": "https://play.gamepix.com/kobadoo-emojis/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/kobadoo-emojis/icon/kobadoo-emojis.png?w=105",
+            "desc": "Kobadoo Emojis invites you into a delightful memory challenge with amusing emojis to sequence. As you advance, the complexity grows, enhancing your cognitive skills while you enjoy the easy controls. Focus, observe, and test your brain in this engaging and laughter-filled experience.",
+            "categoria": "trivia",
+            "id": "cqc0n54sx"
+        },
+        {
+            "titolo": "Kobadoo Shapes",
+            "url": "https://play.gamepix.com/kobadoo-shapes/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/kobadoo-shapes/icon/kobadoo-shapes.png?w=105",
+            "desc": "Kobadoo Shapes challenges you to memorize and replicate sequences of vibrant shapes, enhancing your memory while delivering a rewarding mental workout. With its addictive mechanics and engaging visuals, this game invites players of all ages to relax and focus as difficulty ramps up across multiple levels.",
+            "categoria": "trivia",
+            "id": "ruyhbw0ev"
+        },
+        {
+            "titolo": "Kobadoo Flags",
+            "url": "https://play.gamepix.com/kobadoo-flags/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/kobadoo-flags/icon/kobadoo-flags.png?w=105",
+            "desc": "Test your flag knowledge with Kobadoo Flags, an addictive game that sharpens memory and boosts cognitive skills. Memorize flags as challenges intensify, making it both entertaining and enlightening. Perfect for flag enthusiasts and those eager to enhance mental performance while having fun. Dive into this captivating world of flags today!",
+            "categoria": "trivia",
+            "id": "waikzkbz2"
+        },
+
+        {
+            "titolo": "Skater Kitty",
+            "url": "https://play.gamepix.com/skater-kitty/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/skater-kitty/icon/skater-kitty.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "cats",
+            "id": "se6mrik4i"
+        },
+
+        {
+            "titolo": "Ancient Armies vs Modern Weapons",
+            "url": "https://play.gamepix.com/ancient-armies-vs-modern-weapons/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/ancient-armies-vs-modern-weapons/icon/ancient-armies-vs-modern-weapons.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "battle",
+            "id": "lifk01x50"
+        },
+        {
+            "titolo": "War the Knights",
+            "url": "https://play.gamepix.com/war-the-knights/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/war-the-knights/icon/war-the-knights.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "battle",
+            "id": "9wc6czcqz"
+        },
+
+
+        {
+            "titolo": "Flag Memory Match",
+            "url": "https://play.gamepix.com/flag-memory-match/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/flag-memory-match/icon/flag-memory-match.png?w=105",
+            "desc": "Test your memory with Flag Memory Match, a vibrant educational challenge featuring flags from 98 countries. Flip cards to find matching pairs, earn points, and unlock six increasingly difficult levels. Sharpen your focus and precision to become a flag-matching pro in this entertaining and educational journey.",
+            "categoria": "memory",
+            "id": "unv49myni"
+        },
+        {
+            "titolo": "Memory Cards",
+            "url": "https://play.gamepix.com/memory-cards/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/memory-cards/icon/memory-cards.png?w=105",
+            "desc": "Test your memory and cognitive skills with Memory Cards! Sequence through increasingly challenging levels by identifying and selecting cards in the correct order. Perfect for a brain workout, this captivating game ensures surprising twists and mental boosts as you advance through its intricate stages.",
+            "categoria": "memory",
+            "id": "huo4kg2fo"
+        },
+        {
+            "titolo": "Kobadoo Numbers",
+            "url": "https://play.gamepix.com/kobadoo-numbers/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/kobadoo-numbers/icon/kobadoo-numbers.png?w=105",
+            "desc": "Strengthen your mind with Kobadoo Numbers, a captivating browser game. Challenge yourself to memorize increasingly difficult two-digit sequences and enhance your cognitive abilities in a fun way. Unlock the potential of your working memory as you improve your focus, attention, and mental agility while enjoying this addictive experience.",
+            "categoria": "memory",
+            "id": "311d18ujz"
+        },
+        {
+            "titolo": "Three Cups Game",
+            "url": "https://play.gamepix.com/three-cups-game/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/three-cups-game/icon/three-cups-game.png?w=105",
+            "desc": "Challenge your focus and memory with the Three Cups Game, where precision and strategy meet. Track the elusive cup hiding surprises as the pace intensifies with each level. Unveil secrets and celebrate each win in this deceptively simple, yet profoundly addictive mental adventure. How sharp is your attention?",
+            "categoria": "memory",
+            "id": "2rr9xvda6"
+        },
+
+        {
+            "titolo": "Sumo Shove",
+            "url": "https://play.gamepix.com/sumo-shove/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/sumo-shove/icon/sumo-shove.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "fighting",
+            "id": "8gikkcufa"
+        },
+        {
+            "titolo": "Stickman Warriors",
+            "url": "https://play.gamepix.com/stickman-warriors-1/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stickman-warriors-1/icon/stickman-warriors-1.png?w=105",
+            "desc": "Unleash your inner stickman hero in Stickman Warriors, a thrilling fighting RPG. Ascend the ranks by mastering combat against powerful Saints. Maximize your strategy with daily rewards and diverse stickman attributes. Battle your way to the ultimate S rank and become the supreme stickman warrior!",
+            "categoria": "fighting",
+            "id": "af1vqzxjq"
+        },
+        {
+            "titolo": "Stickman Street Fighting 3D",
+            "url": "https://play.gamepix.com/stickman-street-fighting/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stickman-street-fighting/icon/stickman-street-fighting.png?w=105",
+            "desc": "Get ready to dominate the streets as a fearless stickman in Stickman Street Fighting 3D! This intense brawler challenges you to crush foes with strategic blows and quick reflexes. Break objects for unexpected power-ups, wield weapons for added punch, and prove you're the toughest stickman around.",
+            "categoria": "fighting",
+            "id": "yvdtldktf"
+        },
+        {
+            "titolo": "Knockback Knights",
+            "url": "https://play.gamepix.com/knockback-knights/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/knockback-knights/icon/knockback-knights.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "fighting",
+            "id": "j5gadzc88"
+        },
+        {
+            "titolo": "Merge Battle Tactics",
+            "url": "https://play.gamepix.com/merge-battle-tactics/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/merge-battle-tactics/icon/merge-battle-tactics.png?w=105",
+            "desc": "Summon and merge creatures in a captivating fantasy realm where strategy is your ally. Engage in thrilling battles by combining monsters to create powerful warriors, balance your forces on the battlefield, and earn coins to expand your ranks. Will your tactical prowess lead you to victory?",
+            "categoria": "fighting",
+            "id": "4w74fl4ri"
+        },
+        {
+            "titolo": "Drunken Boxing 2",
+            "url": "https://play.gamepix.com/drunken-boxing-2/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/drunken-boxing-2/icon/drunken-boxing-2.png?w=105",
+            "desc": "Step into chaos with Drunken Boxing 2, where intoxicated stickmen clash in strategic bouts of reflex and endurance. With glistening 3D visuals, vibrant animations, and adrenaline-pumping action, battle solo or with friends for a uniquely boozy arcade experience where energy management is the key to victory.",
+            "categoria": "fighting",
+            "id": "1u5r4yrw7"
+        },
+
+        {
+            "titolo": "Math Fight Club",
+            "url": "https://play.gamepix.com/math-fight-club/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/math-fight-club/icon/math-fight-club.png?w=105",
+            "desc": "Unleash your inner math warrior in Math Fight Club! Customize your character, solve challenging equations, and battle legendary opponents in the ring. Outsmart your foes with quick calculations, collect their masks, and rise to become the ultimate math champion. Can you conquer every math legend?",
+            "categoria": "math",
+            "id": "f14uai59i"
+        },
+        {
+            "titolo": "Kobadoo Arithmetic",
+            "url": "https://play.gamepix.com/kobadoo-arithmetic/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/kobadoo-arithmetic/icon/kobadoo-arithmetic.png?w=105",
+            "desc": "Sharpen your mind with Kobadoo Arithmetic, a captivating number challenge that enhances math skills and memory. Memorize sequences, calculate sums, and tackle increasingly complex levels. This scientifically designed game offers a simple yet stimulating experience that boosts cognitive abilities while keeping players engaged and entertained. ",
+            "categoria": "math",
+            "id": "zbjdbcilx"
+        },
+
+        {
+            "titolo": "My First 100 Words",
+            "url": "https://play.gamepix.com/my-100-first-words/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/my-100-first-words/icon/my-100-first-words.png?w=105",
+            "desc": " Immerse your child in \"My First 100 Words,\" a vibrant language adventure! They will explore multiple languages through playful interactions, spotting emojis while hearing correct pronunciations. With increasing challenges, they’ll build vocabulary and cultural awareness, making learning a captivating journey. Watch them thrive as they start a multilingual quest!",
+            "categoria": "educational",
+            "id": "xpcfce4m6"
+        },
+
+        {
+            "titolo": "Trap the Convoy",
+            "url": "https://play.gamepix.com/trap-the-convoy/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/trap-the-convoy/icon/trap-the-convoy.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "tanks",
+            "id": "nb55sy9c2"
+        },
+
+        {
+            "titolo": "Yenemy",
+            "url": "https://play.gamepix.com/yenemy-io/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/yenemy-io/icon/yenemy-io.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "io",
+            "id": "l7yksvgzz"
+        },
+        {
+            "titolo": "Evo Pit",
+            "url": "https://play.gamepix.com/evo-pit/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/evo-pit/icon/evo-pit.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "io",
+            "id": "19pyc1okc"
+        },
+
+        {
+            "titolo": "Bus Driver Simulator 3D",
+            "url": "https://play.gamepix.com/bus-driver-simulator-3d/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/bus-driver-simulator-3d/icon/bus-driver-simulator-3d.png?w=105",
+            "desc": "Experience the thrill of Bus Driver Simulator 3D by navigating iconic cities, conquering diverse terrains, and mastering the art of bus driving. Choose between adrenaline-packed racing or relaxed free mode, and immerse yourself in authentic cityscapes with dynamic traffic and weather for a truly captivating driving adventure.",
+            "categoria": "simulation",
+            "id": "wd3kr3ydh"
+        },
+        {
+            "titolo": "Body Drop 3D",
+            "url": "https://play.gamepix.com/body-drop-3d/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/body-drop-3d/icon/body-drop-3d.png?w=105",
+            "desc": "Experience hilarious ragdoll physics as a resilient crash test dummy in Body Drop 3D. Strategically aim and unleash powerful impacts with limited balls to maximize bone-crunching damage. Explore creative angles, unlock new scenarios, and enjoy the endless cycle of chaos and laughter. Can you outwit gravity?",
+            "categoria": "simulation",
+            "id": "nddw5zbjs"
+        },
+        {
+            "titolo": "Cauldron Counter",
+            "url": "https://play.gamepix.com/cauldron-counter/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/cauldron-counter/icon/cauldron-counter.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "simulation",
+            "id": "ux2qswtnx"
+        },
+
+        {
+            "titolo": "Hoops & Fruits",
+            "url": "https://play.gamepix.com/hoops-and-fruits/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/hoops-and-fruits/icon/hoops-and-fruits.png?w=105",
+            "desc": "Dive into the whimsical world of Hoops & Fruits, where your hoop-tossing skills meet colorful, fruity targets. Engage in addictive drag-and-drop gameplay with charming graphics and a captivating soundtrack, challenging you to master levels and score big by hooping multiple fruits at once.",
+            "categoria": "drawing",
+            "id": "o00fz7ol8"
+        },
+
+        {
+            "titolo": "Cerkio",
+            "url": "https://play.gamepix.com/cerkio/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/cerkio/icon/cerkio.png?w=105",
+            "desc": "Cerkio invites you into a minimalist world where precision meets relaxation. Test your timing as you launch a ball into a target across 30 increasingly complex levels. With soothing music and intuitive one-touch controls, experience a challenging yet calming escape. Perfect your skills and master one-hand gameplay.",
+            "categoria": "ball",
+            "id": "psfmx7slb"
+        },
+        {
+            "titolo": "Sokoballs",
+            "url": "https://play.gamepix.com/sokoballs/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/sokoballs/icon/sokoballs.png?w=105",
+            "desc": "Sokoballs offers a delightful puzzle adventure where each level tests your strategic skills. Carefully maneuver balls onto switches using intuitive controls while enjoying vintage pixel art. As difficulty elevates, planning ahead becomes key to solving these increasingly challenging puzzles. Embrace the cerebral journey and relish the art of problem-solving.",
+            "categoria": "ball",
+            "id": "lgaog7u96"
+        },
+        {
+            "titolo": "Slope Racing 3D",
+            "url": "https://play.gamepix.com/slope-racing-3d/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/slope-racing-3d/icon/slope-racing-3d.png?w=105",
+            "desc": "Experience exhilarating speed as you guide a relentless ball down a vibrant, ever-changing slope. Navigate through dynamic obstacles, hit boost pads, and gather gems while skillfully using power-ups. With endless ramps and increasing challenges, Slope Racing 3D offers a fast-paced thrill ride testing your reflexes and precision.",
+            "categoria": "ball",
+            "id": "181jvt2xx"
+        },
+        {
+            "titolo": "Face Breaker",
+            "url": "https://play.gamepix.com/face-breaker/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/face-breaker/icon/face-breaker.png?w=105",
+            "desc": "Face Breaker challenges your reflexes in a dynamic arcade puzzle setting. Control a paddle to keep a quirky square-face-ball in play, crushing blocks through 45 escalating levels. With each bounce, the speed surges, testing your timing and strategy in this riveting race against the clock!",
+            "categoria": "ball",
+            "id": "3i7u69k85"
+        },
+
+        {
+            "titolo": "Twin Peeks",
+            "url": "https://play.gamepix.com/twin-peeks/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/twin-peeks/icon/twin-peeks.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "hidden-object",
+            "id": "wtlthh01p"
+        },
+
+        {
+            "titolo": "Turbo Crash Test",
+            "url": "https://play.gamepix.com/turbo-dismounting/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/turbo-dismounting/icon/turbo-dismounting.png?w=105",
+            "desc": "Turbo Dismounting is a thrilling physics-based adventure where players create epic crashes. Propel your stickman through chaotic obstacles, earning rewards to unlock diverse vehicles and challenging levels. Revel in the havoc with unique replays, testing your skills in explosive, adrenaline-fueled gameplay.",
+            "categoria": "stickman",
+            "id": "t9npiumg4"
+        },
+
+        {
+            "titolo": "Merge Mine - Idle Clicker",
+            "url": "https://play.gamepix.com/merge-mine-idle-clicker/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/merge-mine-idle-clicker/icon/merge-mine-idle-clicker.png?w=105",
+            "desc": "Unleash your inner miner in Merge Mine - Idle Clicker. Tap into a diamond-rich vein, strategically upgrade tools, and merge them for enhanced mining power. Experience the thrill of turning hard work into shiny rewards, as you automate your mining empire and watch diamonds accumulate, even while you're away.",
+            "categoria": "adventure",
+            "id": "e2m6b00pe"
+        },
+        {
+            "titolo": "Flamit",
+            "url": "https://play.gamepix.com/flamit/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/flamit/icon/flamit.png?w=105",
+            "desc": "Flamit puts your reflexes to the test in a swift race against a dwindling flame. Navigate 30 challenging, icy levels, lighting torches before time extinguishes your hopes. Strategize through snowy obstacles, evade icy enemies, and conquer two distinct game modes for an adrenaline-pumping experience.",
+            "categoria": "adventure",
+            "id": "q2zv6adx3"
+        },
+        {
+            "titolo": "War of Tanks 3D",
+            "url": "https://play.gamepix.com/war-of-tanks-3d/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/war-of-tanks-3d/icon/war-of-tanks-3d.png?w=105",
+            "desc": "Command your tank in intense battles where strategy and precision are key. Navigate dynamic terrains, meticulously aim your cannons, and tactically outmaneuver your foes. Fast-paced action awaits as you strive to dominate the battlefield, mastering your tank’s firepower while leveraging the environment for ultimate victory.",
+            "categoria": "adventure",
+            "id": "fjl1pe21z"
+        },
+
+        {
+            "titolo": "Funny Shooter 2",
+            "url": "https://play.gamepix.com/funny-shooter-2/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/funny-shooter-2/icon/funny-shooter-2.png?w=105",
+            "desc": "Dive into the zany chaos of Funny Shooter 2, where every battle is a laugh-filled thrill ride. Face off against quirky enemies, upgrade your arsenal with endless customization options, and explore a whimsical world bursting with personality. This action-packed adventure is a hilariously unique gaming experience.",
+            "categoria": "shooter",
+            "id": "20a3tgoqd"
+        },
+        {
+            "titolo": "The Room",
+            "url": "https://play.gamepix.com/the-room/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/the-room/icon/the-room.png?w=105",
+            "desc": "The Room immerses you in intense, nostalgic 2D shooter action as you defend your domain's heart against relentless enemy waves. Precision, strategy, and quick reflexes are key. With intuitive controls and a charming pixel art style, each escalating challenge delivers adrenaline-fueled excitement and addictive gameplay.",
+            "categoria": "shooter",
+            "id": "byn59daxl"
+        },
+
+        {
+            "titolo": "Going Right",
+            "url": "https://play.gamepix.com/going-right/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/going-right/icon/going-right.png?w=105",
+            "desc": "Embark on a thrilling aerial journey as you guide a determined bird back to its nest in \"Going Right.\" Navigate through dynamic obstacles using intuitive one-touch controls. Embrace the challenge across multiple modes, collect coins for customization, and strategize your taps to master this addictive arcade adventure.",
+            "categoria": "animal",
+            "id": "f13wgnxfz"
+        },
+
+        {
+            "titolo": "Canjump",
+            "url": "https://play.gamepix.com/canjump/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/canjump/icon/canjump.png?w=105",
+            "desc": "Leap into a thrilling arcade adventure with Canjump! Master the art of well-timed jumps as a monster navigating perilous terrains. With only one button to control, sharpen your reflexes to conquer increasingly tough obstacles and enemies, all while aiming for the highest score in this endlessly entertaining challenge.",
+            "categoria": "fun",
+            "id": "rbf0dz3kd"
+        },
+
+        {
+            "titolo": "Moto X3M: Spooky Land",
+            "url": "https://play.gamepix.com/moto-x3m-spooky-land/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/moto-x3m-spooky-land/icon/moto-x3m-spooky-land.png?w=105",
+            "desc": "Dive into the eerie thrills of Moto X3M: Spooky Land, where every turn is a challenge against the supernatural. Master gravity-defying stunts on spooky tracks, dodge bone-rattling obstacles, and ride like the wind to unlock creepy new gear. Can you handle the haunting speed and survive the ghoulish adventure?",
+            "categoria": "racing",
+            "id": "al8biivvl"
+        },
+        {
+            "titolo": "Endless Car Chase",
+            "url": "https://play.gamepix.com/endless-car-chase/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/endless-car-chase/icon/endless-car-chase.png?w=105",
+            "desc": "Dive into the exhilarating chaos of Endless Car Chase, where evading the relentless police becomes a thrilling art. Customize your ride, collect power-ups, and master sharp maneuvers as you navigate through hectic streets. With every heart-pounding chase, design your unique escape experience while pursuing the ultimate high score.",
+            "categoria": "racing",
+            "id": "2gw311hph"
+        },
+        {
+            "titolo": "Demolition Derby Life",
+            "url": "https://play.gamepix.com/demolition-derby-life/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/demolition-derby-life/icon/demolition-derby-life.png?w=105",
+            "desc": "Plunge into the chaotic thrill of Demolition Derby Life, a high-octane derby simulator. Strategically smash your way to victory, upgrading your car while trying to outlast the competition. Experience the adrenaline rush of tactical destruction and exhilarating impacts in this immersive single-player experience. Can you survive the arena?",
+            "categoria": "racing",
+            "id": "ies5f4lgz"
+        },
+
+        {
+            "titolo": "Royal Couple Halloween Party",
+            "url": "https://play.gamepix.com/royal-couple-halloween-party/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/royal-couple-halloween-party/icon/royal-couple-halloween-party.png?w=105",
+            "desc": "Step into a whimsical world where creating enchanting Halloween outfits for royal couples is your mission. With vibrant graphics and easy point-and-click controls, mix and match wardrobes to craft unique, thematic ensembles. Unleash your creativity as you turn the festive night into a magical masterpiece.",
+            "categoria": "games-for-girls",
+            "id": "2yztegkwv"
+        },
+        {
+            "titolo": "Yummy Toast",
+            "url": "https://play.gamepix.com/yummy-toast/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/yummy-toast/icon/yummy-toast.png?w=105",
+            "desc": "In Yummy Toast, become the toast crafting expert in a lively kitchen setting. Quickly serve up delightful creations using a variety of ingredients to satisfy customer orders. Speed and precision are your allies as you unlock challenging levels and strive to become the ultimate toast maestro.",
+            "categoria": "games-for-girls",
+            "id": "vga806oa8"
+        },
+
+        {
+            "titolo": "Impossible Repair Shop",
+            "url": "https://play.gamepix.com/impossible-repair-shop/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/impossible-repair-shop/icon/impossible-repair-shop.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "brain",
+            "id": "dzlsfmcjj"
+        },
+
+        {
+            "titolo": "Val d'Agri Race",
+            "url": "https://play.gamepix.com/val-d-agri-race/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/val-d-agri-race/icon/val-d-agri-race.png?w=105",
+            "desc": "Race through lively Viggiano streets, dodging traffic and escaping patrols in Val d' Agri Race. Collect coins to unlock and customize flashy cars, harness temporary powers, and cause thrilling destruction to access exclusive rides. Experience heart-pounding action in every high-speed chase.",
+            "categoria": "car",
+            "id": "z1krvn4ar"
+        },
+
+        {
+            "titolo": "Santabalt",
+            "url": "https://play.gamepix.com/santabalt/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/santabalt/icon/santabalt.png?w=105",
+            "desc": "Dive into the festive spirit with Santabalt, an exhilarating endless runner with Santa at the helm. Leap between rooftops, dodging obstacles at thrilling speed with just a tap or click. Hone your timing and reflexes, extending Santa's journey in this addictive holiday adventure loaded with jolly excitement.",
+            "categoria": "christmas",
+            "id": "0s6m2ze9x"
+        },
+
+        {
+            "titolo": "The Floor Is Lying",
+            "url": "https://play.gamepix.com/the-floor-is-lying/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/the-floor-is-lying/icon/the-floor-is-lying.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "platformer",
+            "id": "ia41arpv9"
+        },
+        {
+            "titolo": "Super Billy Boy",
+            "url": "https://play.gamepix.com/super-billy-boy/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/super-billy-boy/icon/super-billy-boy.png?w=105",
+            "desc": "Embark on a thrilling journey with Super Billy Boy as you navigate a pixelated world filled with traps and alien foes. Rescue your friend by mastering platformer challenges that demand precision and clever strategies. Dive into this nostalgic adventure where each level brings new excitement and unexpected twists.",
+            "categoria": "platformer",
+            "id": "l0tsnuuda"
+        },
+
+        {
+            "titolo": "Hoop World",
+            "url": "https://play.gamepix.com/hoop-world/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/hoop-world/icon/hoop-world.png?w=105",
+            "desc": "In Hoop World, become a master of aerial acrobatics with precision mouse clicks. Soar through the air, nail flipping dunks, and outshine with style. Simple controls meet spectacular moves, making each perfect dunk a thrilling achievement in this dynamic 3D basketball experience.",
+            "categoria": "basketball",
+            "id": "dnbqpenyf"
+        },
+
+        {
+            "titolo": "TenTrix",
+            "url": "https://play.gamepix.com/tentrix/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/tentrix/icon/tentrix.png?w=105",
+            "desc": "Unleash your strategic prowess in TenTrix, a compelling blend of simplicity and creativity. Effortlessly arrange falling blocks on a 10x10 grid to clear lines and score points. With unrotatable shapes and endless possibilities, it's a fresh twist on classic Tetris, offering endless fun on both PC and mobile.",
+            "categoria": "block",
+            "id": "2culxh2ts"
+        },
+        {
+            "titolo": "Spinning Oia Oia Cat Bricker",
+            "url": "https://play.gamepix.com/spinning-oia-oia-cat-bricker/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/spinning-oia-oia-cat-bricker/icon/spinning-oia-oia-cat-bricker.png?w=105",
+            "desc": "Join the energetic Oia Oia cat in a vivid brick-breaking adventure where vibrant visuals and lively meows propel you forward. Master your aim, shatter bricks with precision, and groove through each escalating level, all while soaking up the dynamic, cheering atmosphere for an endlessly fun experience.",
+            "categoria": "block",
+            "id": "fu0ps7k4p"
+        },
+
+        {
+            "titolo": "Commando Force 2",
+            "url": "https://play.gamepix.com/commando-force-2/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/commando-force-2/icon/commando-force-2.png?w=105",
+            "desc": "Dive into high-octane action with Commando Force 2! Engage in thrilling team battles or go head-to-head in free-for-alls. Unlock rewards through the Battle Pass while mastering diverse maps and weaponry. With smooth controls, stunning graphics, and strategic gameplay, it's a shooter experience that's easy to start, challenging to master.",
+            "categoria": "first-person-shooter",
+            "id": "2hjyjublw"
+        },
+
+        {
+            "titolo": "Lotl Spa",
+            "url": "https://play.gamepix.com/lotl-spa/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/lotl-spa/icon/lotl-spa.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "clicker",
+            "id": "hj82ipvh6"
+        },
+
+        {
+            "titolo": "Dotto Botto",
+            "url": "https://play.gamepix.com/dotto-botto/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/dotto-botto/icon/dotto-botto.png?w=105",
+            "desc": "Embark on an epic adventure with pixel hero Dotto Botto in this charming retro platformer. Facing hazardous spikes and deadly enemies across diverse levels, you'll jump and dodge with precision. Find power-ups, solve challenges, and prepare for a climactic showdown against a colossal final boss! Will you guide Dotto home?",
+            "categoria": "retro",
+            "id": "lihokr0p4"
+        },
+        {
+            "titolo": "Boing Bang",
+            "url": "https://play.gamepix.com/boing-bang/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/boing-bang/icon/boing-bang.png?w=105",
+            "desc": "Boing Bang tosses you into frenetic action as you control a quirky creature armed with a blaster. Navigate through bouncing chaos, shatter massive balls into pieces, and use platforms strategically. With unpredictable bouncing patterns to master and survival at stake, every shot counts in this thrilling arcade adventure.",
+            "categoria": "retro",
+            "id": "sle3w0jfq"
+        },
+
+        {
+            "titolo": "Idle Craft 3D",
+            "url": "https://play.gamepix.com/idle-craft-3d-1/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/idle-craft-3d-1/icon/idle-craft-3d-1.png?w=105",
+            "desc": " Rebuild your home in Idle Craft 3D where you recruit workers and summon elders to manage fatigue. Enjoy a vibrant 3D world and continuous progress, even when idle. Strategize wisely to enhance your workforce, master resource balance, and marvel at the satisfying transformation around you.",
+            "categoria": "idle",
+            "id": "m4it96ljm"
+        },
+        {
+            "titolo": "Drill to the Core",
+            "url": "https://play.gamepix.com/drill-to-the-core/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/drill-to-the-core/icon/drill-to-the-core.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "idle",
+            "id": "uzu9fw7h2"
+        },
+
+        {
+            "titolo": "Robo-Butcher",
+            "url": "https://play.gamepix.com/robo-butcher/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/robo-butcher/icon/robo-butcher.png?w=105",
+            "desc": "Engage in relentless 2D platform-arena battles as a humanoid robot, striving for supremacy. Outmaneuver and obliterate waves of robotic adversaries with tactical agility. Upgrade your arsenal, seize power-ups from crates, and strategically exploit enemy weaknesses for a thrilling test of endurance and skill.",
+            "categoria": "robots",
+            "id": "ajhn42xtp"
+        },
+
+        {
+            "titolo": "Emberdeck",
+            "url": "https://play.gamepix.com/emberdeck/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/emberdeck/icon/emberdeck.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "card",
+            "id": "4em7jm4h1"
+        },
+
+        {
+            "titolo": "BattleBox",
+            "url": "https://play.gamepix.com/battlebox/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/battlebox/icon/battlebox.png?w=105",
+            "desc": "Unearth hidden treasures while sidestepping treacherous monsters in BattleBox, a thrilling puzzle adventure that will challenge your memory and wits. Strategize and recall the secret grid layout, aiming for riches while avoiding peril. Survive by maintaining your health with handy strawberries, ensuring every play is an exciting discovery.",
+            "categoria": "board",
+            "id": "btcmdt3pr"
+        },
+
+        {
+            "titolo": "Spider Evolution Runner Game",
+            "url": "https://play.gamepix.com/spider-evolution-runner-game/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/spider-evolution-runner-game/icon/spider-evolution-runner-game.png?w=105",
+            "desc": "Embark on a thrilling journey as a spider in this dynamic 3D runner. Consume insects and smaller spiders to grow larger, navigate challenging terrains, and dodge threats. Explore vibrant landscapes as you strategize your survival and aim to become the realm's biggest spider. Ready for a bite-sized adventure?",
+            "categoria": "runner",
+            "id": "puw2dcxdc"
+        },
+
+        {
+            "titolo": "Worms Zone",
+            "url": "https://play.gamepix.com/worms-zone/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/worms-zone/icon/worms-zone.png?w=105",
+            "desc": "Worms Zone combines the classic Snake experience with vibrant twists, where worms devour their way to gigantism. Navigate through colorful zones, grow faster, and customize your worm. Balance speed and strategy to avoid rivals, collect power-ups, and emerge as the longest worm. Slither, compete, and claim worm supremacy!",
+            "categoria": "snake",
+            "id": "8itn8183w"
+        },
+
+        {
+            "titolo": "Golf Orbit",
+            "url": "https://play.gamepix.com/golf-orbit/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/golf-orbit/icon/golf-orbit.png?w=105",
+            "desc": "Unleash your inner golfer with Golf Orbit, a dynamic twist on traditional golf. Master the power meter to blast balls through zany courses, overcoming quirky obstacles. Customize your golfer, earn rewards, and test your strength as you aim for the green, all with a light-hearted, entertaining spin.",
+            "categoria": "golf",
+            "id": "j8ak36ddf"
         }
-
-
-       
     ];
 
 </script>
 
 <!-- Il filo che abbiamo appena collegato -->
-<!-- Vedi quel ?v=5 alla fine? Inganna il browser e lo costringe a scaricare il file nuovo! -->
-<script src="https://playcombo.it/js/motore-playcombo.js?v=5"></script>
+<!-- Vedi quel ?v=2 alla fine? Inganna il browser e lo costringe a scaricare il file nuovo! -->
+<script src="https://playcombo.it/js/motore-playcombo.js?v=" 10=""></script>
 
 <script>
     // E via, si parte!
