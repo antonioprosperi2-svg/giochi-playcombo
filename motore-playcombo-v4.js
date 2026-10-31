@@ -228,6 +228,45 @@ function iniettaStileHome() {
     document.head.appendChild(st);
 }
 
+// Legge "listaGiochi = [ ... ]" da un testo, contando le parentesi (le stringhe non contano)
+function estraiListaGiochi(testo) {
+    const m = /(?:var|let|const)\s+listaGiochi\s*=\s*\[/.exec(testo);
+    if (!m) return null;
+    const inizio = m.index + m[0].length - 1;
+    let prof = 0, inStr = false, esc = false;
+    for (let i = inizio; i < testo.length; i++) {
+        const c = testo[i];
+        if (inStr) {
+            if (esc) esc = false;
+            else if (c === '\\') esc = true;
+            else if (c === '"') inStr = false;
+            continue;
+        }
+        if (c === '"') inStr = true;
+        else if (c === '[') prof++;
+        else if (c === ']' && --prof === 0) return (new Function('return ' + testo.slice(inizio, i + 1)))();
+    }
+    return null;
+}
+
+// Pagina normale, oppure script in base64 (LiteSpeed li trasforma cosi' per i visitatori)
+function listaDaHtml(html) {
+    try {
+        const diretta = estraiListaGiochi(html);
+        if (diretta) return diretta;
+        const re = /src="data:text\/javascript;base64,([A-Za-z0-9+\/=]+)"/g;
+        let m;
+        while ((m = re.exec(html))) {
+            const bin = atob(m[1]);
+            if (bin.indexOf('listaGiochi') === -1) continue;
+            const testo = new TextDecoder('utf-8').decode(Uint8Array.from(bin, c => c.charCodeAt(0)));
+            const lista = estraiListaGiochi(testo);
+            if (lista) return lista;
+        }
+    } catch (e) { /* pagina illeggibile: la riga usa i giochi della home */ }
+    return null;
+}
+
 function costruisciRigheHome() {
     if (righeHomeEl) return righeHomeEl;
     if (costruisciRigheHome.fallito) return null;
@@ -296,9 +335,8 @@ function costruisciRigheHome() {
         return fetch(pathRelativo)
             .then(r => r.ok ? r.text() : Promise.reject())
             .then(html => {
-                const match = html.match(/(?:var|let|const)\s+listaGiochi\s*=\s*(\[[\s\S]*?\]);/);
-                if (!match || !match[1]) return fallbackLocali;
-                const estratti = (new Function('return ' + match[1]))();
+                const estratti = listaDaHtml(html);
+                if (!estratti) return fallbackLocali;
                 const nuovi = Array.isArray(estratti) ? liberi(estratti, idx) : [];
                 return nuovi.length > fallbackLocali.length
                     ? nuovi.slice(0, RIGA_MAX)
