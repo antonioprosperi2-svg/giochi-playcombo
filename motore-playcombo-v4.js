@@ -40,17 +40,20 @@ function tinyPlaceholder() {
         encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><rect width="100%" height="100%" fill="#222"/></svg>');
 }
 
-// Copertine ridimensionate e convertite in WebP da wsrv.nl
+// Copertine ridimensionate e convertite in WebP dal CDN immagini di WordPress (i0.wp.com),
+// il cui robots.txt non blocca Googlebot (wsrv.nl invece lo blocca)
 function ottimizzaImg(url) {
     if (!url || url.indexOf('http') !== 0) return url;
     // gamepix le manda gia' piccole: le lasciamo cosi'
     if (url.indexOf('img.gamepix.com') !== -1) return url;
-    return 'https://wsrv.nl/?url=' + encodeURIComponent(url) + '&w=240&output=webp&q=75';
+    // indirizzi con parametri: li lasciamo originali per non rompere il link
+    if (url.indexOf('?') !== -1) return url;
+    return 'https://i0.wp.com/' + url.replace(/^https?:\/\//, '') + '?w=240&quality=75';
 }
 
 function imgErrorHandler() {
-    // se wsrv.nl non risponde, riprova con l'immagine originale
-    if (this.dataset.orig && this.src.indexOf('wsrv.nl') !== -1) {
+    // se il CDN immagini non risponde, riprova con l'immagine originale
+    if (this.dataset.orig && this.src.indexOf('i0.wp.com') !== -1) {
         this.src = this.dataset.orig;
         delete this.dataset.orig;
         return;
