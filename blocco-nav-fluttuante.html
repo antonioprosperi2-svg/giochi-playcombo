@@ -1,0 +1,79 @@
+<style>
+/* regola "sacrificale": se LiteSpeed incolla del testo davanti al CSS, rovina questa e non quelle vere */
+.spc-nav-ok { --spc-nav: 1; }
+
+.blocco-nav-fluttuante {
+    position: fixed;
+    top: 45px;          /* Distanza dall'alto dello schermo */
+    left: 20px;         /* Lo blocca sul lato sinistro */
+    display: flex;
+    flex-direction: column; /* Elementi in verticale, uno sotto l'altro */
+    gap: 10px;          /* Spazio tra il logo e la lente */
+    z-index: 999999;    /* Sta sopra a tutto il testo dell'articolo */
+}
+
+.elemento-fluttuante {
+    width: 50px;        /* Dimensione compatta come su Poki */
+    height: 50px;
+    background: #ffffff15; /* Sfondo semi-trasparente elegante */
+    backdrop-filter: blur(10px); /* Effetto vetro sfocato sotto */
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px; /* Angoli arrotondati come i cubetti dei tuoi giochi */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+/* Stile specifico per l'immagine del Logo */
+.elemento-fluttuante.logo-spc img {
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+}
+
+/* Stile specifico per l'icona della lente di ingrandimento */
+.elemento-fluttuante.cerca-spc svg {
+    width: 22px;
+    height: 22px;
+    color: #00c3ff; /* Colore azzurro acceso per la ricerca */
+}
+
+/* Effetto quando ci passi sopra col dito o col mouse */
+.elemento-fluttuante:hover {
+    transform: translateY(-3px);
+    background: #00c3ff;
+}
+.elemento-fluttuante:hover svg {
+    color: #ffffff;
+}
+
+/* TELEFONO: il blocco non serve. La home e' nel menu categorie (voce SPC)
+   e la ricerca negli articoli e' il tasto "Articoli" dentro la barra di ricerca. */
+@media (max-width: 767px) {
+    .blocco-nav-fluttuante {
+        display: none !important;
+    }
+}
+
+/* Quando e' aperta l'anteprima / il gioco, il blocco si nasconde per non coprire il gioco */
+body:has(#cornice-gioco[style*="display: flex"]) .blocco-nav-fluttuante {
+    display: none;
+}
+</style>
+
+<div class="blocco-nav-fluttuante">
+    <a href="https://www.playcombo.it" class="elemento-fluttuante logo-spc" title="Home" aria-label="Vai alla home di PlayCombo">
+        <img src="https://www.playcombo.it/wp-content/uploads/2026/05/android-chrome-192x192-1.png" alt="SPC">
+    </a>
+
+    <a href="https://www.playcombo.it/?s=" class="elemento-fluttuante cerca-spc" title="Cerca negli articoli" aria-label="Cerca negli articoli">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+    </a>
+</div>
