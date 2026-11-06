@@ -576,9 +576,14 @@
     }
 
     /* === BARRA RICERCA + CATEGORIA SEMPRE VISIBILE MENTRE SI SCORRE === */
+    /* Lo spazio riservato resta sempre al suo posto: quando la barra diventa fissa
+       (vedi script in fondo) la pagina sotto non si sposta di un pixel. */
+    .barra-spazio-spc {
+        display: flow-root;
+    }
+
     .barra-fissa-spc {
-        position: sticky;
-        top: 0;
+        position: relative;
         z-index: 900;
         /* sotto l'anteprima/gioco (999999) e sotto la barra di WordPress */
         max-width: 540px;
@@ -591,12 +596,19 @@
         box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
     }
 
-    body.admin-bar .barra-fissa-spc {
+    /* Barra agganciata in alto mentre si scorre (posizione e larghezza le imposta lo script) */
+    .barra-fissa-spc.barra-ancorata-spc {
+        position: fixed;
+        top: 0;
+        margin: 0;
+    }
+
+    body.admin-bar .barra-fissa-spc.barra-ancorata-spc {
         top: 32px;
     }
 
     @media (max-width: 782px) {
-        body.admin-bar .barra-fissa-spc {
+        body.admin-bar .barra-fissa-spc.barra-ancorata-spc {
             top: 46px;
         }
     }
@@ -609,11 +621,14 @@
         margin-bottom: 0;
     }
 
-    /* Dopo lo spostamento (vedi script in fondo) la barra sta direttamente nel body:
-       li' lo sticky dura per tutta la pagina, footer compreso. */
-    .barra-spostata-spc {
-        width: 100%;
-        margin: 0 auto 14px auto;
+    /* Spazio riservato alla griglia prima che il motore la riempia (o la sostituisca con le righe
+       della home): senza, tutto cio' che sta sotto verrebbe spinto in basso di colpo (CLS). */
+    .griglia-giochi-spc:empty {
+        min-height: 100vh;
+    }
+
+    .griglia-giochi-spc:not(:has(*)) {
+        min-height: 100vh;
     }
 
     /* Quando e' aperta l'anteprima o il gioco la barra si nasconde (lo spazio resta, niente salti) */
@@ -663,6 +678,7 @@
 
 <div class="contenitore-arcade-spc">
 
+    <div class="barra-spazio-spc">
     <div class="barra-fissa-spc">
 
         <div class="sezione-ricerca-spc">
@@ -698,6 +714,7 @@
             </select>
         </div>
 
+    </div>
     </div>
 
     <div id="blocco-recenti-spc" class="sezione-recenti-spc" style="display: none;">
@@ -3915,18 +3932,61 @@
 
 <script>
     // La barra ricerca + categoria resta visibile in alto per TUTTA la pagina, footer compreso.
-    // Lo "sticky" dura quanto il contenitore in cui sta: la porto quindi direttamente dentro <body>,
-    // subito prima del contenitore principale della pagina (nel tema e' #page).
+    // Non la sposto nel DOM (spostarla faceva saltare tutta la pagina = CLS alto): resta dov'e',
+    // dentro uno spazio riservato (.barra-spazio-spc). Quando quello spazio esce dalla cima dello
+    // schermo la barra diventa "fixed" nello stesso punto esatto, quindi non c'e' nessun salto.
     (function () {
-        function spostaBarra() {
-            var barra = document.querySelector('.barra-fissa-spc');
-            var blocco = document.querySelector('.contenitore-arcade-spc');
-            if (!barra || !blocco || barra.classList.contains('barra-spostata-spc')) return;
-            var alto = blocco;
-            while (alto.parentNode && alto.parentNode !== document.body) alto = alto.parentNode;
-            if (!alto.parentNode) return;
-            document.body.insertBefore(barra, alto);
-            barra.classList.add('barra-spostata-spc');
+        var MAX_LARGH = 540;   // come il max-width del CSS
+        var barra, spazio, ancorata = false, inCoda = false;
+
+        function offsetAlto() {
+            if (!document.body.classList.contains('admin-bar')) return 0;
+            return window.innerWidth <= 782 ? 46 : 32;
+        }
+
+        function misura() {
+            var r = spazio.getBoundingClientRect();
+            var w = Math.min(MAX_LARGH, r.width);
+            barra.style.left = (r.left + (r.width - w) / 2) + 'px';
+            barra.style.width = w + 'px';
+        }
+
+        function aggiorna() {
+            inCoda = false;
+            if (!barra || !spazio) return;
+            var sopra = spazio.getBoundingClientRect().top <= offsetAlto();
+            if (sopra && !ancorata) {
+                // riservo lo spazio PRIMA di togliere la barra dal flusso
+                var mb = parseFloat(window.getComputedStyle(barra).marginBottom) || 0;
+                spazio.style.minHeight = (barra.offsetHeight + mb) + 'px';
+                misura();
+                barra.classList.add('barra-ancorata-spc');
+                ancorata = true;
+            } else if (!sopra && ancorata) {
+                barra.classList.remove('barra-ancorata-spc');
+                barra.style.left = '';
+                barra.style.width = '';
+                spazio.style.minHeight = '';
+                ancorata = false;
+            } else if (ancorata) {
+                misura();
+            }
+        }
+
+        function richiedi() {
+            if (inCoda) return;
+            inCoda = true;
+            if (window.requestAnimationFrame) window.requestAnimationFrame(aggiorna); else aggiorna();
+        }
+
+        function agganciaBarra() {
+            barra = document.querySelector('.barra-fissa-spc');
+            spazio = document.querySelector('.barra-spazio-spc');
+            if (!barra || !spazio) return;
+            window.addEventListener('scroll', richiedi, { passive: true });
+            window.addEventListener('resize', richiedi, { passive: true });
+            window.addEventListener('load', richiedi);
+            richiedi();
         }
 
         // Quando si apre l'anteprima o il gioco, la barra si nasconde
@@ -3942,7 +4002,7 @@
         }
 
         function avvia() {
-            spostaBarra();
+            agganciaBarra();
             osservaGioco();
         }
         if (document.readyState === 'loading') {
