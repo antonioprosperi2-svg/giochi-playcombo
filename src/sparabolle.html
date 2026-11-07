@@ -1,8 +1,12 @@
 <style>
+    .spc-css-guard {
+        --spc: 1;
+    }
+
     .contenitore-arcade-spc {
         width: 100% !important;
         margin: 0 auto;
-        padding: 10px;
+        padding: 150px 10px 10px 10px !important;
         box-sizing: border-box;
         font-family: sans-serif;
     }
@@ -176,9 +180,26 @@
         gap: 10px !important;
         padding: 10px !important;
         width: 100% !important;
-        min-height: 50vh;
         box-sizing: border-box;
         background-color: transparent !important;
+    }
+
+    /* Solo al primo caricamento, quando la griglia e' ancora vuota: riserva l'altezza
+       della prima pagina (60 schede). Stessa formula della griglia: colonne auto-fill
+       da 100px, gap 10px, padding 10px. 100cqw e' la larghezza del contenitore.
+       Dopo il riempimento la classe viene tolta, cosi' l'ultima pagina e la ricerca
+       restano alte quanto le schede davvero presenti. */
+    .griglia-riserva-spc {
+        container-type: inline-size;
+        width: 100%;
+    }
+
+    .griglia-riserva-spc .griglia-in-attesa {
+        /* Le colonne si ricalcolano da sole: sul PC sono 12 o piu', e la lista
+           ferma a 10 lasciava la griglia troppo alta (il salto da 0,216). */
+        --spc-colonne: max(1, round(down, (100cqw - 10px) / 110px, 1));
+        align-content: start;
+        min-height: calc(10px + round(up, 60 / var(--spc-colonne), 1) * (100cqw - 10px) / var(--spc-colonne));
     }
 
     .scheda-gioco-figura {
@@ -575,41 +596,31 @@
         }
     }
 
-    /* === BARRA RICERCA + CATEGORIA SEMPRE VISIBILE MENTRE SI SCORRE === */
-    /* Lo spazio riservato resta sempre al suo posto: quando la barra diventa fissa
-       (vedi script in fondo) la pagina sotto non si sposta di un pixel. */
-    .barra-spazio-spc {
-        display: flow-root;
-    }
-
+    /* === BARRA RICERCA + CATEGORIA FLUTTUANTE (FIXED PURO CSS FINO AL FOOTER, CLS ZERO) === */
     .barra-fissa-spc {
-        position: relative;
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        right: 12px;
         z-index: 900;
         /* sotto l'anteprima/gioco (999999) e sotto la barra di WordPress */
         max-width: 540px;
-        margin: 0 auto 14px auto;
+        margin: 0 auto;
         padding: 8px 0 8px 0;
-        border-radius: 0 0 22px 22px;
+        border-radius: 22px;
         background: linear-gradient(180deg, rgba(16, 6, 30, 0.82), rgba(16, 6, 30, 0.7));
         backdrop-filter: blur(14px) saturate(140%);
         -webkit-backdrop-filter: blur(14px) saturate(140%);
         box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
     }
 
-    /* Barra agganciata in alto mentre si scorre (posizione e larghezza le imposta lo script) */
-    .barra-fissa-spc.barra-ancorata-spc {
-        position: fixed;
-        top: 0;
-        margin: 0;
-    }
-
-    body.admin-bar .barra-fissa-spc.barra-ancorata-spc {
-        top: 32px;
+    body.admin-bar .barra-fissa-spc {
+        top: 44px;
     }
 
     @media (max-width: 782px) {
-        body.admin-bar .barra-fissa-spc.barra-ancorata-spc {
-            top: 46px;
+        body.admin-bar .barra-fissa-spc {
+            top: 58px;
         }
     }
 
@@ -621,14 +632,11 @@
         margin-bottom: 0;
     }
 
-    /* Spazio riservato alla griglia prima che il motore la riempia (o la sostituisca con le righe
-       della home): senza, tutto cio' che sta sotto verrebbe spinto in basso di colpo (CLS). */
-    .griglia-giochi-spc:empty {
-        min-height: 100vh;
-    }
-
-    .griglia-giochi-spc:not(:has(*)) {
-        min-height: 100vh;
+    /* Dopo lo spostamento (vedi script in fondo) la barra sta direttamente nel body:
+       li' lo sticky dura per tutta la pagina, footer compreso. */
+    .barra-spostata-spc {
+        width: 100%;
+        margin: 0 auto 14px auto;
     }
 
     /* Quando e' aperta l'anteprima o il gioco la barra si nasconde (lo spazio resta, niente salti) */
@@ -678,44 +686,41 @@
 
 <div class="contenitore-arcade-spc">
 
-    <div class="barra-spazio-spc">
-        <div class="barra-fissa-spc">
+    <div class="barra-fissa-spc">
 
-            <div class="sezione-ricerca-spc">
-                <div class="campo-ricerca-wrap-spc">
-                    <input type="text" id="campoRicerca" class="input-ricerca-spc"
-                        placeholder="🔍 Cerca tra i giochi..." oninput="window.filtraGiochi()">
-                    <a class="btn-articoli-spc" href="https://www.playcombo.it/?s=" title="Cerca negli articoli"
-                        aria-label="Cerca negli articoli"
-                        onclick="this.href='https://www.playcombo.it/?s='+encodeURIComponent(document.getElementById('campoRicerca').value.trim())">Articoli
-                        ›</a>
-                </div>
+        <div class="sezione-ricerca-spc">
+            <div class="campo-ricerca-wrap-spc">
+                <input type="text" id="campoRicerca" class="input-ricerca-spc" placeholder="🔍 Cerca tra i giochi..."
+                    oninput="window.filtraGiochi()">
+                <a class="btn-articoli-spc" href="https://www.playcombo.it/?s=" title="Cerca negli articoli"
+                    aria-label="Cerca negli articoli"
+                    onclick="this.href='https://www.playcombo.it/?s='+encodeURIComponent(document.getElementById('campoRicerca').value.trim())">Articoli
+                    ›</a>
             </div>
-
-            <div class="box-selezione-spc">
-                <select id="select-categoria-spc" aria-label="Seleziona la categoria"
-                    onchange="if (this.value) location = this.value;">
-                    <option value="">Seleziona la categoria</option>
-                    <option value="https://playcombo.it">SPC</option>
-                    <option value="https://playcombo.it/puzzle/">PUZZLE</option>
-                    <option value="https://playcombo.it/sparabolle/">SPARABOLLE</option>
-                    <option value="https://playcombo.it/arcade/">ARCADE</option>
-                    <option value="https://playcombo.it/match-3/">MATCH-3</option>
-                    <option value="https://playcombo.it/MAHJONG/">MAHJONG</option>
-                    <option value="https://playcombo.it/quizzz/">QUIZZZ!</option>
-                    <option value="https://playcombo.it/GIRLS/">GIRLS</option>
-                    <option value="https://playcombo.it/SPORT/">SPORT</option>
-                    <option value="https://playcombo.it/giochi-di-corse/">GIOCHI DI CORSE</option>
-                    <option value="https://playcombo.it/carte-e-memory/">CARTE E MEMORI</option>
-                    <option value="https://playcombo.it/super-bubble-shot/">SUPER BUBBLE SHOT</option>
-                    <option value="https://playcombo.it/giochi-davventura/">GIOCHI D'AVVENTURA</option>
-                    <option value="https://www.playcombo.it/giochi-platform//">GIOCHI PLATFORM</option>
-                    <option value="https://www.playcombo.it/2048-online-gratis-gioca-subito-su-spc/">GIOCHI 2048
-                    </option>
-                </select>
-            </div>
-
         </div>
+
+        <div class="box-selezione-spc">
+            <select id="select-categoria-spc" aria-label="Seleziona la categoria"
+                onchange="if (this.value) location = this.value;">
+                <option value="">Seleziona la categoria</option>
+                <option value="https://playcombo.it">SPC</option>
+                <option value="https://playcombo.it/puzzle/">PUZZLE</option>
+                <option value="https://playcombo.it/sparabolle/">SPARABOLLE</option>
+                <option value="https://playcombo.it/arcade/">ARCADE</option>
+                <option value="https://playcombo.it/match-3/">MATCH-3</option>
+                <option value="https://playcombo.it/MAHJONG/">MAHJONG</option>
+                <option value="https://playcombo.it/quizzz/">QUIZZZ!</option>
+                <option value="https://playcombo.it/GIRLS/">GIRLS</option>
+                <option value="https://playcombo.it/SPORT/">SPORT</option>
+                <option value="https://playcombo.it/giochi-di-corse/">GIOCHI DI CORSE</option>
+                <option value="https://playcombo.it/carte-e-memory/">CARTE E MEMORI</option>
+                <option value="https://playcombo.it/super-bubble-shot/">SUPER BUBBLE SHOT</option>
+                <option value="https://playcombo.it/giochi-davventura/">GIOCHI D'AVVENTURA</option>
+                <option value="https://www.playcombo.it/giochi-platform//">GIOCHI PLATFORM</option>
+                <option value="https://www.playcombo.it/2048-online-gratis-gioca-subito-su-spc/">GIOCHI 2048</option>
+            </select>
+        </div>
+
     </div>
 
     <div id="blocco-recenti-spc" class="sezione-recenti-spc" style="display: none;">
@@ -734,7 +739,9 @@
         <p id="intro-categoria-spc">Il catalogo PlayCombo: giochi gratis nel browser, senza installazione.</p>
     </div>
 
-    <div class="griglia-giochi-spc"></div>
+    <div class="griglia-riserva-spc">
+        <div class="griglia-giochi-spc griglia-in-attesa"></div>
+    </div>
 
     <div class="paginazione-spc">
         <button id="btn-precedente" class="btn-paginazione" onclick="window.cambiaPagina(-1)">◀</button>
@@ -3025,9 +3032,26 @@
             aggiorna();
         }
 
+        function rilasciaGriglia() {
+            var g = document.querySelector('.griglia-giochi-spc');
+            if (!g) return;
+            var oss;
+            var togli = function () {
+                if (!g.children.length) return;
+                g.classList.remove('griglia-in-attesa');
+                if (oss) oss.disconnect();
+            };
+            if (window.MutationObserver) {
+                oss = new MutationObserver(togli);
+                oss.observe(g, { childList: true });
+            }
+            togli();
+        }
+
         function avvia() {
             // spostaBarra();
             osservaGioco();
+            rilasciaGriglia();
         }
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', avvia);
