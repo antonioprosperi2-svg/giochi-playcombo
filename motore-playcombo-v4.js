@@ -195,7 +195,8 @@ const CATEGORIE_HOME = [
     { key: 'card', titolo: 'Carte e memory', url: 'https://playcombo.it/carte-e-memory/' },
     { key: 'adventure', titolo: "Giochi d'avventura", url: 'https://playcombo.it/giochi-davventura/' },
     { key: 'platformer', titolo: 'Giochi platform', url: 'https://www.playcombo.it/giochi-platform/' },
-    { key: '2048', titolo: 'Giochi 2048', url: 'https://www.playcombo.it/2048-online-gratis-gioca-subito-su-spc/' }
+    { key: '2048', titolo: 'Giochi 2048', url: 'https://www.playcombo.it/2048-online-gratis-gioca-subito-su-spc/' },
+    { key: 'stickman', titolo: 'Giochi Stickman', url: 'https://www.playcombo.it/giochi-stickman/' }
 ];
 let righeHomeEl = null;
 
@@ -292,7 +293,8 @@ function costruisciRigheHome() {
         'superbubbleshot': ['super-bubble-shot', 'ball', 'shooter'],
         'adventure': ['adventure', 'giochidavventura', 'stickman', 'christmas', 'strategy', 'farming', 'building', 'simulation', 'zombie', 'battle', 'fighting', 'tanks'],
         'platformer': ['platformer', 'giochiplatform', 'runner'],
-        '2048': ['2048']
+        '2048': ['2048'],
+        'stickman': ['stickman', 'giochistickman']
     };
 
     const gruppiLocali = {};

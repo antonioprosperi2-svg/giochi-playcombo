@@ -1,0 +1,2485 @@
+<style>
+    .spc-css-guard {
+        --spc: 1;
+    }
+
+    .contenitore-arcade-spc {
+        width: 100% !important;
+        margin: 0 auto;
+        padding: 150px 10px 10px 10px !important;
+        box-sizing: border-box;
+        font-family: sans-serif;
+    }
+
+    .sezione-ricerca-spc {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+        padding: 0 10px;
+    }
+
+    .input-ricerca-spc {
+        width: 100% !important;
+        max-width: 500px !important;
+        padding: 14px 20px !important;
+        font-size: 16px !important;
+        border: 2px solid rgba(255, 255, 255, 0.5) !important;
+        border-radius: 50px !important;
+        outline: none !important;
+        background: rgba(255, 255, 255, 0.15) !important;
+        color: #ffffff !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+        transition: border-color 0.3s, box-shadow 0.3s !important;
+        box-sizing: border-box !important;
+    }
+
+    .input-ricerca-spc::placeholder {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+
+    .input-ricerca-spc:focus {
+        border-color: #00aaff !important;
+        box-shadow: 0 4px 12px rgba(0, 170, 255, 0.3) !important;
+        background: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .box-selezione-spc {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+        padding: 0 10px;
+    }
+
+    #select-categoria-spc {
+        width: 100%;
+        max-width: 500px;
+        padding: 14px 20px;
+        font-size: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        border-radius: 50px;
+        outline: none;
+        background: rgba(255, 255, 255, 0.15);
+        background-color: rgba(255, 255, 255, 0.15) !important;
+        color: #ffffff;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        box-sizing: border-box;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    #select-categoria-spc:focus {
+        border-color: #00aaff;
+        box-shadow: 0 4px 12px rgba(0, 170, 255, 0.3);
+    }
+
+    #select-categoria-spc option {
+        background: #1a1a2e;
+        color: #ffffff;
+    }
+
+    /* === GIOSTRA DEI RECENTI === */
+    .sezione-recenti-spc {
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto 25px auto;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-sizing: border-box;
+    }
+
+    .titolo-recenti-spc {
+        color: #ffffff;
+        font-size: 15px;
+        margin: 0 0 12px 0;
+        font-weight: bold;
+        text-align: left;
+        opacity: 0.9;
+        letter-spacing: 0.5px;
+    }
+
+    .giostra-recenti-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+    }
+
+    .lista-recenti-scroll {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        flex: 1;
+    }
+
+    .lista-recenti-scroll::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Freccette trasparenti come il resto */
+    .btn-freccia-recenti {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff !important;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s, background 0.2s, border-color 0.3s;
+        flex-shrink: 0;
+    }
+
+    .btn-freccia-recenti:hover {
+        transform: scale(1.1);
+        background: rgba(255, 255, 255, 0.25);
+        border-color: #00aaff;
+    }
+
+    .nodo-recente-spc {
+        flex: 0 0 75px;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        position: relative;
+    }
+
+    .nodo-recente-spc:hover {
+        transform: scale(1.05);
+    }
+
+    .nodo-recente-spc img {
+        width: 75px;
+        height: 75px;
+        object-fit: cover;
+        border-radius: 14px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        display: block;
+    }
+
+    /* ========================== */
+
+    .griglia-giochi-spc {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)) !important;
+        gap: 10px !important;
+        padding: 10px !important;
+        width: 100% !important;
+        box-sizing: border-box;
+        background-color: transparent !important;
+    }
+
+    /* Solo al primo caricamento, quando la griglia e' ancora vuota: riserva l'altezza
+       della prima pagina (60 schede). Stessa formula della griglia: colonne auto-fill
+       da 100px, gap 10px, padding 10px. 100cqw e' la larghezza del contenitore.
+       Dopo il riempimento la classe viene tolta, cosi' l'ultima pagina e la ricerca
+       restano alte quanto le schede davvero presenti. */
+    .griglia-riserva-spc {
+        container-type: inline-size;
+        width: 100%;
+    }
+
+    .griglia-riserva-spc .griglia-in-attesa {
+        /* Le colonne si ricalcolano da sole: sul PC sono 12 o piu', e la lista
+           ferma a 10 lasciava la griglia troppo alta (il salto da 0,216). */
+        --spc-colonne: max(1, round(down, (100cqw - 10px) / 110px, 1));
+        align-content: start;
+        min-height: calc(10px + round(up, 60 / var(--spc-colonne), 1) * (100cqw - 10px) / var(--spc-colonne));
+    }
+
+    .scheda-gioco-figura {
+        cursor: pointer;
+        position: relative;
+        transition: transform 0.3s ease;
+    }
+
+    .scheda-gioco-figura img {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: 12px;
+        display: block;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .scheda-gioco-figura:hover {
+        transform: translateY(-5px) scale(1.03);
+    }
+
+    .scheda-gioco-figura:hover img {
+        box-shadow: 0 8px 16px rgba(0, 119, 190, 0.3);
+    }
+
+    .paginazione-spc {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 8px !important;
+        margin: 40px 0 !important;
+        font-family: sans-serif !important;
+        flex-wrap: nowrap !important;
+        width: 100% !important;
+        padding: 0 5px;
+        box-sizing: border-box;
+    }
+
+    .btn-paginazione {
+        background-color: #ff9900 !important;
+        color: white !important;
+        border: none !important;
+        padding: 10px 16px !important;
+        font-size: 14px !important;
+        font-weight: bold !important;
+        border-radius: 50px !important;
+        cursor: pointer !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+        transition: transform 0.3s ease, background 0.2s !important;
+        flex-shrink: 0 !important;
+    }
+
+    .btn-paginazione:hover:not(:disabled) {
+        transform: scale(1.05) !important;
+        background-color: #e08800 !important;
+    }
+
+    .btn-paginazione:disabled {
+        background-color: #ccc !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    #info-pagina {
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 5px !important;
+        flex-wrap: nowrap !important;
+        max-width: 70vw !important;
+    }
+
+    #info-pagina button,
+    #info-pagina strong,
+    #info-pagina span {
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 34px !important;
+        height: 34px !important;
+        border-radius: 50% !important;
+        font-size: 14px !important;
+        font-weight: bold !important;
+        font-family: sans-serif !important;
+        margin: 0 !important;
+        transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease !important;
+        box-sizing: border-box !important;
+        flex-shrink: 0 !important;
+    }
+
+    #info-pagina strong,
+    #info-pagina .pagina-attiva {
+        background-color: #ff9900 !important;
+        color: #000000 !important;
+        box-shadow: 0 4px 8px rgba(255, 153, 0, 0.4) !important;
+        cursor: default !important;
+        border: none !important;
+    }
+
+    #info-pagina button,
+    #info-pagina .pagina-button {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        cursor: pointer !important;
+    }
+
+    #info-pagina button:hover,
+    #info-pagina .pagina-button:hover {
+        transform: scale(1.1) !important;
+        background-color: #0077be !important;
+        color: #ffffff !important;
+        border-color: #0077be !important;
+    }
+
+    #info-pagina span.puntini {
+        border: none !important;
+        background: transparent !important;
+        color: rgba(255, 255, 255, 0.6) !important;
+        cursor: default !important;
+        width: auto !important;
+        height: auto !important;
+    }
+
+    /* CORNICE GIOCATORE */
+    #cornice-gioco {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(165deg, rgba(13, 4, 32, 0.94), rgba(26, 11, 53, 0.9));
+        backdrop-filter: blur(18px) saturate(140%);
+        -webkit-backdrop-filter: blur(18px) saturate(140%);
+        z-index: 999999;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    #area-contenuto {
+        flex: 0 1 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        align-self: center;
+        width: calc(100% - 28px);
+        max-width: 560px;
+        margin: 88px auto 28px;
+        padding: 32px 28px;
+        box-sizing: border-box;
+        color: white;
+        text-align: center;
+        background: rgba(22, 8, 40, 0.55);
+        border: 1px solid rgba(255, 45, 214, 0.62);
+        border-radius: 24px;
+        box-shadow: 0 0 16px rgba(255, 45, 214, 0.28), 0 0 32px rgba(168, 85, 247, 0.22);
+        backdrop-filter: blur(16px) saturate(140%);
+        -webkit-backdrop-filter: blur(16px) saturate(140%);
+    }
+
+    #spazio-info {
+        width: 100%;
+    }
+
+    .pulsante-chiudi {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(22, 8, 40, 0.55);
+        color: white;
+        border: 1px solid rgba(192, 132, 252, 0.75);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 28px;
+        cursor: pointer;
+        z-index: 9999999;
+        box-shadow: 0 0 10px rgba(168, 85, 247, 0.35);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .pulsante-chiudi:hover {
+        border-color: #ff2bd6;
+        box-shadow: 0 0 14px rgba(255, 45, 214, 0.65);
+    }
+
+    .btn-gioca {
+        background: linear-gradient(135deg, #ff2bd6, #a855f7);
+        color: white;
+        padding: 16px 42px;
+        border: none;
+        border-radius: 50px;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 22px;
+        cursor: pointer;
+        box-shadow: 0 0 16px rgba(255, 45, 214, 0.55), 0 0 28px rgba(168, 85, 247, 0.35);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-gioca:hover {
+        transform: scale(1.06);
+        box-shadow: 0 0 20px rgba(255, 45, 214, 0.75), 0 0 36px rgba(168, 85, 247, 0.5);
+    }
+
+    #spazio-gioco {
+        width: 100%;
+        height: 100%;
+        background-color: #070214;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    #spazio-gioco iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    #spazio-info h3 {
+        color: #ffffff;
+        font-size: 30px;
+        line-height: 1.2;
+        margin: 0 0 14px 0;
+        font-weight: bold;
+        text-shadow: 0 0 8px rgba(255, 45, 214, 0.5), 0 0 18px rgba(168, 85, 247, 0.4);
+    }
+
+    #box-descrizione {
+        width: 100%;
+        font-size: 15px;
+        line-height: 1.6;
+        color: #d5d0de;
+        max-height: calc(1.6em * 6);
+        overflow-y: auto;
+        margin: 0;
+    }
+
+    .intestazione-categoria-spc {
+        width: 100%;
+        max-width: 640px;
+        margin: 0 auto 16px auto;
+        padding: 0 10px;
+        box-sizing: border-box;
+        text-align: center;
+    }
+
+    #titolo-categoria-spc {
+        color: #ffffff;
+        font-size: 22px;
+        line-height: 1.2;
+        margin: 0 0 8px 0;
+        font-weight: bold;
+    }
+
+    #intro-categoria-spc {
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 15px;
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    /* Neon su tutti i formati: solo colore, bordo e glow. Sul mobile lo spessore resta quello di base. */
+    .input-ricerca-spc {
+        border-color: rgba(255, 45, 214, 0.7) !important;
+        background: rgba(22, 8, 40, 0.38) !important;
+        box-shadow: 0 0 14px rgba(168, 85, 247, 0.28) !important;
+        backdrop-filter: blur(14px) saturate(140%) !important;
+        -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
+    }
+
+    .input-ricerca-spc:focus {
+        border-color: #ff2bd6 !important;
+        box-shadow: 0 0 16px rgba(255, 45, 214, 0.45) !important;
+        background: rgba(22, 8, 40, 0.5) !important;
+    }
+
+    #select-categoria-spc {
+        border-color: rgba(192, 132, 252, 0.7);
+        background: rgba(22, 8, 40, 0.38);
+        background-color: rgba(22, 8, 40, 0.38) !important;
+        box-shadow: 0 0 14px rgba(168, 85, 247, 0.28);
+        backdrop-filter: blur(14px) saturate(140%);
+        -webkit-backdrop-filter: blur(14px) saturate(140%);
+    }
+
+    #select-categoria-spc:focus {
+        border-color: #ff2bd6;
+        box-shadow: 0 0 16px rgba(255, 45, 214, 0.45);
+    }
+
+    #select-categoria-spc option {
+        background: #160828;
+    }
+
+    .sezione-recenti-spc {
+        background: rgba(22, 8, 40, 0.4);
+        border-color: rgba(192, 132, 252, 0.65);
+        box-shadow: 0 0 16px rgba(168, 85, 247, 0.28);
+        backdrop-filter: blur(14px) saturate(140%);
+        -webkit-backdrop-filter: blur(14px) saturate(140%);
+    }
+
+    .btn-freccia-recenti {
+        background: rgba(22, 8, 40, 0.45);
+        border-color: rgba(255, 45, 214, 0.75);
+        box-shadow: 0 0 10px rgba(255, 45, 214, 0.4);
+    }
+
+    .btn-freccia-recenti:hover {
+        background: rgba(168, 85, 247, 0.35);
+        border-color: #ff2bd6;
+        box-shadow: 0 0 14px rgba(255, 45, 214, 0.6);
+    }
+
+    .scheda-gioco-figura:hover img {
+        box-shadow: 0 0 8px rgba(255, 45, 214, 0.85), 0 0 18px rgba(168, 85, 247, 0.75), 0 0 28px rgba(255, 45, 214, 0.35);
+    }
+
+    .btn-paginazione {
+        background: rgba(22, 8, 40, 0.5) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 0 1px rgba(255, 45, 214, 0.8), 0 0 12px rgba(255, 45, 214, 0.4) !important;
+    }
+
+    .btn-paginazione:hover:not(:disabled) {
+        background: rgba(168, 85, 247, 0.4) !important;
+        box-shadow: 0 0 0 1px rgba(255, 45, 214, 0.9), 0 0 16px rgba(192, 132, 252, 0.7) !important;
+    }
+
+    .btn-paginazione:disabled {
+        background: rgba(255, 255, 255, 0.06) !important;
+        color: rgba(255, 255, 255, 0.35) !important;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16) !important;
+    }
+
+    #info-pagina strong,
+    #info-pagina .pagina-attiva {
+        background: linear-gradient(135deg, #ff2bd6, #a855f7) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 12px rgba(255, 45, 214, 0.65) !important;
+    }
+
+    #info-pagina button,
+    #info-pagina .pagina-button {
+        background: rgba(22, 8, 40, 0.45) !important;
+        color: #ffffff !important;
+        border-color: rgba(192, 132, 252, 0.6) !important;
+        box-shadow: 0 0 8px rgba(168, 85, 247, 0.3) !important;
+    }
+
+    #info-pagina button:hover,
+    #info-pagina .pagina-button:hover {
+        background: rgba(168, 85, 247, 0.5) !important;
+        border-color: #ff2bd6 !important;
+        box-shadow: 0 0 12px rgba(255, 45, 214, 0.55) !important;
+    }
+
+    #titolo-categoria-spc {
+        text-shadow: 0 0 8px rgba(255, 45, 214, 0.55), 0 0 18px rgba(168, 85, 247, 0.45);
+    }
+
+    @media (min-width: 768px) {
+
+        .input-ricerca-spc,
+        #select-categoria-spc,
+        .btn-freccia-recenti {
+            border-width: 1px !important;
+        }
+
+        .scheda-gioco-figura:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-paginazione {
+            border: 1px solid rgba(255, 45, 214, 0.8) !important;
+            box-shadow: 0 0 12px rgba(255, 45, 214, 0.4) !important;
+        }
+
+        .btn-paginazione:hover:not(:disabled) {
+            box-shadow: 0 0 16px rgba(192, 132, 252, 0.7) !important;
+        }
+
+        .btn-paginazione:disabled {
+            border: 1px solid rgba(255, 255, 255, 0.16) !important;
+            box-shadow: none !important;
+        }
+    }
+
+    /* === BARRA RICERCA + CATEGORIA FLUTTUANTE (FIXED PURO CSS FINO AL FOOTER, CLS ZERO) === */
+    .barra-fissa-spc {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        z-index: 900;
+        /* sotto l'anteprima/gioco (999999) e sotto la barra di WordPress */
+        max-width: 540px;
+        margin: 0 auto;
+        padding: 8px 0 8px 0;
+        border-radius: 22px;
+        background: linear-gradient(180deg, rgba(16, 6, 30, 0.82), rgba(16, 6, 30, 0.7));
+        backdrop-filter: blur(14px) saturate(140%);
+        -webkit-backdrop-filter: blur(14px) saturate(140%);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+    }
+
+    body.admin-bar .barra-fissa-spc {
+        top: 44px;
+    }
+
+    @media (max-width: 782px) {
+        body.admin-bar .barra-fissa-spc {
+            top: 58px;
+        }
+    }
+
+    .barra-fissa-spc .sezione-ricerca-spc {
+        margin-bottom: 8px;
+    }
+
+    .barra-fissa-spc .box-selezione-spc {
+        margin-bottom: 0;
+    }
+
+    /* Dopo lo spostamento (vedi script in fondo) la barra sta direttamente nel body:
+       li' lo sticky dura per tutta la pagina, footer compreso. */
+    .barra-spostata-spc {
+        width: 100%;
+        margin: 0 auto 14px auto;
+    }
+
+    /* Quando e' aperta l'anteprima o il gioco la barra si nasconde (lo spazio resta, niente salti) */
+    .gioco-aperto-spc .barra-fissa-spc {
+        visibility: hidden;
+    }
+
+    /* campo di ricerca con il tasto "Articoli" dentro */
+    .campo-ricerca-wrap-spc {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .campo-ricerca-wrap-spc .input-ricerca-spc {
+        padding-right: 98px !important;
+    }
+
+    .btn-articoli-spc {
+        position: absolute;
+        top: 50%;
+        right: 6px;
+        transform: translateY(-50%);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 36px;
+        padding: 0 12px;
+        border-radius: 50px;
+        background: linear-gradient(135deg, #ff2bd6, #a855f7);
+        color: #ffffff !important;
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1;
+        text-decoration: none !important;
+        box-shadow: 0 0 12px rgba(255, 45, 214, 0.5);
+        transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .btn-articoli-spc:hover,
+    .btn-articoli-spc:focus-visible {
+        box-shadow: 0 0 18px rgba(255, 45, 214, 0.8);
+        transform: translateY(-50%) scale(1.04);
+    }
+</style>
+
+<div class="contenitore-arcade-spc">
+
+    <div class="barra-fissa-spc">
+
+        <div class="sezione-ricerca-spc">
+            <div class="campo-ricerca-wrap-spc">
+                <input type="text" id="campoRicerca" class="input-ricerca-spc" placeholder="🔍 Cerca tra i giochi..."
+                    oninput="window.filtraGiochi()">
+                <a class="btn-articoli-spc" href="https://www.playcombo.it/?s=" title="Cerca negli articoli"
+                    aria-label="Cerca negli articoli"
+                    onclick="this.href='https://www.playcombo.it/?s='+encodeURIComponent(document.getElementById('campoRicerca').value.trim())">Articoli
+                    ›</a>
+            </div>
+        </div>
+
+        <div class="box-selezione-spc">
+            <select id="select-categoria-spc" aria-label="Seleziona la categoria"
+                onchange="if (this.value) location = this.value;">
+                <option value="">Seleziona la categoria</option>
+                <option value="https://playcombo.it">SPC</option>
+                <option value="https://playcombo.it/puzzle/">PUZZLE</option>
+                <option value="https://playcombo.it/sparabolle/">SPARABOLLE</option>
+                <option value="https://playcombo.it/arcade/">ARCADE</option>
+                <option value="https://playcombo.it/match-3/">MATCH-3</option>
+                <option value="https://playcombo.it/MAHJONG/">MAHJONG</option>
+                <option value="https://playcombo.it/quizzz/">QUIZZZ!</option>
+                <option value="https://playcombo.it/GIRLS/">GIRLS</option>
+                <option value="https://playcombo.it/SPORT/">SPORT</option>
+                <option value="https://playcombo.it/giochi-di-corse/">GIOCHI DI CORSE</option>
+                <option value="https://playcombo.it/carte-e-memory/">CARTE E MEMORI</option>
+                <option value="https://playcombo.it/super-bubble-shot/">SUPER BUBBLE SHOT</option>
+                <option value="https://playcombo.it/giochi-davventura/">GIOCHI D'AVVENTURA</option>
+                <option value="https://www.playcombo.it/giochi-platform//">GIOCHI PLATFORM</option>
+                <option value="https://www.playcombo.it/2048-online-gratis-gioca-subito-su-spc/">GIOCHI 2048</option>
+                <option value="https://www.playcombo.it/giochi-stickman/">GIOCHI STICKMAN</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div id="blocco-recenti-spc" class="sezione-recenti-spc" style="display: none;">
+        <p class="titolo-recenti-spc">🎮 Ultimi giocati in questa pagina:</p>
+        <div class="giostra-recenti-wrapper">
+            <button id="freccia-sx-recenti" class="btn-freccia-recenti" onclick="scorriMieiRecenti(-1)"
+                aria-label="Scorri a sinistra">◀</button>
+            <div id="lista-recenti-spc" class="lista-recenti-scroll"></div>
+            <button id="freccia-dx-recenti" class="btn-freccia-recenti" onclick="scorriMieiRecenti(1)"
+                aria-label="Scorri a destra">▶</button>
+        </div>
+    </div>
+
+    <div class="intestazione-categoria-spc">
+        <h1 id="titolo-categoria-spc">Giochi SPC</h1>
+        <p id="intro-categoria-spc">Il catalogo PlayCombo: giochi gratis nel browser, senza installazione.</p>
+    </div>
+
+    <div class="griglia-riserva-spc">
+        <div class="griglia-giochi-spc griglia-in-attesa"></div>
+    </div>
+
+    <div class="paginazione-spc">
+        <button id="btn-precedente" class="btn-paginazione" onclick="window.cambiaPagina(-1)">◀</button>
+        <span id="info-pagina"></span>
+        <button id="btn-successiva" class="btn-paginazione" onclick="window.cambiaPagina(1)">▶</button>
+    </div>
+
+    <div id="cornice-gioco">
+        <button class="pulsante-chiudi" onclick="window.chiudiGiocatore()">×</button>
+        <div id="area-contenuto">
+            <div id="spazio-info"></div>
+            <button id="btn-avvia" class="btn-gioca" onclick="window.avviaGioco()" style="display:none;">GIOCA
+                ORA</button>
+        </div>
+        <div id="spazio-gioco"></div>
+    </div>
+
+</div>
+
+<script>
+    // Funzione per estrarre la categoria dal URL
+    function ottieniCategoriaDalURL() {
+        const pathSegments = window.location.pathname.split('/').filter(s => s);
+        if (pathSegments.length > 0 && pathSegments[0] !== 'page') {
+            return pathSegments[0]; // 'puzzle', 'sparabolle', 'arcade', ecc.
+        }
+        return 'spc'; // categoria default (home)
+    }
+
+    function testoCategoria(slug) {
+        const testi = {
+            spc: {
+                titolo: "Giochi SPC",
+                testo: "Il catalogo PlayCombo: giochi gratis nel browser, senza installazione."
+            },
+            puzzle: {
+                titolo: "Giochi Puzzle",
+                testo: "Rompicapo e giochi di logica da risolvere con calma, gratis nel browser."
+            },
+            sparabolle: {
+                titolo: "Sparabolle",
+                testo: "Mira, scoppia le bolle e libera il campo in questi livelli gratis."
+            },
+            arcade: {
+                titolo: "Giochi Arcade",
+                testo: "Riflessi, punteggi e classici arcade da giocare subito."
+            },
+            "match-3": {
+                titolo: "Match-3",
+                testo: "Allinea tre o più tessere, combina le mosse e svuota la griglia."
+            },
+            mahjong: {
+                titolo: "Giochi Mahjong",
+                testo: "Tessere e combinazioni: le sfide di Mahjong, gratis online."
+            },
+            quizzzz: {
+                titolo: "Giochi Quizzz!",
+                testo: "Domande, risposte e sfide a tempo per mettere alla prova quello che sai."
+            },
+            girls: {
+                titolo: "Giochi Girls",
+                testo: "Stile, creatività e storie: i giochi della categoria Girls."
+            },
+            sport: {
+                titolo: "Giochi Sport",
+                testo: "Calcio, gare e sfide sportive da giocare al volo nel browser."
+            },
+            "giochi-di-corse": {
+                titolo: "Giochi di corse",
+                testo: "Mettiti al volante, supera gli avversari e taglia il traguardo."
+            },
+            "carte-e-memory": {
+                titolo: "Giochi Carte e memory",
+                testo: "Carte, memoria e abbinamenti: partite rapide da rifare subito."
+            },
+            "super-bubble-shot": {
+                titolo: "Giochi Super Bubble Shot",
+                testo: "Mira e spara alle bolle per svuotare lo schermo."
+            },
+            "giochi-davventura": {
+                titolo: "Giochi d'avventura",
+                testo: "Esplora e porta avanti la storia in queste avventure gratis."
+            },
+            "giochi-platform": {
+                titolo: "Giochi platform",
+                testo: "Corri, salta e supera i livelli in questi platform gratis."
+            },
+            "2048-online-gratis-gioca-subito-su-spc": {
+                titolo: "Giochi 2048",
+                testo: "Unisci le tessere, arriva a 2048 e batti il tuo record."
+            },
+            "giochi-stickman": {
+                titolo: "Giochi Stickman",
+                testo: "Salta, combatti e sopravvivi con gli omini stilizzati più pazzi del web."
+            }
+        };
+        return testi[(slug || "spc").toLowerCase()] || testi.spc;
+    }
+
+    // Scorrimento freccette
+    window.scorriMieiRecenti = function (direzione) {
+        const lista = document.getElementById('lista-recenti-spc');
+        if (lista) {
+            lista.scrollLeft += (direzione * 160);
+        }
+    };
+
+    // Al caricamento della pagina
+    document.addEventListener("DOMContentLoaded", function () {
+        const categoria = ottieniCategoriaDalURL();
+        const chiaveStorage = 'recenti_playcombo_' + categoria;
+        const testo = testoCategoria(categoria);
+        const titoloCategoria = document.getElementById('titolo-categoria-spc');
+        const introCategoria = document.getElementById('intro-categoria-spc');
+        if (titoloCategoria) titoloCategoria.textContent = testo.titolo;
+        if (introCategoria) introCategoria.textContent = testo.testo;
+
+        // RENDER BLOCCO RECENTI
+        try {
+            let recenti = JSON.parse(localStorage.getItem(chiaveStorage)) || [];
+            const container = document.getElementById('blocco-recenti-spc');
+            const listaRecenti = document.getElementById('lista-recenti-spc');
+            const fSx = document.getElementById('freccia-sx-recenti');
+            const fDx = document.getElementById('freccia-dx-recenti');
+
+            if (recenti.length > 0 && container && listaRecenti) {
+                container.style.display = 'block';
+                listaRecenti.innerHTML = '';
+
+                // Freccette visibili solo se più di 5 giochi salvati
+                if (recenti.length > 5 && fSx && fDx) {
+                    fSx.style.display = 'flex';
+                    fDx.style.display = 'flex';
+                }
+
+                recenti.forEach(function (gioco) {
+                    const div = document.createElement('div');
+                    div.className = 'nodo-recente-spc';
+                    div.title = gioco.titolo || 'Gioca';
+
+                    const img = document.createElement('img');
+                    img.src = gioco.img || '';
+                    img.alt = gioco.titolo || 'Gioco';
+
+                    div.onclick = function () {
+                        if (typeof window.apriAnteprima === 'function') {
+                            window.apriAnteprima(gioco);
+                        }
+                    };
+
+                    div.appendChild(img);
+                    listaRecenti.appendChild(div);
+                });
+            }
+        } catch (e) {
+            console.error("Errore render recenti:", e);
+        }
+
+        // SALVATAGGIO QUANDO SI AVVIA UN GIOCO (funziona con e senza id)
+        const btnAvvia = document.getElementById('btn-avvia');
+        if (btnAvvia) {
+            btnAvvia.addEventListener('click', function () {
+                try {
+                    const g = window.giocoCorrente;
+                    if (!g) return;
+                    const chiave = function (x) { return x.id || x.url || x.titolo; };
+                    const k = chiave(g);
+                    if (!k) return;
+
+                    let recenti = JSON.parse(localStorage.getItem(chiaveStorage)) || [];
+                    recenti = recenti.filter(function (x) { return chiave(x) !== k; });
+                    recenti.unshift({ id: g.id || '', titolo: g.titolo, img: g.img, url: g.url, desc: g.desc || '' });
+                    if (recenti.length > 20) recenti.length = 20;
+                    localStorage.setItem(chiaveStorage, JSON.stringify(recenti));
+                } catch (e) {
+                    console.error("Errore salvataggio recenti:", e);
+                }
+            }, { passive: true });
+        }
+    });
+</script>
+<script>
+    // La tua lista dei giochi
+    var listaGiochi = [
+        {
+            "titolo": "Turbo Crash Test",
+            "url": "https://play.gamepix.com/turbo-dismounting/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/turbo-dismounting/icon/turbo-dismounting.png?w=105",
+            "desc": "Turbo Dismounting is a thrilling physics-based adventure where players create epic crashes. Propel your stickman through chaotic obstacles, earning rewards to unlock diverse vehicles and challenging levels. Revel in the havoc with unique replays, testing your skills in explosive, adrenaline-fueled gameplay.",
+            "categoria": "stickman",
+            "id": "yxblb6dcd"
+        },
+        {
+            "titolo": "Stickman Mega Boss Battles!",
+            "url": "https://play.gamepix.com/stickman-mega-boss-battles/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stickman-mega-boss-battles/icon/stickman-mega-boss-battles.png?w=105",
+            "desc": "Unleash your inner warrior in Stickman Mega Boss Battles! Face relentless mobs, wield epic swords, and unlock powerful armor. Conquer mega-bosses to rise through thrilling modes, all while aiming for supremacy on the leaderboard. Dive into a world where each battle brings you closer to ultimate glory!",
+            "categoria": "stickman",
+            "id": "tniq2inqf"
+        },
+        {
+            "titolo": "Stickman That One Level",
+            "url": "https://play.gamepix.com/stickman-that-one-level/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stickman-that-one-level/icon/stickman-that-one-level.png?w=105",
+            "desc": "Guide your stickman through a wild maze of mind-bending puzzles and perilous spikes in Stickman That One Level. Test your wits while uncovering paths to the golden key, unlocking the door to freedom. Keep your reflexes sharp and your mind sharper in this addictive puzzle adventure!",
+            "categoria": "stickman",
+            "id": "3co5s87zz"
+        },
+        {
+            "titolo": "Stick Rope Hero",
+            "url": "https://play.gamepix.com/stick-rope-hero/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stick-rope-hero/icon/stick-rope-hero.png?w=105",
+            "desc": "Unleash your inner hero in Stick Rope Hero, a dynamic sandbox adventure where you swing through a vibrant city like a legendary web-slinger. Battle evildoers, complete daring missions, and collect power-ups. Hone your swinging skills to save the day with style and embody the ultimate urban champion.",
+            "categoria": "stickman",
+            "id": "jiaxr5u6j"
+        },
+        {
+            "titolo": "Stick Man Battle Fighting",
+            "url": "https://play.gamepix.com/stick-man-battle-fighting/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stick-man-battle-fighting/icon/stick-man-battle-fighting.png?w=105",
+            "desc": "Enter the thrilling world of Stick Man Battle Fighting, where every duel is a strategic test. Customize your hero, master diverse fighting techniques, and face waves of foes in engaging modes. Battle solo, survive intense challenges, or clash with friends in epic multiplayer duels for endless fun.",
+            "categoria": "stickman",
+            "id": "fnwesflu2"
+        },
+        {
+            "titolo": "Stick War Saga",
+            "url": "https://play.gamepix.com/stick-war-saga/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stick-war-saga/icon/stick-war-saga.png?w=105",
+            "desc": "Lead your stickmen to victory in this action-packed strategy adventure. Balance resource mining and tactical warfare as you build your army, defend your territory, and conquer enemy lands. Can you outsmart your foes and dominate the battlefield? Dive into the Stick War Saga and find out!",
+            "categoria": "stickman",
+            "id": "01jak4e9m"
+        },
+        {
+            "titolo": "Stickman Zombie Shooting 3D",
+            "url": "https://play.gamepix.com/stickman-city-zombie-shooter/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stickman-city-zombie-shooter/icon/stickman-city-zombie-shooter.png?w=105",
+            "desc": "Navigate a stickman wasteland overrun by zombies in this thrilling apocalyptic adventure. Arm yourself with an array of weapons, operate vehicles, and unleash turret fury as you fight to survive. Each encounter quickens the pulse, making every moment a test of skill and strategy in a world gone wild.",
+            "categoria": "stickman",
+            "id": "ynq7y3agb"
+        },
+        {
+            "titolo": "Element Clash 2D",
+            "url": "https://play.gamepix.com/element-clash-2d/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/element-clash-2d/icon/element-clash-2d.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "stickman",
+            "id": "lckto35mv"
+        },
+        {
+            "titolo": "Stickman Thief Puzzle",
+            "url": "https://play.gamepix.com/stickman-thief-puzzle/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stickman-thief-puzzle/icon/stickman-thief-puzzle.png?w=105",
+            "desc": "Embark on a daring escape adventure in Stickman Thief Puzzle. Use your creativity to draw lines and ropes, guiding your stickman through perilous situations. Outsmart prison guards, solve intricate puzzles, and become the ultimate master thief, all while experiencing high-stakes rescues and thrilling suspense.",
+            "categoria": "stickman",
+            "id": "5od2lphao"
+        },
+        {
+            "titolo": "Stickman Battle 1-4 Players",
+            "url": "https://play.gamepix.com/stickman-battle-1-4-players/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stickman-battle-1-4-players/icon/stickman-battle-1-4-players.png?w=105",
+            "desc": "Dive into fast-paced stickman mayhem where each round offers different thrills, from intense battles with spinning weapons to exciting races and goal-scoring matches. Customize your character, compete against up to three friends or AI, and discover new modes by collecting keys. Endless fun awaits!",
+            "categoria": "stickman",
+            "id": "n95t7e573"
+        },
+        {
+            "titolo": "Lineguard",
+            "url": "https://play.gamepix.com/lineguard/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/lineguard/icon/lineguard.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "stickman",
+            "id": "dwap8vljh"
+        },
+        {
+            "titolo": "DOP Stickman",
+            "url": "https://play.gamepix.com/dop-stickman/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/dop-stickman/icon/dop-stickman.png?w=105",
+            "desc": "Embark on a thrilling prison break in DOP Stickman, where your artful drawings pave the path to freedom. Evade ever-watchful guards as you cleverly fill missing parts of images to progress. Balance speed and precision in this captivating escape adventure set in a world full of peril.",
+            "categoria": "stickman",
+            "id": "6qrnawj6v"
+        },
+        {
+            "titolo": "StickNinja Mission",
+            "url": "https://play.gamepix.com/stickninja-mission/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stickninja-mission/icon/stickninja-mission.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "stickman",
+            "id": "k7y2lukn7"
+        },
+        {
+            "titolo": "Hook the Star",
+            "url": "https://play.gamepix.com/hook-the-star/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/hook-the-star/icon/hook-the-star.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "stickman",
+            "id": "nw1p8edgm"
+        },
+        {
+            "titolo": "Stickman Guys Defense",
+            "url": "https://play.gamepix.com/stickman-guys-defense/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stickman-guys-defense/icon/stickman-guys-defense.png?w=105",
+            "desc": "Defend your base against relentless enemy waves in Stickman Guys Defense! Strategically position and upgrade your stickman warriors, from archers to sword fighters, to create an unstoppable defense. Face escalating challenges and master the thrill of fast-paced, strategic combat. Can you lead your team to victory?",
+            "categoria": "stickman",
+            "id": "u4twkkcr7"
+        },
+        {
+            "titolo": "Obby Stickman - On Swords",
+            "url": "https://play.gamepix.com/obby-stickman-on-swords/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/obby-stickman-on-swords/icon/obby-stickman-on-swords.png?w=105",
+            "desc": "Embark on a thrilling stickman adventure as you engage in intense sword duels! Master the art of combat, dodge enemy attacks, and unleash your warrior potential. Customize your hero, upgrade your arsenal, and become the unrivaled champion in an ever-evolving arena of relentless fun and challenges.",
+            "categoria": "stickman",
+            "id": "cjw8wjgn0"
+        },
+        {
+            "titolo": "Rescue Escape",
+            "url": "https://play.gamepix.com/resuce-escape/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/resuce-escape/icon/resuce-escape.png?w=105",
+            "desc": "Guide agile stick figures through perilous prison mazes in Rescue Escape. Dodge spike traps and navigate tight corridors with precision. Every calculated move is crucial, as one wrong step could trap your entire group. Master each treacherous level and lead them safely to freedom. Your escape plan awaits!",
+            "categoria": "stickman",
+            "id": "h4t1hydr3"
+        },
+        {
+            "titolo": "Troll Thief - Stickman",
+            "url": "https://play.gamepix.com/troll-thief-stickman/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/troll-thief-stickman/icon/troll-thief-stickman.png?w=105",
+            "desc": "Step into the shoes of a witty thief in Troll Thief - Stickman. Navigate through complex puzzles and evade security with slick strategies. Balance comedy and tension as you outsmart traps, dodge guards, and perfect the art of heisting. Are you cunning enough for this mischievous adventure?",
+            "categoria": "stickman",
+            "id": "eidpat9j1"
+        },
+        {
+            "titolo": "Stickman Combat Clash",
+            "url": "https://play.gamepix.com/stickman-combat-clash/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stickman-combat-clash/icon/stickman-combat-clash.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "stickman",
+            "id": "itbouwnnq"
+        },
+        {
+            "titolo": "Stickman Count Masters",
+            "url": "https://play.gamepix.com/stickman-count-masters/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stickman-count-masters/icon/stickman-count-masters.png?w=105",
+            "desc": "Lead your stickman army to victory in a blend of math and strategy! Multiply your forces through clever gate choices, navigate tricky obstacles, and engage in thrilling battles. Outsmart the enemy, choose the smartest path, and watch your stickmen grow as you dominate the battlefield!",
+            "categoria": "stickman",
+            "id": "kmod8bjus"
+        },
+        {
+            "titolo": "Stickman Ping Pong 2",
+            "url": "https://play.gamepix.com/stickman-ping-pong-2/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stickman-ping-pong-2/icon/stickman-ping-pong-2.png?w=105",
+            "desc": "Dive into the thrilling world of Stickman Ping Pong 2, where arcade excitement meets strategic table tennis. With intuitive controls and dynamic stickman animations, every intense match sharpens your reflexes and tests your tactical acumen. Play solo or against friends—every swing captures the unstoppable fun of ping pong triumph.",
+            "categoria": "stickman",
+            "id": "0p3lui0c8"
+        },
+        {
+            "titolo": "Weapons and Ragdolls",
+            "url": "https://play.gamepix.com/weapons-and-ragdolls/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/weapons-and-ragdolls/icon/weapons-and-ragdolls.png?w=105",
+            "desc": "Dive into chaotic stickman brawls with endless weaponry. Master slow-motion dodging and unleash explosive tactics as you face diverse foes. With realistic physics and escalating challenges, every randomly generated battle promises thrilling combat and strategic depth. Embrace the action, upgrade your arsenal, and refine your fighting prowess.",
+            "categoria": "stickman",
+            "id": "901h2ttd0"
+        },
+        {
+            "titolo": "Stickman Gun Shooter 3D",
+            "url": "https://play.gamepix.com/stickman-gun-shooter-3d/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stickman-gun-shooter-3d/icon/stickman-gun-shooter-3d.png?w=105",
+            "desc": "Enter the frenetic world of Stickman Gun Shooter 3D, where your reflexes and aim are your best allies. Engage in intense battles, facing waves of enemy stickmen, and utilize a diverse arsenal for thrilling shootouts. Unleash chaos with ragdoll physics and see how long you can survive the relentless onslaught.",
+            "categoria": "stickman",
+            "id": "xxzgijzi4"
+        },
+        {
+            "titolo": "Draw the Way Infinite",
+            "url": "https://play.gamepix.com/draw-the-way-infinite/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/draw-the-way-infinite/icon/draw-the-way-infinite.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "stickman",
+            "id": "ujltr7kig"
+        },
+        {
+            "titolo": "Sumi Stickman Ninja",
+            "url": "https://play.gamepix.com/sumi-stickman-ninja/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/sumi-stickman-ninja/icon/sumi-stickman-ninja.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "stickman",
+            "id": "fjo0x1l7s"
+        },
+        {
+            "titolo": "Stick Brawl",
+            "url": "https://play.gamepix.com/stick-brawl/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stick-brawl/icon/stick-brawl.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "stickman",
+            "id": "st626oiol"
+        },
+        {
+            "titolo": "Inkblade",
+            "url": "https://play.gamepix.com/inkblade/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/inkblade/icon/inkblade.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "stickman",
+            "id": "soo3snrku"
+        },
+        {
+            "titolo": "StickJump",
+            "url": "https://play.gamepix.com/stickjump/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stickjump/icon/stickjump.png?w=105",
+            "desc": "StickJump sends you on a dizzying race around an endless loop, where timing is everything. Navigate unexpected obstacles with precision jumps and quick reflexes. As speed intensifies, so does the thrill, challenging you to survive just a little longer each time. Can you master the circle?",
+            "categoria": "stickman",
+            "id": "tv7m0bzt7"
+        },
+        {
+            "titolo": "Stickman Hunter",
+            "url": "https://play.gamepix.com/stickman-hunter/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/stickman-hunter/icon/stickman-hunter.png?w=105",
+            "desc": "Embark on a thrilling journey as a fearless stickman archer! Master precision shooting and inventive strategies by using arrows, balloons, and bombs to vanquish your foes. Every shot and explosion brings you closer to becoming the ultimate Stickman Hunter.",
+            "categoria": "stickman",
+            "id": "qpiyneeyd"
+        },
+
+        {
+            "titolo": "Stickman Skybow",
+            "url": "https://html5.gamemonetize.co/tsrm1mntua4si64m2i6nx9vzh24t8l7j/",
+            "img": "https://img.gamemonetize.com/tsrm1mntua4si64m2i6nx9vzh24t8l7j/512x384.jpg",
+            "desc": "Stickman Skybow is a fast-paced 2D archery game with two modes: Duel and Defense. Draw, aim and release to defeat distinctive bosses across changing floors, or hold back waves of enemies. Unlock bows, special arrows, heroes and permanent upgrades with coins earned through play. Day and night scenery alternates through the Duel floors. Play with mouse on desktop or touch in landscape on mobile.",
+            "categoria": "Stickman",
+            "id": "oonie60tl"
+        },
+        {
+            "titolo": "Stickman Bow Clash",
+            "url": "https://html5.gamemonetize.co/wngibx4vgc8ssxw714drc45wmfjccsis/",
+            "img": "https://img.gamemonetize.com/wngibx4vgc8ssxw714drc45wmfjccsis/512x384.jpg",
+            "desc": "Stickman Bow Clash is the action-packed sequel to Stickman Archery Ragdoll! Grab your bow, take aim, and face off against rival stickmen in intense archery battles. Master your shots, use precise timing, and knock your opponents off balance with powerful arrows and hilarious ragdoll physics. Each clash is a test of aim, strategy, and reflexes. Hit the right spot, send enemies flying, and become the ultimate stickman archer! Features: Fast-paced stickman archery battles Precise bow-and-arrow aiming Fun ragdoll physics and chaotic reactions Challenge enemy stickmen in exciting duels Use timing and strategy to win each clash",
+            "categoria": "Stickman",
+            "id": "n7cog92wh"
+        },
+        {
+            "titolo": "Stickman Archer Bow Fight",
+            "url": "https://html5.gamemonetize.co/79tq8bz4t8p6wer1vuwiixv16ocbs42p/",
+            "img": "https://img.gamemonetize.com/79tq8bz4t8p6wer1vuwiixv16ocbs42p/512x384.jpg",
+            "desc": "Get ready with your arrows! Our Stickman Archer is the cleverest exciting stickman archer defense game. You are all alone, but your enemies aren&rsquo;t. In a creepy archer forest, a battle is going to begin. Let&rsquo;s see how you win these stickman vs. stickman fights. What&rsquo;s Inside + More than 35+ levels (more incoming) + 4 powerful boosters + Chance to earn tons of coins + Enjoyable graphics and gameplay + Exciting sound effects and easy controls + Interesting bow fights with stickmen and Boss Spend Coins to Get Powerful Boosters from the Shop + Shield + 3 Arrow Combos + Arrow Rain + Med Aid Destroy the Stickman Army Each level is full of bow",
+            "categoria": "Stickman",
+            "id": "76kfy056b"
+        },
+        {
+            "titolo": "Stickman Army : Team Battle-3",
+            "url": "https://html5.gamemonetize.co/adolichvdk8bzshxae231w1slz5bbual/",
+            "img": "https://img.gamemonetize.com/adolichvdk8bzshxae231w1slz5bbual/512x384.jpg",
+            "desc": "The most strategic stickman war game is now available. Play now to : \" Stickman Army : Team Battle \". You must lead your stickman army and defeat the enemy ! Up to the victory !!",
+            "categoria": "Stickman",
+            "id": "6c0h7mo76"
+        },
+        {
+            "titolo": "Stickman Kart Hero",
+            "url": "https://html5.gamemonetize.co/ju0qzw6fpcb0mctu71i85cge96sq47sb/",
+            "img": "https://img.gamemonetize.com/ju0qzw6fpcb0mctu71i85cge96sq47sb/512x384.jpg",
+            "desc": "Stickman Kart Hero is a free physics game. See how far you can fling your cart without dying! Its almost like seeing how long you can last at the grocery store without dying, but funner!",
+            "categoria": "Stickman",
+            "id": "n1rbah5it"
+        },
+        {
+            "titolo": "Stickman Army 2",
+            "url": "https://html5.gamemonetize.co/zmmsiiwdj6u9fk4x4qu6v9tr40mmtbss/",
+            "img": "https://img.gamemonetize.com/zmmsiiwdj6u9fk4x4qu6v9tr40mmtbss/512x384.jpg",
+            "desc": "The most epic stickman war game is now available. Enter the arena and contest the fearless army as-sault! Join the campaign bootcamp to fight against foe after foe. Think you can be a challenger or contender in this crusade? Play \"Stickman Army : The Resistance\" now and create your own legacy! Show how fearless you are by defeating the guerrilla crusade by shooting them one by one! Build a base that can be well defended and strike back with a campaign of bloody as-sault!",
+            "categoria": "Stickman",
+            "id": "4fddmtx3z"
+        },
+        {
+            "titolo": "Stickman Fighter Training",
+            "url": "https://html5.gamemonetize.co/rdsntktkho23afsptyo6d05jlet321vt/",
+            "img": "https://img.gamemonetize.com/rdsntktkho23afsptyo6d05jlet321vt/512x384.jpg",
+            "desc": "You like fighting games and stickman games? This game is made for you! Train to be the fastest stickman fighter in the world. Blast away an endless iron column in the fastest game ever. Put your reflexes to the test, unleach your skills and climb the leaderboards for global domination!",
+            "categoria": "Stickman",
+            "id": "fqj1detsu"
+        },
+        {
+            "titolo": "Stickman Blast",
+            "url": "https://html5.gamemonetize.co/rp5c2tmwuv95gwmbuhgvru18msbr0xc2/",
+            "img": "https://img.gamemonetize.com/rp5c2tmwuv95gwmbuhgvru18msbr0xc2/512x384.jpg",
+            "desc": "Merge identical stickmen to unlock powerful warriors and mages! Lead your squad to auto-battle against giant chickens, minotaurs, and hordes of demons. Unleash explosive skills, crush foes, and dominate in both story and endless modes. Simple merge mechanics and chaotic combat make it easy to pick up&mdash;blast through enemies and become the ultimate stickman hero!",
+            "categoria": "Stickman",
+            "id": "2uqztqdr1"
+        },
+        {
+            "titolo": "Gun Mob: Stickman Run",
+            "url": "https://html5.gamemonetize.co/anyua87adg79v4fujeyyhvzjrnbzzrdu/",
+            "img": "https://img.gamemonetize.com/anyua87adg79v4fujeyyhvzjrnbzzrdu/512x384.jpg",
+            "desc": "Start with one Commander and build a MASSIVE ARMY! &zwj; Pass through the Blue (+) Gates to ADD more soldiers to your squad. The more gunners you have, the faster you destroy the enemy base! WATCH OUT FOR MINES! The road is trapped! Dodge the explosive landmines on the ground, or lose your soldiers! DESTROY ENEMY MACHINES: Face off against heavy military gear trying to stop you! Attack Helicopters in the sky! Armored Jeeps with machine guns! Giant TANKS blocking the way! Rocket Launcher enemies! USE SUPER POWER-UPS: Cant break through? Unleash chaos! Call an AIRSTRIKE to bomb everything! Throw GRENADES",
+            "categoria": "Stickman",
+            "id": "mib8ayou6"
+        },
+        {
+            "titolo": "stickman sky 3D",
+            "url": "https://html5.gamemonetize.co/ss13q0odm4vofj1co2daj2cq4mmd8dbv/",
+            "img": "https://img.gamemonetize.com/ss13q0odm4vofj1co2daj2cq4mmd8dbv/512x384.jpg",
+            "desc": "Stickman Sky 3D is a fast-paced action game where you control a stickman running through floating sky platforms, dodging obstacles, jumping between gaps, and collecting rewards. The game challenges your reflexes with increasing speed, dynamic traps, and thrilling sky-high environments designed to test precision, timing, and quick decision-making.",
+            "categoria": "Stickman",
+            "id": "gku3xmusk"
+        },
+        {
+            "titolo": "StickMan School Run-3",
+            "url": "https://html5.gamemonetize.co/h8s3azqnzkq6lllmjcr1xub4nodjd96v/",
+            "img": "https://img.gamemonetize.com/h8s3azqnzkq6lllmjcr1xub4nodjd96v/512x384.jpg",
+            "desc": "happy to show you its brand new game: StickMan School Run. Feel like you went back to school and take the control of a little wire man who’s also trying to run away from his homework and save his girlfriend. Come and test your skills in this obstacle race!",
+            "categoria": "Stickman",
+            "id": "buhqqqfx1"
+        },
+        {
+            "titolo": "Stickman Slash",
+            "url": "https://html5.gamemonetize.co/dimgvlqk0miw677p6zv1snl4u3491l3i/",
+            "img": "https://img.gamemonetize.com/dimgvlqk0miw677p6zv1snl4u3491l3i/512x384.jpg",
+            "desc": "Experience the world of one of your favorite fighting action games but with stickman as main hero! Advanced physics and immersive graphics have brought this experience to a whole new level for players!",
+            "categoria": "Stickman",
+            "id": "h8xiv4yy9"
+        },
+        {
+            "titolo": "Stickman Army Pusher",
+            "url": "https://html5.gamemonetize.co/sxmnfs0flc0f4xlddomb05idgbh9p975/",
+            "img": "https://img.gamemonetize.com/sxmnfs0flc0f4xlddomb05idgbh9p975/512x384.jpg",
+            "desc": "Stickman Army Pusher is a fun and addictive game where you play as a blue stickman commander. Your goal is to strategically place blue stickmen to push the red stickmen off the edge. Use your army wisely to outnumber and push the opponents away, winning each level by making all red stickmen fall. Enjoy smooth gameplay and simple controls, perfect for quick and exciting battles.",
+            "categoria": "Stickman",
+            "id": "hwrzgshlf"
+        },
+        {
+            "titolo": "Super Stickman Dragon",
+            "url": "https://html5.gamemonetize.co/77b5mbmq8ruyo6zqgdx6mu8zlvtab3um/",
+            "img": "https://img.gamemonetize.com/77b5mbmq8ruyo6zqgdx6mu8zlvtab3um/512x384.jpg",
+            "desc": "Find the truest and most powerful warrior with the Dragon ball z characters in the Super Stickman Dragon Warriors game. Earn Stars to unlock more warriors and destroy all the enemies.",
+            "categoria": "Stickman",
+            "id": "ijuahwl1d"
+        },
+        {
+            "titolo": "Human Stickman Gun",
+            "url": "https://html5.gamemonetize.co/qqyvna26o4q93x26lper17puv5hl6t1j/",
+            "img": "https://img.gamemonetize.com/qqyvna26o4q93x26lper17puv5hl6t1j/512x384.jpg",
+            "desc": "In Human Stickman Gun game, you start as a small, simple gun. As you move forward, you collect stickmen who join your gun and help it grow stronger. Each stickman takes a spot to build a bigger and better gun. Shoot barrels to earn money, dodge obstacles, and keep upgrading your gun. There are lots of cool and tricky levels to explore. Have fun and good luck!",
+            "categoria": "Stickman",
+            "id": "97492wg7a"
+        },
+        {
+            "titolo": "Sprunki Rage Stickman Incredibox",
+            "url": "https://html5.gamemonetize.co/m8x6penzlmav9y79ypzlw9i10usli9ld/",
+            "img": "https://img.gamemonetize.com/m8x6penzlmav9y79ypzlw9i10usli9ld/512x384.jpg",
+            "desc": "Sprunki Rage Stickman Incredibox is fun and addictive beatemup game with realistic physics and hardcore gameplay. With simple controls you can perform amazing stunts and blows to defeat your opponents. Unknown enemies emerge in the city! Sprunki hero continues to fight them off with a wide array of deadly weapons as well as helicopters and robots, who can devastate all enemies at once! The followers of Stickman games still have not forgotten the feeling of tight guillotine and ecstatic graphics of Stickman Brawl of Rage. And what would you expect in a recent version of Stickman fight and this revenge? Whether this revenge will end or not?",
+            "categoria": "Stickman",
+            "id": "z1ex0y93a"
+        },
+        {
+            "titolo": "Stickman vs Zombies Minecraft",
+            "url": "https://html5.gamemonetize.co/bztju5apx957kapkxnzocq3au3f8kq3y/",
+            "img": "https://img.gamemonetize.com/bztju5apx957kapkxnzocq3au3f8kq3y/512x384.jpg",
+            "desc": "Stickman vs Zombies Minecraft is an action-adventure platform game in which you can play as a brave stick ninja. When you play as a stickman hero, eliminate all the craft zombies and collect coins with each eliminated sombie so you can unlock new skins. Move around the map and look for all the zombies before they find you and run to catch you or shoot at your position. Dont leave even one alive, dont stop moving or all the zombie craft will try to catch you.",
+            "categoria": "Stickman",
+            "id": "j196d31gz"
+        },
+        {
+            "titolo": "Stickman The Flash",
+            "url": "https://html5.gamemonetize.co/qfh8jceadtfl6m0ilctnpy6elqpdp04p/",
+            "img": "https://img.gamemonetize.com/qfh8jceadtfl6m0ilctnpy6elqpdp04p/512x384.jpg",
+            "desc": "Stickman The Flash is a fighting RPG arcade game with 2D stickman warriors. In the Survival Mode, you need to survive as long as you can by dodging red areas and killing incoming enemies. You can collect different weapons when you kill the corresponding enemies. When you earn enough gems, you can unlock and equip them in the Equipment Store, and they will increase your full abilities. Keep calm and slaughter them all!",
+            "categoria": "Stickman",
+            "id": "dv9kvm1j3"
+        },
+        {
+            "titolo": "stickman base defense",
+            "url": "https://html5.gamemonetize.co/10jlapj6zx3rwude8qk6mc0xhze2f5bf/",
+            "img": "https://img.gamemonetize.com/10jlapj6zx3rwude8qk6mc0xhze2f5bf/512x384.jpg",
+            "desc": "Welcome to stickman base defense - the ultimate arcade idler browser game! Immerse yourself in the world of stickman heroes, where you must protect the base from hordes of attacking enemies. Your mission: Collect resources, build protective walls and towers, and upgrade your hero to create the ultimate defense!",
+            "categoria": "Stickman",
+            "id": "y9d2t0rmc"
+        },
+        {
+            "titolo": "Shadow Stickman Fight",
+            "url": "https://html5.gamemonetize.co/wu5idx0ik1b7xyqv9k7a003a71f5kf6d/",
+            "img": "https://img.gamemonetize.com/wu5idx0ik1b7xyqv9k7a003a71f5kf6d/512x384.jpg",
+            "desc": "Shadow Stickman Fight is an awesome and intense 2D ninja survival arcade game. You have to survive the endless waves of enemies with stickman ninjas. Every time you pass a belt exam, you get the examiner&rsquo;s hat and weapon. You can use souls to trade items or earn gifts. You have to follow the white dots and hit the enemies. You have to time your attack when enemies are in your attack distance. You can also enter the arsenal and choose different equipment, like helmets and weapons.",
+            "categoria": "Stickman",
+            "id": "fsnchs1af"
+        },
+        {
+            "titolo": "Stickman Merge Battle: Arena",
+            "url": "https://html5.gamemonetize.co/obyhafhugknxn37yy4vsed6yknb9d6rl/",
+            "img": "https://img.gamemonetize.com/obyhafhugknxn37yy4vsed6yknb9d6rl/512x384.jpg",
+            "desc": "An exciting strategic merge game where you have to demonstrate your advantage over the red stickman invaders. Create your army of stickmen, show your wit in the formation of troops and defeat all bosses. Less than 1% percent of players are able to unlock all stickmen and complete the game. - 3D stickmen - Each level is harder than the previous one - Intuitive controls - Boss difficulty every ten levels - Tactical game for all ages",
+            "categoria": "Stickman",
+            "id": "vmkydbk4d"
+        },
+        {
+            "titolo": "Stickman Miner",
+            "url": "https://html5.gamemonetize.co/bhyewxjcbnyu7f32233fmpk6z7kaj9n6/",
+            "img": "https://img.gamemonetize.com/bhyewxjcbnyu7f32233fmpk6z7kaj9n6/512x384.jpg",
+            "desc": "Embark on a lucrative journey beneath the earth in Stickman Idle Miner, a captivating mining simulator. Start with a humble pickaxe, chip away at mineral-rich veins, and uncover a variety of ores including coal, iron, gold, and diamonds. Sell the resources to make money.. Refine raw minerals into valuable products to sell at peak prices. Expand your empire, upgrade your tools, grow your facilities, and transform your small enterprise into a global mining powerhouse.",
+            "categoria": "Stickman",
+            "id": "rjkgtegnz"
+        },
+        {
+            "titolo": "Stickman Hot Potato",
+            "url": "https://html5.gamemonetize.co/ohvhay9yre82sin5djnn1tpddc4dqamp/",
+            "img": "https://img.gamemonetize.com/ohvhay9yre82sin5djnn1tpddc4dqamp/512x384.jpg",
+            "desc": "This is a pretty simple game: Throw a flaming hot potato to burn your opponents&rsquo; hands instead of yours! It&rsquo;s like playing catch, but with a fiery twist. Just don&rsquo;t get caught holding the potato when the timer reaches 0, or you&rsquo;ll be feeling the heat! Four fast modes await you, two of which are 2-player. Compete against friends or family, or take on the CPU if you&rsquo;re flying solo. First to 1,000 points wins! For a unique challenge, try Hot Rings mode and race to destroy your opponent&rsquo;s rings. Use the four unique power-ups - cloak, freeze, clone, and slow motion - but remember to use them wisely!",
+            "categoria": "Stickman",
+            "id": "gf99k0d0b"
+        },
+        {
+            "titolo": "Stickman Ninja Way of the Shinobi",
+            "url": "https://html5.gamemonetize.co/bbvs6yc7da25q92ogll0m4cfmuo4ymox/",
+            "img": "https://img.gamemonetize.com/bbvs6yc7da25q92ogll0m4cfmuo4ymox/512x384.jpg",
+            "desc": "Stickman - Ninja from the clan of Black Panthers enters the battle. Help him drive the invaders out of his house! Defeat your enemies with lightning strikes and combo attacks. Dodge enemy attacks with a roll. Upgrade your character so that you have the strength to defeat all enemies and free your house.",
+            "categoria": "Stickman",
+            "id": "r6vcjm2my"
+        },
+        {
+            "titolo": "Stickman fall",
+            "url": "https://html5.gamemonetize.co/4nsbkbsthace3imqxe11zdymbiwnc2bg/",
+            "img": "https://img.gamemonetize.com/4nsbkbsthace3imqxe11zdymbiwnc2bg/512x384.jpg",
+            "desc": "Hang between two pillars with plungers on a bar. When you press space, the plungers touch the pillars, halting your descent. Navigate a path filled with obstacles, ensuring you dont collide. Your goal? See how far you can descend without hitting any barriers. Ready to take the challenge?",
+            "categoria": "Stickman",
+            "id": "t4z9fziqx"
+        },
+        {
+            "titolo": "Stickman Rope Heroes",
+            "url": "https://html5.gamemonetize.co/eqxf0v60oye38q5x3rdcf54caej8xwc6/",
+            "img": "https://img.gamemonetize.com/eqxf0v60oye38q5x3rdcf54caej8xwc6/512x384.jpg",
+            "desc": "Have you ever seen a stickman throwing a web before? yes he is throwing net and trying to reach the finish line to fulfill his mission. Net and jump at all marked locations. Help him as a stickman superhero and network together. Reach the finish line without falling off the cliff in different difficulty levels.",
+            "categoria": "Stickman",
+            "id": "jfed5jbyi"
+        },
+        {
+            "titolo": "Stickman Races 3D",
+            "url": "https://html5.gamemonetize.co/85mh5d73g2oawupffxxh83qw1vn1v0b1/",
+            "img": "https://img.gamemonetize.com/85mh5d73g2oawupffxxh83qw1vn1v0b1/512x384.jpg",
+            "desc": "Stickman Race 3D is New Race 3D Game with Opponent Stickman Players , Run , Jump, Race, Perform Stunts to Won the Race with Stickman Never stop running! Jump and flip over obstacles, climb over ladder, swim in the pool , Stunts and make sure you avoid all the obstacles and reach the finish line safely.",
+            "categoria": "Stickman",
+            "id": "bmj3eyxov"
+        },
+        {
+            "titolo": "Stickman Brothers Nether Parkour",
+            "url": "https://html5.gamemonetize.co/2hn3nxkg226d5rhz34w1l9xpww3nqxqb/",
+            "img": "https://img.gamemonetize.com/2hn3nxkg226d5rhz34w1l9xpww3nqxqb/512x384.jpg",
+            "desc": "4 stickman brothers survival battle. 4 must survive in front of him. You have to help them in the nether world full of obstacles. Help them by playing with your friends. Hurry up and join this adventure. everywhere is full of danger. Be careful and never, ever fall down. 4 must reach the portal in front of him. There are tasks to be done in each section and they must be fulfilled.",
+            "categoria": "Stickman",
+            "id": "ez7mvwzlc"
+        },
+        {
+            "titolo": "Stickman Picker Master",
+            "url": "https://html5.gamemonetize.co/7gixrhuo4ds5dwvzbq0kba17tmyzvu5i/",
+            "img": "https://img.gamemonetize.com/7gixrhuo4ds5dwvzbq0kba17tmyzvu5i/512x384.jpg",
+            "desc": "Stickman Picker Master is a stickman running game where you try to collect balls of the same color while speeding on a track above the sea. If you collect identical color balls, your stickman character will grow, but if you collect different color balls, your stickman character will shrink.",
+            "categoria": "Stickman",
+            "id": "u7u4kvz11"
+        },
+        {
+            "titolo": "Stickman Wick",
+            "url": "https://html5.gamemonetize.co/g6jvlpv08fpnk5eqzbm8l9vzga5foo6u/",
+            "img": "https://img.gamemonetize.com/g6jvlpv08fpnk5eqzbm8l9vzga5foo6u/512x384.jpg",
+            "desc": "The ruthless Stickman Wick must get his best friend back! To do this, he is ready to use his entire arsenal and brutal fighting techniques! Stickman will have to overcome 30 floors of a building filled with enemies to overtake his sworn enemy. Stickman has a whole arsenal of weapons and fighting techniques with which he will break through crowds of enemies. Stickman is dangerous both in close combat and at a distance. Defeated enemies give rage points, which are necessary to defeat the boss. The closer you attack ordinary enemies, the more rage points you will get. Enemies will try to stop you by all available means. Cold and firearms are used, as well as bombs.",
+            "categoria": "Stickman",
+            "id": "x79orm62t"
+        },
+        {
+            "titolo": "Stickman Bullets Ragdoll",
+            "url": "https://html5.gamemonetize.co/qjyw0g6oc9e8v8dsawxkupjoqe3liu62/",
+            "img": "https://img.gamemonetize.com/qjyw0g6oc9e8v8dsawxkupjoqe3liu62/512x384.jpg",
+            "desc": "Stickman with a bazooka blows up his enemies and destroys their bases. - Full possibility of destruction of everything around - Multiple bullets for stickman weapons - Physical enemies and crazy explosions - Levels with exciting challenges Enjoy addictive gameplay with amazing destruction! Choose bullets for weapons and destroy everything around. Destroy ragdoll enemies. Explode bombs, shoot rockets and make your enemies fly away from the explosions, destroying their bases and crushing their buildings! Fun physical enemies and crazy explosions with amazing content and challenges Help Stickman destroy all enemies to win!",
+            "categoria": "Stickman",
+            "id": "9ip5mi2ux"
+        },
+        {
+            "titolo": "Crazy Stickman Escape",
+            "url": "https://html5.gamemonetize.co/7ki9efve23zgbq5uyr8m2zcobmfihnhx/",
+            "img": "https://img.gamemonetize.com/7ki9efve23zgbq5uyr8m2zcobmfihnhx/512x384.jpg",
+            "desc": "Crazy Stickman Escape is a puzzle-platform game in which you control two stickman characters who are trying to break out of a facility in which they are being held. The objective is to control the blue stickman to collect the blue key and then switch to the red stickman to collect the red key. Sounds easy? Not so fast. The facility is filled with security guards, cameras, drones, lasers, acid vats, and other obstacles. Along the way, you can also rescue other prisoners and unlock new costumes and skins to customize your characters. Additionally, there are various accessories you can obtain to keep the game interesting. Play the Lucky Wheel to earn free cash and show us that you have the skill and determination to escape.",
+            "categoria": "Stickman",
+            "id": "rdcf9kadi"
+        },
+        {
+            "titolo": "Stickman Hero",
+            "url": "https://html5.gamemonetize.co/imwsoj6dod2izstzsmsr9uu0asegbc8k/",
+            "img": "https://img.gamemonetize.com/imwsoj6dod2izstzsmsr9uu0asegbc8k/512x384.jpg",
+            "desc": "Swing your way to the finish line! Avoid all the obstacle. There are twenty challenging stages. Finish them all and be the Stickman Hero!",
+            "categoria": "Stickman",
+            "id": "iqj66v7nr"
+        },
+        {
+            "titolo": "Stickman Archer 5",
+            "url": "https://html5.gamemonetize.co/sn2uell0ms2xn1vlo9enfpcone7oxbjz/",
+            "img": "https://img.gamemonetize.com/sn2uell0ms2xn1vlo9enfpcone7oxbjz/512x384.jpg",
+            "desc": "Enhance your stickman shooting skills with our newest game featuring three exciting modes. In the first mode, test your aim by shooting at moving and stationary targets with a limited supply of arrows. In the second mode, engage in a thrilling stickman duel. And in the third mode, clear a multi-level building with a gun. Collect emeralds as you play to exchange for new weapons and skins. Try our stickman shooting game now!",
+            "categoria": "Stickman",
+            "id": "0720hhe9l"
+        },
+        {
+            "titolo": "Stickman parkour craft",
+            "url": "https://html5.gamemonetize.co/6dy2yj5e4n8bufx8dx6n13nf5go8vfsz/",
+            "img": "https://img.gamemonetize.com/6dy2yj5e4n8bufx8dx6n13nf5go8vfsz/512x384.jpg",
+            "desc": "Stickman will have to go through parkour skyblock, and overcome all obstacles on his way! Each level complicates this task, but can you? Collect gold along the way and buy various skins!",
+            "categoria": "Stickman",
+            "id": "fy5murd2e"
+        },
+        {
+            "titolo": "Fight StickMan",
+            "url": "https://html5.gamemonetize.co/35vohyrh9uqn09vtuneui4q71htmc8p2/",
+            "img": "https://img.gamemonetize.com/35vohyrh9uqn09vtuneui4q71htmc8p2/512x384.jpg",
+            "desc": "Stick Fighter is a fighting game where you take control of one six characters, all of whom have completely different move sets! Run the gauntlet in the single player mode taking on each of the other characters in an attempt to prove yourself as the ultimate Stick Fighter!",
+            "categoria": "Stickman",
+            "id": "bxdkuu06o"
+        },
+        {
+            "titolo": "Stickman Idle Clicker Miner: Imposter among us",
+            "url": "https://html5.gamemonetize.co/wm39u7ou2xd1bhemxh1953aw109nxlh2/",
+            "img": "https://img.gamemonetize.com/wm39u7ou2xd1bhemxh1953aw109nxlh2/512x384.jpg",
+            "desc": "This is a unique relaxing idle miner game. It is based on the stickman universe. Build units, make upgrades, and try to reach a final goal! Stickmen want freedom - help them to get out. But an imposter is among us so be aware. - Create more Stickman's; - Make Upgrades; - Earn more ore; - Dig deeper until You earn enough money; - Buy all train parts, so Stickman can move on; - Be careful - an imposter is among us!",
+            "categoria": "Stickman",
+            "id": "t8naocxy7"
+        },
+        {
+            "titolo": "Draw and Save Stickman",
+            "url": "https://html5.gamemonetize.co/fei5ffz1h2tgtxaijdmfcd8gk0puw7ia/",
+            "img": "https://img.gamemonetize.com/fei5ffz1h2tgtxaijdmfcd8gk0puw7ia/512x384.jpg",
+            "desc": "Want to test your IQ, creativity or drawing skills? Looking for a new, unique puzzle game? Draw and Save Stickman is the game you need! Make drawings to keep various dangers and traps away from Stickman. You will need to think differently in each level. Let's guess where the danger will come from and start drawing the shield!",
+            "categoria": "Stickman",
+            "id": "00eepqakt"
+        },
+        {
+            "titolo": "Stickman Bunny Hop Tricks",
+            "url": "https://html5.gamemonetize.co/6o5quqwsbfcns5n9u1pm91ywlci6py63/",
+            "img": "https://img.gamemonetize.com/6o5quqwsbfcns5n9u1pm91ywlci6py63/512x384.jpg",
+            "desc": "Complete levels and do parkour tricks in Stickman Bunny Hop Tricks. Jump over obstacles, climb ledges, get to the portal! Jump on the slugs to fly higher. Run through a variety of biomes and have fun! Stickman Bunny Hop Tricks - game with stickman. Skyblock runner and parkour tricks. Skyblock survivor mode in skyland world with stick war animation. Stickman in minecraft and terraria: parkour and traps floor is lava and stickman supreme duelist.",
+            "categoria": "Stickman",
+            "id": "s4k6yx4ce"
+        },
+        {
+            "titolo": "Red Stickman vs Monster School",
+            "url": "https://html5.gamemonetize.co/k2ksa2oskzf1xohh0f2snosfigwx5zwy/",
+            "img": "https://img.gamemonetize.com/k2ksa2oskzf1xohh0f2snosfigwx5zwy/512x384.jpg",
+            "desc": "Perfect news for the lovers of Red And Blue Stickman Adventure! The sequel to the series has been completed as Red Stickman vs Monster School. The Stick Adventure is an addictive platform puzzle game, where you have to control characters. Participate in the Monster School challenge together with the Red Stickman.",
+            "categoria": "Stickman",
+            "id": "9og04uba7"
+        },
+        {
+            "titolo": "Stickman Archero Fight",
+            "url": "https://html5.gamemonetize.co/olq15f2zemu1f6gto35fd13pmxnzqilm/",
+            "img": "https://img.gamemonetize.com/olq15f2zemu1f6gto35fd13pmxnzqilm/512x384.jpg",
+            "desc": "Upgrade your stickman, fight enemies in the Stickman Archero game. Create cool and dynamic fatalities. Lots of magic and battles! The game is similar to SupremeDuelistStickman. Fights in the village with other stickman.",
+            "categoria": "Stickman",
+            "id": "2r7neuukl"
+        },
+        {
+            "titolo": "Stickman Climber",
+            "url": "https://html5.gamemonetize.co/r6h0rueubew554237k9nr5v6n0jaorkd/",
+            "img": "https://img.gamemonetize.com/r6h0rueubew554237k9nr5v6n0jaorkd/512x384.jpg",
+            "desc": "Stickman Climber is an amazing stickman game! The rules are very simple. just press the \"Up\" button to jump from side to side, and press \"Turn\" button to flip and avoid the bomb. Can you get a high score?",
+            "categoria": "Stickman",
+            "id": "p8qyn440a"
+        },
+        {
+            "titolo": "Stickman Hook Animation",
+            "url": "https://html5.gamemonetize.co/4c8hos7j7bg1tehtpkl4e8j7jk15487m/",
+            "img": "https://img.gamemonetize.com/4c8hos7j7bg1tehtpkl4e8j7jk15487m/512x384.jpg",
+            "desc": "Stickman Hook is a fun game where you can test your skills. You play as a swinging stickman through hundreds of challenging levels. This fun, colorful stickman game offers over 100 challenging levels. Unlock unique characters along the way to switch things up while you swing. Pay attention to the angle and direction of your swing to make it to the finish line! Can you control your swing? In this game, embody the spider stickman. Finish all the levels with the same agility as a spider. For that, you just have to: - Tap to hook and make incredible jumps - Press your screen to hook your stickman with your grapnel and release to let go - Avoid every obstacle that stands in your way - Swing from hook to hook to pass all the levels",
+            "categoria": "Stickman",
+            "id": "uq3ai8jiy"
+        },
+        {
+            "titolo": "Stickman Hook Rescue",
+            "url": "https://html5.gamemonetize.co/5xz3xp3p7trgm8yjbzputnalfnnefmx0/",
+            "img": "https://img.gamemonetize.com/5xz3xp3p7trgm8yjbzputnalfnnefmx0/512x384.jpg",
+            "desc": "We all know the stickman as an excellent warrior, a good friend and a generally positive character, which in itself already allows him to become a superhero. Well, why not, here, for example, he is impressed by the spider-man, perhaps the stickman would have come out no worse than a spider?",
+            "categoria": "Stickman",
+            "id": "9ohjdzha3"
+        },
+        {
+            "titolo": "Stickman Golf Super",
+            "url": "https://html5.gamemonetize.co/tb8uo3r41mz8nhc3kh7puaegc7k65185/",
+            "img": "https://img.gamemonetize.com/tb8uo3r41mz8nhc3kh7puaegc7k65185/512x384.jpg",
+            "desc": "Enjoy this wonderful golf game! Calculate the angle and power of your shots in order to get a hole in one. Good luck, player!",
+            "categoria": "Stickman",
+            "id": "y3r0qtvrs"
+        },
+        {
+            "titolo": "Stickman Fight",
+            "url": "https://html5.gamemonetize.co/vqlbeetbbf92vkvo9lho6g7mc5dnn6oi/",
+            "img": "https://img.gamemonetize.com/vqlbeetbbf92vkvo9lho6g7mc5dnn6oi/512x384.jpg",
+            "desc": "Do you like fighter games? Do you enjoy stickman games? Are you ready for the stick fight extreme Stickman Fight?? The hero of the casual stickman Stick Fight games is returning. The fight game with endless waves of ninja enemies hordes will test your brawl and survival skills. Become the ultimate stickman warrior boss in this free funny and hypercasual battle royale game. Have fun. Play stickman games on iyigames.com. Stick fight the endless horde of stickmen to break your own records or until your perish in the survival arena. Hit with your fist but also",
+            "categoria": "Stickman",
+            "id": "vgl6i4n7p"
+        },
+        {
+            "titolo": "Stickman Bridge Constructor",
+            "url": "https://html5.gamemonetize.co/yhxbomastpavyk2shmrp2pdo3wpsxoea/",
+            "img": "https://img.gamemonetize.com/yhxbomastpavyk2shmrp2pdo3wpsxoea/512x384.jpg",
+            "desc": "You like construction games and stickman games? This game is made for you ! Play as an heroic stickman worker that build bridge after brige. You now want to become the most famous Stickman Bridge Constructor Stickman Bridge Constructor is a fun game easy to play... but dificult to master",
+            "categoria": "Stickman",
+            "id": "o0g4o3ahm"
+        },
+        {
+            "titolo": "Stickman Duel Battle",
+            "url": "https://html5.gamemonetize.co/3rk4otwaf8um65l46h1w1ot6s3jw9n9u/",
+            "img": "https://img.gamemonetize.com/3rk4otwaf8um65l46h1w1ot6s3jw9n9u/512x384.jpg",
+            "desc": "A fun war game begins with Stick War: Infinity Duel. Grab the gun falling from the air, aim and kill the enemy stickman. Weapons will fall on the field at certain intervals during the game. Grab someone right away, hurry up to disarm your enemy. Some tracks are moving, keep your balance and try not to fall. Focus your attention and let your only goal be to collect weapons and kill your enemy. You can also play the Stick war game with your friends at school with the 2-player option. You will love this game with its brand new and vivid appearance. Hihoy Games wishes you good fun!",
+            "categoria": "Stickman",
+            "id": "qq34bqz5f"
+        },
+        {
+            "titolo": "Stickman Sniper : Tap To Kill",
+            "url": "https://html5.gamemonetize.co/t2rb13zf55lngb76b1xbqrk9164xzkci/",
+            "img": "https://img.gamemonetize.com/t2rb13zf55lngb76b1xbqrk9164xzkci/512x384.jpg",
+            "desc": "Do you like FPS and other shooting games? This game is for you! Take the identity of a secret agent and take your sniper. You have precise orders! The identity of each one of your targets is given to you at the beginning of the level. Concentrate and succeed in all your missions.",
+            "categoria": "Stickman",
+            "id": "3h1mwc4hv"
+        },
+        {
+            "titolo": "Stickman Killer: Top gun Shots",
+            "url": "https://html5.gamemonetize.co/3iguufxew1w7kbzroz77yv9r2mrap7fe/",
+            "img": "https://img.gamemonetize.com/3iguufxew1w7kbzroz77yv9r2mrap7fe/512x384.jpg",
+            "desc": "You like shooting games and you like stickman games? This game is made for you! Enter on the playground and play the best stickman shooter. Are you a Top Gun ?. You must shoot down your opponents. You must have no mercy against them. To win, you have to kill them all. Watch out ... you'll face numerous snipers. Their big boss will not hesitate to shoot you in the head !",
+            "categoria": "Stickman",
+            "id": "92dzwdt3l"
+        },
+        {
+            "titolo": "Stickman Fighter Training Camp",
+            "url": "https://html5.gamemonetize.co/l32hwgcoe7hwdg7eh4iij67059amfpzg/",
+            "img": "https://img.gamemonetize.com/l32hwgcoe7hwdg7eh4iij67059amfpzg/512x384.jpg",
+            "desc": "You like fighting games and stickman games? This game is made for you! Train to be the fastest stickman fighter in the world. Blast away an endless iron column in the fastest game ever. Put your reflexes to the test, unleach your skills and climb the leaderboards for global domination!",
+            "categoria": "Stickman",
+            "id": "alwed9xdd"
+        },
+        {
+            "titolo": "Stickman Boxing KO Champion",
+            "url": "https://html5.gamemonetize.co/6tmp9phczxm9yfyona4ntvjrnvd70huc/",
+            "img": "https://img.gamemonetize.com/6tmp9phczxm9yfyona4ntvjrnvd70huc/512x384.jpg",
+            "desc": "This new boxing game is available for all stickman fans! Fight 4 professionals in intense combat. Fight using a variety of devastating punches and combos. Jab, cross, uppercut, give in all you have, but don’t forget to dodge!. Master jabs, hooks, uppercuts, body punches and combine them with devastating Special Punches.",
+            "categoria": "Stickman",
+            "id": "pl8xducdf"
+        },
+        {
+            "titolo": "Stickman Boxing KO",
+            "url": "https://html5.gamemonetize.co/dmzl9eimmp3oubqzq2ses7kh0rda9sbp/",
+            "img": "https://img.gamemonetize.com/dmzl9eimmp3oubqzq2ses7kh0rda9sbp/512x384.jpg",
+            "desc": "Welcome to the online game Stickman Boxing KO Champion. This is a free Sport Game. You're not a boxing expert? Don't worry, the boxing game is easy enough to learn. Just press the Space button repeatedly to perform punches and block attacks, and then hit the other boxer with an uppercut, lowercut, or body shot. Once you've completed your round, you can move on to the next round. Stickman Boxing KO Championship unblocked game is an online game that features 4 stickman fighters in intense combat. You'll be able to punch opponents with a variety of devastating punches and combos. Using your mouse or keyboard, you'll be able to navigate the game and perform all of your attacks. The HTML5-based game is also compatible with PCs and mobiles. The game includes many features to make it more enjoyable. It allows you to throw various punches and combs. Depending on your skill level, you can hit your opponents with an uppercut, cross, jab, or even dodge. You'll be able to knock out all of your opponents, which is the goal of the game. As long as all of your opponents are knocked out, you can win.",
+            "categoria": "Stickman",
+            "id": "upjwq3vqq"
+        },
+        {
+            "titolo": "Stickman Fighter: Epic Battle",
+            "url": "https://html5.gamemonetize.co/p27n60wut6rqymgjr3um08eoy0cg3ru6/",
+            "img": "https://img.gamemonetize.com/p27n60wut6rqymgjr3um08eoy0cg3ru6/512x384.jpg",
+            "desc": "You like fighting games and stickman games? Then this game was made for you! Enter the arena and play as a heroic Stickman. You must fight against your opponents. You must have no mercy against them. To win, you have to kill them all. But watch out because you'll face numerous warriors.",
+            "categoria": "Stickman",
+            "id": "9qmo5b1js"
+        },
+        {
+            "titolo": "StickMan Fly",
+            "url": "https://html5.gamemonetize.co/4ywlg1t7p7auy29j5340wuqfttu763o0/",
+            "img": "https://img.gamemonetize.com/4ywlg1t7p7auy29j5340wuqfttu763o0/512x384.jpg",
+            "desc": "Click on the screen and pull the stickman!",
+            "categoria": "Stickman",
+            "id": "l6rxn8eog"
+        },
+        {
+            "titolo": "Stickman Shadow Fighter",
+            "url": "https://html5.gamemonetize.co/r8bnwrkp0ne1lu6nqnc6h0m61gei9ttu/",
+            "img": "https://img.gamemonetize.com/r8bnwrkp0ne1lu6nqnc6h0m61gei9ttu/512x384.jpg",
+            "desc": "Play stickman hero robbing superhero gangster crime city. Tie your shoelaces to become the stickman hero in gangster city. Play as a flying stickman in adventurous superhero game. Mafia city need you to tear apart monsters by fighting gangster mafia in flying superhero game. Become a flying hero in a criminal city of gangsters and fight the murderers for the peace of the locality. Take the challenge as a real stickman hero in gangster mafia and take the lead by eliminating the monster from superhero game.",
+            "categoria": "Stickman",
+            "id": "v798p3ciq"
+        },
+        {
+            "titolo": "Stickman vs Aliens",
+            "url": "https://html5.gamemonetize.co/r7drhkl4vp5ip0107pz9rtd6qgb9hp5t/",
+            "img": "https://img.gamemonetize.com/r7drhkl4vp5ip0107pz9rtd6qgb9hp5t/512x384.jpg",
+            "desc": "Welcome to Stickman vs Aliens, A new Action War game. Slide your finger left, right & Up and down to control you Stickman hero. Shoot your enemy and destroy Tanks and planes. Collect weapons and coins to get a high score. good luck",
+            "categoria": "Stickman",
+            "id": "vz8mx6e9z"
+        },
+        {
+            "titolo": "Stickman Dragon Ball Fight - Super Stick Warriors",
+            "url": "https://html5.gamemonetize.co/f0hbsg1m7jfual8m1e8gtwqmu286chsr/",
+            "img": "https://img.gamemonetize.com/f0hbsg1m7jfual8m1e8gtwqmu286chsr/512x384.jpg",
+            "desc": "You are a fan of role playing games? You like it to be stickman games? Welcome to Stickman Dragon Fight - Super Stick Warriors! You will find it so much fun to experience this simple but interesting gameplay. All you need to do is dodge, jump, power your ki, perform basic and 3 advanced skills, transform your hero into an ultra instinct then fight against invaders. The control is so simple that you will be amazed at how attracting the sound effects and graphics are.",
+            "categoria": "Stickman",
+            "id": "nq1wxous3"
+        },
+        {
+            "titolo": "Stickman Archer",
+            "url": "https://html5.gamemonetize.co/a4aoxbnnozyaokbtif3wpdaho9ymoe7t/",
+            "img": "https://img.gamemonetize.com/a4aoxbnnozyaokbtif3wpdaho9ymoe7t/512x384.jpg",
+            "desc": "Stickman decides to test his own skills and pass the tests, consisting in marksmanship, allowing you to hit targets, which are ordinary signs or people armed with a military arsenal. Score as many points as possible for successfully removing targets under different conditions.",
+            "categoria": "Stickman",
+            "id": "181i3qjar"
+        },
+        {
+            "titolo": "Stickman City Battle",
+            "url": "https://html5.gamemonetize.co/ycr80m0r7urjhq8rnjh6f00oi4s8gvug/",
+            "img": "https://img.gamemonetize.com/ycr80m0r7urjhq8rnjh6f00oi4s8gvug/512x384.jpg",
+            "desc": "Enjoy Incredible Monster Stickman Rope hero fantastical massive city destruction with angry stickman incredible monster attack games. Smash cars, attack city people and cause horrific traffic jam with angry stickman incredible monster rampage in stickman incredible monster fighting games. Enjoy stickman funky acts and run as crazy stickman incredible monster escape games. Nonstop thrill of stickman incredible monster attack & escape challenges as king of city who has no limit to smash and thrash anything which comes in stickman incredible monster way in stickman games. Don’t stop the stickman incredible monster revenge. Your aggression for city attack in necessary in stickman incredible monster games. Play as an angry stickman hero incredible monster and make the whole town trample in rampage stickman hero incredible monster city attack stickman incredible monster hero escape games. Stickman police cops and us army stickman are on the roads to stop the in stickman incredible monster from destruction in mighty incredible superhero games. Smash and Crush everything that comes on stickman hero way and become the incredible monster Hero in breaking the stickman police prison superhero games. Defend by superhero fighting skills in stickman hero crime shooting games. Gangster vegas stickman incredible monster fighting makes crime city escape mission difficult in stickman hero incredible monster escape games. Stickman police cops call stickman army fighters for stickman incredible monster haunting. Complete stickman incredible monster attack missions and cause massive crime city destruction, smash and crash the cars and everything in the city escape mission. Attack and act as smasher, and utilize real stickman incredible monster fighting & smashing skills in crime city survival stickman incredible monster rampage simulator. Break, smash, attack, destroy and throw, do whatever you want to do being wild stickman incredible monster fighter. People are afraid & trying to escape from crazy stickman incredible monster attack in city rampage game. Crazy stickman incredible monster is tough to handle in city attack stickman incredible monster simulator! No limit or any boundary will stop stickman incredible monster attack, perform wonder attack for city destruction. Stickman Incredible Monster Hero City Rampage features: Endless stickman monster powers Fantastical missions cause destruction for stickman incredible monster Unlock variant stickman incredible monsters Funky & crazy power shortcuts to destroy city Flexible controls for stickman incredible monster simulation Download now and leave your feedback as suggestive comment so we can make gameplay better for users.",
+            "categoria": "Stickman",
+            "id": "8curwdx4q"
+        },
+        {
+            "titolo": "Tactical Squad Stickman",
+            "url": "https://html5.gamemonetize.co/3x78cxj7rteyfv6l4fo0m104tee36dtk/",
+            "img": "https://img.gamemonetize.com/3x78cxj7rteyfv6l4fo0m104tee36dtk/512x384.jpg",
+            "desc": "Even kindergarten graduates know what killers do. But the fact that this criminal activity also has its own clear specialization, someone may not even guess. This is often associated with a favorite weapon - someone prefers to use a sniper rifle, others prefer a pistol, explosives or melee weapons. In today's game, you will meet such a professional sniper. It is considered one of the best, so there are always orders. Would you like to see how everything happens and participate in several of his missions?",
+            "categoria": "Stickman",
+            "id": "fvi6oj2hc"
+        },
+        {
+            "titolo": " Stickman Ping Pong Match",
+            "url": "https://html5.gamemonetize.co/nrvq1ezin78m7vtbhiebwlobtbzrwji3/",
+            "img": "https://img.gamemonetize.com/nrvq1ezin78m7vtbhiebwlobtbzrwji3/512x384.jpg",
+            "desc": "Stickman Ping Pong Match is a fast paced realistic tennis game with gorgeous courts and great atmosphere, simple controls and tons of replay value. Good luck!",
+            "categoria": "Stickman",
+            "id": "77jjber38"
+        },
+        {
+            "titolo": "StickMan Parkour 2",
+            "url": "https://html5.gamemonetize.co/ybbprvnzp8v7kixeiid7aum3fbxdty96/",
+            "img": "https://img.gamemonetize.com/ybbprvnzp8v7kixeiid7aum3fbxdty96/512x384.jpg",
+            "desc": "Here is another Version of Stickman Parkour Games. Your mission is to run and jump to reach the the door to unlock the next level. Be careful to not fall from edges and try to avoid obstacles. Let the adventure begins!",
+            "categoria": "Stickman",
+            "id": "3de4gs6u8"
+        },
+        {
+            "titolo": "Stickman Run Parkour",
+            "url": "https://html5.gamemonetize.co/p94c6azbdqwpipfht8wp1xtxsc10vcl2/",
+            "img": "https://img.gamemonetize.com/p94c6azbdqwpipfht8wp1xtxsc10vcl2/512x384.jpg",
+            "desc": "Welcome to Stickman Run, A new Stickman running parkour Game . you'll face challenging levels filled with devious traps once more. Are you ready to take command of this brave stickman and show his acrobatic abilities while earning various achievements and gems? Best of luck!",
+            "categoria": "Stickman",
+            "id": "pis6ein9s"
+        },
+        {
+            "titolo": "Stickman Parkour 3",
+            "url": "https://html5.gamemonetize.co/0nmaftolhf5awg8o8hobe43pdgw2qogq/",
+            "img": "https://img.gamemonetize.com/0nmaftolhf5awg8o8hobe43pdgw2qogq/512x384.jpg",
+            "desc": "Stickman Parkour Vol3 Your mission is to run , And Climb walls to reach the the door to unlock the next level. Be careful to not fall from edges and try to avoid obstacles. Let the adventure begins!",
+            "categoria": "Stickman",
+            "id": "g9mp7kvfh"
+        },
+        {
+            "titolo": "Stickman Parkours",
+            "url": "https://html5.gamemonetize.co/xcepjor1hywkvqoy3vlq7jf46q20zt46/",
+            "img": "https://img.gamemonetize.com/xcepjor1hywkvqoy3vlq7jf46q20zt46/512x384.jpg",
+            "desc": "Welcome to Stickman Parkour, A new Running and jumping Game you'll face challenging levels filled with devious traps once more. Are you ready to take command of this brave stickman and show his acrobatic abilities while earning various achievements and gems? Best of luck! ACTION",
+            "categoria": "Stickman",
+            "id": "cdav66t12"
+        },
+        {
+            "titolo": "Stickman Death Run",
+            "url": "https://html5.gamemonetize.co/rt8qdnl052x3hfr075070frs36kd9tgp/",
+            "img": "https://img.gamemonetize.com/rt8qdnl052x3hfr075070frs36kd9tgp/512x384.jpg",
+            "desc": "Everyone's favorite stickman is now on a death run in the pixel world. If you want to achieve victory with him, run. Help him run, be careful, there are many obstacles, you have to watch out for these obstacles.",
+            "categoria": "Stickman",
+            "id": "wwm0vhdga"
+        },
+        {
+            "titolo": "Stickman Fall Guys: Running Race",
+            "url": "https://html5.gamemonetize.co/rxwor4vgwu67uc22758om5297vdmxqv5/",
+            "img": "https://img.gamemonetize.com/rxwor4vgwu67uc22758om5297vdmxqv5/512x384.jpg",
+            "desc": "It is time for some delightfully comical epic run knockout challenge. Enter a challenging dodge and run arena of a huge online party of up to 30 players and attempt everything you can to beat your opponents. The Fall Go – Stickman Obstacle Course Running Race is all about escalating chaos and compelling opponents, which you must overcome to win the fun run levels. Ultimate Physics Based Fun Race Do you think you have got what it takes to defy the physics laws in the middle of chaos? Survive the mayhem of a huge online multiplayer runner party and complete the running games challenges to be the last one to survive and receive the king’s crown. The stickman racer game is an absolute treat for those who like to enjoy physics based fun race challenges in their free time.",
+            "categoria": "Stickman",
+            "id": "bnn75w50f"
+        },
+        {
+            "titolo": "Super Stickman Fight All-Star Hero",
+            "url": "https://html5.gamemonetize.co/qbv1ya43ddnt5colk3jmmxwk1qasdi0o/",
+            "img": "https://img.gamemonetize.com/qbv1ya43ddnt5colk3jmmxwk1qasdi0o/512x384.jpg",
+            "desc": "A whole new storyline about characters familiar to all of us. A Devil God group capable of bringing all characters from different universes gathered in your world through a space portal. You, along with all your new friends, will have to face the most powerful villains in the multiverse. This war is called Chaos War. Stand side by side with teammates and fight and bring new peace to your world. You can choose their Super Heroes, upgrade the ultimate power, join the tournament of multiverses and climb TOP on worldwide rankings.",
+            "categoria": "Stickman",
+            "id": "2gz3cfgpi"
+        },
+        {
+            "titolo": "Stickman Fight : Dragon Legends Battle",
+            "url": "https://html5.gamemonetize.co/qsk8nvwgk0cwz4tf6m1q6yo2rodarpdr/",
+            "img": "https://img.gamemonetize.com/qsk8nvwgk0cwz4tf6m1q6yo2rodarpdr/512x384.jpg",
+            "desc": "Among all the stickman games, Stickman Fight - Battle Royale is one of the funniest and easiest to play.",
+            "categoria": "Stickman",
+            "id": "i792jmm1u"
+        },
+        {
+            "titolo": "Stickman Fight Battle - Shadow Warriors",
+            "url": "https://html5.gamemonetize.co/62c3vlawwn62mc8fzlpjc42h9novaq10/",
+            "img": "https://img.gamemonetize.com/62c3vlawwn62mc8fzlpjc42h9novaq10/512x384.jpg",
+            "desc": "Supreme Stick Warriors - Shadow of Legends is a physic-based stickman fighting game. Fighting against other stickmans to become legend in stickman fight and get awesome rewards in stick fight games. Do you want to have exciting times playing stickman fight warriors games & become the supreme stickman fighter? Download Supreme Stick Warriors - Shadow of Legends now and enjoy it!",
+            "categoria": "Stickman",
+            "id": "04faxb6i9"
+        },
+        {
+            "titolo": "Stickman Fighter Infinity - Super Action Heroes",
+            "url": "https://html5.gamemonetize.co/pplbybpg1jxrqav6ei9nbstjqnvbp1qz/",
+            "img": "https://img.gamemonetize.com/pplbybpg1jxrqav6ei9nbstjqnvbp1qz/512x384.jpg",
+            "desc": "Stickman Fighter Infinity - Super Action Heroes is a free-to-play stickman fighting game. All you need to do to role-play as heroes and fight against villains in the universe is cleverly using buttons to move, jump, teleport, block, attack and transform. This extremely simple gameplay, top-notch graphics effect, and vivid sound have attracted many players around the world.",
+            "categoria": "Stickman",
+            "id": "ryif4zhbc"
+        },
+        {
+            "titolo": "Stickman Shooter 3 Among Monsters",
+            "url": "https://html5.gamemonetize.co/2lr8r7zgvsgccdenhk1a62oeuzzz5lqe/",
+            "img": "https://img.gamemonetize.com/2lr8r7zgvsgccdenhk1a62oeuzzz5lqe/512x384.jpg",
+            "desc": "Stickman shooter 3 is back!! The amons us zombies and monsters are attacking the fort and its time to destroy everything again. Be ready for the exciting stickman shooting game. Defend the base against many types of among monsters and dont let reach the base. Improve the parameters of the weapon - accuracy, speed of fire and reload, the number of bullets in the magazine to destroy more powerfull enemies. Survive all levels and be the best stickman soldier.",
+            "categoria": "Stickman",
+            "id": "xno7mkkga"
+        },
+        {
+            "titolo": "Stickman Climb",
+            "url": "https://html5.gamemonetize.co/p119i9rb086uekl7rfh6alonr8o2dyj2/",
+            "img": "https://img.gamemonetize.com/p119i9rb086uekl7rfh6alonr8o2dyj2/512x384.jpg",
+            "desc": "You are in charge of a stickman in a box with a pickaxe in its hand, and your objective is to reach the flag at the finish line of every level using the balancing powers of your strong arms and mighty pickaxe! The road to victory is paved with deadly spikes, so utilize every checkpoint to keep your progress. Use the laws of physics to your advantage and you will master this game in no time. Reach the pinnacle of fun with Stickman Climb!",
+            "categoria": "Stickman",
+            "id": "xg12uzyuo"
+        },
+        {
+            "titolo": "Stickman Shadow Hero",
+            "url": "https://html5.gamemonetize.co/vo752qw0gt9a77j0e8sfkm5wso4vun4d/",
+            "img": "https://img.gamemonetize.com/vo752qw0gt9a77j0e8sfkm5wso4vun4d/512x384.jpg",
+            "desc": "Play stickman hero robbing superhero gangster crime city. Tie your shoelaces to become the stickman hero in gangster city. Play as a flying stickman in adventurous superhero game. Mafia city need you to tear apart monsters by fighting gangster mafia in flying superhero game. Become a flying hero in a criminal city of gangsters and fight the murderers for the peace of the locality. Take the challenge as a real stickman hero in gangster mafia and take the lead by eliminating the monster from superhero game.",
+            "categoria": "Stickman",
+            "id": "idsghqv5p"
+        },
+        {
+            "titolo": "Stickman Escape Parkour",
+            "url": "https://html5.gamemonetize.co/ts7y4ik94if0lj7khxbt147a4oihslcl/",
+            "img": "https://img.gamemonetize.com/ts7y4ik94if0lj7khxbt147a4oihslcl/512x384.jpg",
+            "desc": "Scientists produce racers with special abilities to use in running races. Get out of the lab with these racers! There will be many difficult obstacles. Master these obstacles and reach the portal.",
+            "categoria": "Stickman",
+            "id": "8ln4lcike"
+        },
+        {
+            "titolo": "Stickman Peacekeeper",
+            "url": "https://html5.gamemonetize.co/xfw5cdy6ksg3r0z9wd54iiyw731mx565/",
+            "img": "https://img.gamemonetize.com/xfw5cdy6ksg3r0z9wd54iiyw731mx565/512x384.jpg",
+            "desc": "The main goal of the hero is to kill numerous enemies that attack him, for this, he can use bombs and shoot at them from various weapons. In each subsequent level, you can use a lot of weapons that will help you easily move from level to level without losing your standard of living, which you can see at the bottom of the screen.",
+            "categoria": "Stickman",
+            "id": "4f8zgdenv"
+        },
+        {
+            "titolo": "Mr Stickman",
+            "url": "https://html5.gamemonetize.co/jndurw3pmdos9ehy9ca8jmwepxlkh0ja/",
+            "img": "https://img.gamemonetize.com/jndurw3pmdos9ehy9ca8jmwepxlkh0ja/512x384.jpg",
+            "desc": "Mr Stickman is a crazy shooting Game. Aim and shoot all your enemies. Explore tons of challenging levels and try to complete them all. Have fun and don't waste your bullets",
+            "categoria": "Stickman",
+            "id": "pq4a9osj8"
+        },
+
+        {
+            "titolo": "stickman kombat 2d",
+            "url": "https://html5.gamemonetize.co/tq1a8h39i13lpvk6wm6oeuigljmorjjr/",
+            "img": "https://img.gamemonetize.com/tq1a8h39i13lpvk6wm6oeuigljmorjjr/512x384.jpg",
+            "desc": "Stickman Kombat 2D is a fast-paced fighting game where you battle stickman warriors in intense 1v1 arena combat. Choose your fighter and master punch, kick, and special attack combos to knock out your opponent. Fight through multiple levels and game modes against tougher enemies, dodge incoming blows, and chain devastating combos to win the match. Simple mouse click or tap controls make it easy to jump into action, while timing and strategy keep the combat challenging. Test your skills across a variety of stickman characters and arenas, and become the ultimate champion!",
+            "categoria": "Boys",
+            "id": "2wj5ei6bb"
+        },
+        {
+            "titolo": "Troll Thief - Stickman Puzzle",
+            "url": "https://html5.gamemonetize.co/gj8t7sa2xmr15vi7ln5hbpmg2hkf4rgs/",
+            "img": "https://img.gamemonetize.com/gj8t7sa2xmr15vi7ln5hbpmg2hkf4rgs/512x384.jpg",
+            "desc": "Troll Thief - Stickman Puzzle is a free online puzzle game. In this game, one of the stickman's arms is stretchy. And you can help him drag his hand to reach the things he wants. Note that there are many barriers between you and the target. If you reach the wrong thing, you mignt fail at the level. Which level will you fail at? Hopefully not the first. Good luck!",
+            "categoria": "Boys",
+            "id": "k8n4vlgkd"
+        },
+
+        {
+            "titolo": "Stickman Legion",
+            "url": "https://html5.gamemonetize.co/anbulajofng53wnu2of8grq3i9zts94p/",
+            "img": "https://img.gamemonetize.com/anbulajofng53wnu2of8grq3i9zts94p/512x384.jpg",
+            "desc": "Lead a growing army of stickmen into battle! Fight off waves of enemies and turn them into your own soldiers. Level up, pick upgrades and evolve your gun into a minigun, railgun or rocket launcher. Call in drones, turrets and airstrikes, promote your troops, and take down huge bosses like tanks and fortresses. 10 stages, 2 islands, and permanent upgrades to unlock between runs.",
+            "categoria": "Shooting",
+            "id": "elee6x73c"
+        },
+        {
+            "titolo": "Stickman Archer Assassin",
+            "url": "https://html5.gamemonetize.co/5rn4jtw8vp8o0luxah0hpifgj6069ygk/",
+            "img": "https://img.gamemonetize.com/5rn4jtw8vp8o0luxah0hpifgj6069ygk/512x384.jpg",
+            "desc": "Stickman Archer Assassin is a thrilling action game based on the shooting theme. Come to this game to join in duel battles using a bow to eliminate your enemies",
+            "categoria": "Shooting",
+            "id": "jkmnhf9r4"
+        },
+        {
+            "titolo": " Stickman3D Shooter ",
+            "url": "https://html5.gamemonetize.co/xkvcj122fc5jpxjc6070xrjlm8i72fvf/",
+            "img": "https://img.gamemonetize.com/xkvcj122fc5jpxjc6070xrjlm8i72fvf/512x384.jpg",
+            "desc": "Play as a stickman armed with a pistol in this puzzle-based shooter, where precision and clever thinking are key. Find the right angle, line up your shots, and eliminate enemies in creative ways. Each level becomes more challenging, testing your accuracy and problem-solving skills.",
+            "categoria": "Shooting",
+            "id": "fe6s6i6w3"
+        },
+        {
+            "titolo": "Stickman Hit 3D",
+            "url": "https://html5.gamemonetize.co/nro69ekvo4i95f2sjmxpo2z0rv6v95t6/",
+            "img": "https://img.gamemonetize.com/nro69ekvo4i95f2sjmxpo2z0rv6v95t6/512x384.jpg",
+            "desc": "Welcome! Are you ready to embark on an unforgettable journey in this incredibly exciting 3D platform game? The story takes place in a fantastical world. Your character is a brave and fearless hero! He is trying to save the world from evil forces! Dive into this thrilling adventure from beginning to end! Throughout the game, you can collect bonuses and extra features. These items provide you with much more powerful weapons and energy! If you enjoyed the game, please rate it!",
+            "categoria": "Shooting",
+            "id": "xg9m7jve5"
+        },
+        {
+            "titolo": "Stickman Shooting Survival",
+            "url": "https://html5.gamemonetize.co/gw16l4mhznot8tc8lgbt3bjd4lh508uq/",
+            "img": "https://img.gamemonetize.com/gw16l4mhznot8tc8lgbt3bjd4lh508uq/512x384.jpg",
+            "desc": "Stickman shooting survival game survive and upgrade your gun and character abilities to the next level of this surviving game its a RPG type game where you collect your allies and survive with shooting",
+            "categoria": "Shooting",
+            "id": "axgbs820q"
+        },
+        {
+            "titolo": "Stickman Gun Runner",
+            "url": "https://html5.gamemonetize.co/0h5o76e5mwy6dhmu5zqall1ys6hrm0jn/",
+            "img": "https://img.gamemonetize.com/0h5o76e5mwy6dhmu5zqall1ys6hrm0jn/512x384.jpg",
+            "desc": "Stickman Gun Runner is an action-packed RPG runner shooter game that combines fast-paced gun shooting, intense stickman fighting, and nonstop adventure. Step into a dark and dangerous world where you control a fearless stickman warrior running forward while shooting zombies, monsters, and powerful enemies. Upgrade your weapons, unlock new guns, master special skills, and customize your stickman with cool skins as you progress through challenging levels. Each run tests your reflexes, aiming accuracy, and combat strategy. Face deadly bosses, dodge obstacles, and survive waves of enemies in this thrilling action shooter game.",
+            "categoria": "Shooting",
+            "id": "6c6srtlkt"
+        },
+        {
+            "titolo": "Stickman Archer Kick",
+            "url": "https://html5.gamemonetize.co/ztlovnynr83cl5osxdm27wwr0v16owsn/",
+            "img": "https://img.gamemonetize.com/ztlovnynr83cl5osxdm27wwr0v16owsn/512x384.jpg",
+            "desc": "Take the bow and arrows to kick the stickmans and save their lifes, with a ragdoll style, and awesome game physics. Complete all levels to save the stickmans and collect stars to unlock new character.",
+            "categoria": "Shooting",
+            "id": "focxa5l2e"
+        },
+        {
+            "titolo": "StickmanSniper",
+            "url": "https://html5.gamemonetize.co/pnu56ck5blbnesweiw2z1ule6o530x9e/",
+            "img": "https://img.gamemonetize.com/pnu56ck5blbnesweiw2z1ule6o530x9e/512x384.jpg",
+            "desc": "Highly trained, these games celebrate the marksmen with the most deadly of aim. In these sniper games the goal is to avoid detection and use your specialized training to infiltrate, observe and eliminate enemy troops at long distances before they even spot your location.",
+            "categoria": "Shooting",
+            "id": "uwejltel4"
+        },
+        {
+            "titolo": "Stickman Warfare",
+            "url": "https://html5.gamemonetize.co/g29vickxti7tbf2f5srhvijd3w3azse4/",
+            "img": "https://img.gamemonetize.com/g29vickxti7tbf2f5srhvijd3w3azse4/512x384.jpg",
+            "desc": "In a dystopian future, the world is in brink of war. It is time when humanity need the peace keeper. Fight hordes of terrorists, enhance your war gears, and regain peace back on earth again!",
+            "categoria": "Shooting",
+            "id": "qzhb8fx76"
+        },
+        {
+            "titolo": "Stickman Sniper Western Gun",
+            "url": "https://html5.gamemonetize.co/58o5c66cu7kdk0y2pap14twa0dx24btb/",
+            "img": "https://img.gamemonetize.com/58o5c66cu7kdk0y2pap14twa0dx24btb/512x384.jpg",
+            "desc": "In Stickman Sniper: Western Gun, you become a brave Western gunslinger. Grab your gun and get ready for an exciting shooting mission! Each level will have a different scene, basketball court, street, etc. As a professional sniper, you&rsquo;ll face dangerous enemies in the Wild West and use your shooting skills to take them down.",
+            "categoria": "Shooting",
+            "id": "z7rg7nxzf"
+        },
+        {
+            "titolo": "Stickman Hunter",
+            "url": "https://html5.gamemonetize.co/vjjxb3kbxqfrdgom6d8sf2qbliboogai/",
+            "img": "https://img.gamemonetize.com/vjjxb3kbxqfrdgom6d8sf2qbliboogai/512x384.jpg",
+            "desc": "Embark on a thrilling journey in Stickman Hunter, where your mission is to protect your tribe from hidden enemies. Strategically use your ammunition to eliminate foes and rise as the tribes chieftain. With each of the 10 challenging levels, master the art of precision and cunning to uncover and defeat concealed threats. Do you have what it takes to lead your tribe to victory? How to Play: 1- Aim and shoot your weapon to hit hidden enemies. 2- Conserve ammunition and plan your shots carefully. 3- Progress through 10 increasingly difficult levels.",
+            "categoria": "Shooting",
+            "id": "fwzrv9e5q"
+        },
+        {
+            "titolo": "Stickman Shooter Bros",
+            "url": "https://html5.gamemonetize.co/4exn3rd6dienls8l86g030cqczylfalc/",
+            "img": "https://img.gamemonetize.com/4exn3rd6dienls8l86g030cqczylfalc/512x384.jpg",
+            "desc": "Stickman Shooters Ready for action? Choose one of your 3 stickman characters with different abilities and defeat your enemies with 4 different weapons. Melt your enemies with the lava gun, destroy them with the minigun, deal damage from close range with the shotgun, and stun them with the teslagun. Strong enemies, challenging bosses, and exciting levels await you. Stickman Shooters is an immersive top-down shooter game.",
+            "categoria": "Shooting",
+            "id": "1d8954dw4"
+        },
+        {
+            "titolo": "Stickman Castle Defender",
+            "url": "https://html5.gamemonetize.co/sqsf5zvdbvn6kmf923xlsc1ll7yxmx21/",
+            "img": "https://img.gamemonetize.com/sqsf5zvdbvn6kmf923xlsc1ll7yxmx21/512x384.jpg",
+            "desc": "Defend your castle against the stickman enemies. Every round enemies get stronger and after round 5, a new gun stickman comes to the battle arena Can You Beat The All 10 Rounds?",
+            "categoria": "Shooting",
+            "id": "8v3dtzksv"
+        },
+        {
+            "titolo": "Stickman Archer Warrior",
+            "url": "https://html5.gamemonetize.co/qfdp834rhc8s9jczm3m08oibsu434ity/",
+            "img": "https://img.gamemonetize.com/qfdp834rhc8s9jczm3m08oibsu434ity/512x384.jpg",
+            "desc": "The archers have taken their places! An exciting fight begins with Stickman Archer Warriors. Many enemies are waiting for you on the steps with arrows in their hands. Focus on the target and make your shot. You have to hit it right, don't miss it! There are 4 different special powers in the game. When you face your opponent, examine it and choose one of these powers. As you progress through the chapters, you can buy new arrows with the gold you earn. Have fun!",
+            "categoria": "Shooting",
+            "id": "29lobfgai"
+        },
+        {
+            "titolo": "Stickman vs Poppy Army",
+            "url": "https://html5.gamemonetize.co/adr28m6u0i5s5m3dn7brpxgig8szun55/",
+            "img": "https://img.gamemonetize.com/adr28m6u0i5s5m3dn7brpxgig8szun55/512x384.jpg",
+            "desc": "Stickman vs Poppy Army is an action shooting game with tons of levels. Put all your stickman army to defend your home from Poppy army invaders Collect coins and diamonds to Upgrade your weapons. Good luck",
+            "categoria": "Shooting",
+            "id": "vrykldwn2"
+        },
+        {
+            "titolo": "Stickman Army : The Defenders",
+            "url": "https://html5.gamemonetize.co/jyi95knqwg27lua9lm5w4yfshp2iyjao/",
+            "img": "https://img.gamemonetize.com/jyi95knqwg27lua9lm5w4yfshp2iyjao/512x384.jpg",
+            "desc": "You must Defend your country against revolutionaries and renegades. A crowd of renegade stickman have started to invade the institutions and kill people. The last hope of the country is its best army stratege... You !!! You are in command of a powerfull army that can stop the revolutionaries. You can end this civil war... But this is going to be an epic battle. You must protect the institutions... whatever happens ! Lead your units to the final victory.",
+            "categoria": "Shooting",
+            "id": "65lx8yr5o"
+        },
+        {
+            "titolo": "Stickman Supreme Shooter",
+            "url": "https://html5.gamemonetize.co/1pwrgejz09nvndw3uivoamrwcqi87li0/",
+            "img": "https://img.gamemonetize.com/1pwrgejz09nvndw3uivoamrwcqi87li0/512x384.jpg",
+            "desc": "Get ready to start your journey as a real stickman shooter and use all your might against the enemies in different and dangerous levels. You must fight against other stick figures and show no mercy towards them. Hear your victims' sweet cries as you perform battle tricks and control physics until your opponent is destroyed. Collect stars in battle and use them to buy deadly weapons such as swords, axes and hammers. Take on enemies using heavy machine ramps, shotguns and bazookas and use real ragdoll physics to avoid them.",
+            "categoria": "Shooting",
+            "id": "owi339ctd"
+        },
+
+
+        {
+            "titolo": "Draw Line Stickman",
+            "url": "https://html5.gamemonetize.co/22qtpllfcm66yg1mhek1zf0qaszkm296/",
+            "img": "https://img.gamemonetize.com/22qtpllfcm66yg1mhek1zf0qaszkm296/512x384.jpg",
+            "desc": "Draw Line Stickman is a creative physics puzzle game where every line you draw can save the hero. Observe each dangerous situation, sketch a barrier or clever solution, and protect the stickman from traps, enemies, falling objects, and other hazards. Each level introduces a new challenge that tests your imagination, timing, and problem-solving skills. Draw freely, experiment with different strategies, and discover the smartest way to survive. Simple controls, playful graphics, and increasingly tricky puzzles make every level fun and rewarding. Can you protect the stickman and complete them all?",
+            "categoria": "Puzzle",
+            "id": "cpzsom0lf"
+        },
+        {
+            "titolo": "Draw And Save The Stickman",
+            "url": "https://html5.gamemonetize.co/pmx1eru5umr6kwl8vcqknra7b68kw5v7/",
+            "img": "https://img.gamemonetize.com/pmx1eru5umr6kwl8vcqknra7b68kw5v7/512x384.jpg",
+            "desc": "Draw And Save The Stickman is a fun and addictive puzzle game where your creativity is the key to victory! Draw lines, shapes, and barriers to protect the stickman from dangerous traps, falling rocks, sharp spikes, enemies, and unexpected obstacles. Every level presents a unique challenge that tests your logic, imagination, and problem-solving skills. Think carefully before drawing because every line matters. Use your drawing skills wisely to create the perfect defense and keep the stickman safe. As you progress, puzzles become more challenging, requiring smarter strategies and more creative solutions.",
+            "categoria": "Puzzle",
+            "id": "v68qb498f"
+        },
+        {
+            "titolo": "Stickman Sniper Shoot",
+            "url": "https://html5.gamemonetize.co/bymes51dz58zqon1ooz7db2ubsxyrz7g/",
+            "img": "https://img.gamemonetize.com/bymes51dz58zqon1ooz7db2ubsxyrz7g/512x384.jpg",
+            "desc": "Step into the world of intense long-range combat in Stickman Sniper Shoot, an action-packed sniper shooting game where precision, patience, and fast reflexes are the keys to survival. Become an elite stickman sniper assassin and take on dangerous missions filled with enemies, secret operations, and high-risk targets. Every shot matters, and one mistake can mean mission failure.",
+            "categoria": "Puzzle",
+            "id": "nxa2b9y5t"
+        },
+        {
+            "titolo": "Stickman Blast Puzzle",
+            "url": "https://html5.gamemonetize.co/b1xq3umsvsobp3v95syywh7s62vw944m/",
+            "img": "https://img.gamemonetize.com/b1xq3umsvsobp3v95syywh7s62vw944m/512x384.jpg",
+            "desc": "Fire &amp; collect palm blast ! Fun&amp;crazy stickman clicker ever !! Eliminate enimes and colect hundreds of skins. Caution: Once you begin the game, you could hardly stop it....",
+            "categoria": "Puzzle",
+            "id": "ah3mo5n1a"
+        },
+        {
+            "titolo": "Stickman Rescue Draw 2 Save",
+            "url": "https://html5.gamemonetize.co/fxzsxwyiw3kdj5hf1dnsx6ogy52od6of/",
+            "img": "https://img.gamemonetize.com/fxzsxwyiw3kdj5hf1dnsx6ogy52od6of/512x384.jpg",
+            "desc": "Your brain is the only shield for the stickman! Enjoy a super casual puzzler in the Stickman Rescue - Draw 2 Save. Use your finger to draw lines and save the stickman from danger! In each level, the stickman is in trouble, such as falling rocks, flying arrows, deep pits, etc. It&rsquo;s up to you to draw a safe shield, a bridge, or a clever device to keep him safe and complete your rescue mission!",
+            "categoria": "Puzzle",
+            "id": "shs6cvrjp"
+        },
+        {
+            "titolo": "Stickman Hero Skibidi Tower Defense",
+            "url": "https://html5.gamemonetize.co/2684x8cvwav4br4ro0g9la54rqdsgt7b/",
+            "img": "https://img.gamemonetize.com/2684x8cvwav4br4ro0g9la54rqdsgt7b/512x384.jpg",
+            "desc": "Fight off waves of Skibidi invaders in the Stickman Hero Skibidi Tower Defense. In this casual tower defense puzzle game, take control of the Stickman Hero. Use your strategic skills to build powerful towers and stop the Skibidi army. Move your hero wisely to enhance his power. Expanding his numbers to attack stronger enemies.",
+            "categoria": "Puzzle",
+            "id": "16hx33m1c"
+        },
+        {
+            "titolo": "Red And Blue Stickman Spy Puzzles",
+            "url": "https://html5.gamemonetize.co/h2jx4nmc8znfmowd84tu9ljzdz9tfaf2/",
+            "img": "https://img.gamemonetize.com/h2jx4nmc8znfmowd84tu9ljzdz9tfaf2/512x384.jpg",
+            "desc": "Want to be an archery hero? Red And Blue Stickman-Spy Puzzles is an exciting and fun action puzzle game. In this game, you will play as a brave blue stickman in this special adventure! In each level, you will face red monsters. To use your agility to evade and defeat enemies. Seize the opportunity to constantly adjust your archery Angle and distance to defeat the red monster.",
+            "categoria": "Puzzle",
+            "id": "13taxqtyr"
+        },
+        {
+            "titolo": "Red And Blue Stickman Spy Puzzles 2",
+            "url": "https://html5.gamemonetize.co/ivjv2l2zo2lw39nfpee02u0ulx5i2ps2/",
+            "img": "https://img.gamemonetize.com/ivjv2l2zo2lw39nfpee02u0ulx5i2ps2/512x384.jpg",
+            "desc": "Want to be an archery hero? Red And Blue Stickman-Spy Puzzles is an exciting and fun action puzzle game. In this game, you will play as a brave blue stickman in this special adventure! In each level, you will face red monsters. To use your agility to evade and defeat enemies. Seize the opportunity to constantly adjust your archery Angle and distance to defeat the red monster.",
+            "categoria": "Puzzle",
+            "id": "3r9sro2fo"
+        },
+        {
+            "titolo": "Stickman Troll Thief Puzzle",
+            "url": "https://html5.gamemonetize.co/136zurog5im5u5grwaf19itso4bn8k6l/",
+            "img": "https://img.gamemonetize.com/136zurog5im5u5grwaf19itso4bn8k6l/512x384.jpg",
+            "desc": "Thief Puzzle is a funny and addictive casual puzzle game. Here you should help a clever stickman with many funny ways to solve puzzles and steal target items. The rich and varied game scene contains many unexpected obstacles and traps, testing your intelligence and logical thinking. Each level of the game is a unique challenge.",
+            "categoria": "Puzzle",
+            "id": "aeojtlnhy"
+        },
+        {
+            "titolo": "Stickman Thief Puzzle 2",
+            "url": "https://html5.gamemonetize.co/zqk22il0jwlbf2ky8th74u84fz86g3pu/",
+            "img": "https://img.gamemonetize.com/zqk22il0jwlbf2ky8th74u84fz86g3pu/512x384.jpg",
+            "desc": "Revamp the batter: Stickman Thief Puzzle 2 offers an entertaining puzzle experience where you aim to aid a cunning thief in stealing various items and individuals. Each level presents a unique challenge where you must strategically extend the thiefs arm to access the desired target or apprehend a person. However, becoming a master thief requires more than a simple reach; you must employ cunning tactics and strategic thinking to outsmart your adversaries. Website Developer <a href='https://www.brightestgames.com/new-games'>https://www.brightestgames.com/new-games</a>",
+            "categoria": "Puzzle",
+            "id": "zro10yfxx"
+        },
+        {
+            "titolo": "Stickman Mental Math",
+            "url": "https://html5.gamemonetize.co/ack7uz3u0tq0wzfgiuzni4prdasjpdqj/",
+            "img": "https://img.gamemonetize.com/ack7uz3u0tq0wzfgiuzni4prdasjpdqj/512x384.jpg",
+            "desc": "Learn math by playing with Stickman. Brain game, math problem. Practice your skills in arithmetic. You must have heard about mental math, solve simple problems in your head. You can learn how to quickly find the right solution. Allocating just 5-10 minutes of stickman will help you increase your power of thought. By solving simple mathematical problems, you develop, but if you answer incorrectly, you will lose part of your stickman, help him hold out as long as possible. Math, Stickman, try this union.",
+            "categoria": "Puzzle",
+            "id": "yqw3xnjp1"
+        },
+        {
+            "titolo": "Totally Reliable Delivery Stickman",
+            "url": "https://html5.gamemonetize.co/yt3c74st3l5j4jofp5dgsz2whmgiz8w4/",
+            "img": "https://img.gamemonetize.com/yt3c74st3l5j4jofp5dgsz2whmgiz8w4/512x384.jpg",
+            "desc": "Fasten your harness and start the delivery truck. Its time for delivery! Join up to three of your friends and finish your work in an interactive sandbox world. Attempted delivery, this is a completely reliable delivery service guarantee!",
+            "categoria": "Puzzle",
+            "id": "2tzhlhle2"
+        },
+        {
+            "titolo": "Stickman Draw the Bridge",
+            "url": "https://html5.gamemonetize.co/e5gfyek11ts0hcvyvalbxhpw55g7dn11/",
+            "img": "https://img.gamemonetize.com/e5gfyek11ts0hcvyvalbxhpw55g7dn11/512x384.jpg",
+            "desc": "Draw a line so that the stickman can drive over it like a bridge. Learn to draw lines creatively, develop logic and your brain! Try to complete all levels and save stickman! GAME FEATURES ✏ Addictive and relaxing ✏ Entertaining and killing time ✏ Simple physical system ✏ Train your brain ✏ Challenge your creativity ✏ Simple yet interesting combination of logic puzzles and drawing games This is a test of how well your brain knows about creative ways to solve problems. Dive into the interesting world of stickman puzzles!",
+            "categoria": "Puzzle",
+            "id": "1kgsrcfry"
+        },
+        {
+            "titolo": " Stickman Prison Warriors ",
+            "url": "https://html5.gamemonetize.co/ef5utfw1l3drq2dfojdsef2cc0clga6t/",
+            "img": "https://img.gamemonetize.com/ef5utfw1l3drq2dfojdsef2cc0clga6t/512x384.jpg",
+            "desc": "An exiting game about a stickman escape from prison. A stickman is framed and imprisoned, but he never gives up and plans to self-salvation. Persevere, day after day, year after year. Hope can set him free. Finally, he can take the breath of freedom.",
+            "categoria": "Puzzle",
+            "id": "4gaj63lli"
+        },
+        {
+            "titolo": "Scary Stickman House Escape",
+            "url": "https://html5.gamemonetize.co/l6ken8ezxikbg2s6thb7c0ogqok7wkrk/",
+            "img": "https://img.gamemonetize.com/l6ken8ezxikbg2s6thb7c0ogqok7wkrk/512x384.jpg",
+            "desc": "Scary Stickman House Escape is a point and click game developed by 8B Games/Games2mad. Imagine that you had been to a house; there you got trapped inside the house. Here are the interesting puzzles and hidden objects to find and get escape from the house. Good luck... Have fun!",
+            "categoria": "Puzzle",
+            "id": "polwvmjzr"
+        },
+
+        {
+            "titolo": "Stickman Archery Ragdoll",
+            "url": "https://html5.gamemonetize.co/m962i8tkn6he3orbput128bvbvzhabq7/",
+            "img": "https://img.gamemonetize.com/m962i8tkn6he3orbput128bvbvzhabq7/512x384.jpg",
+            "desc": "Stickman Archer is a sleek and athletic black stickman warrior with a simple but powerful silhouette. He has a round head with small glowing white eyes, a slim yet strong body, long flexible limbs, and an aggressive combat stance. He carries a large modern bow with a clearly visible string and a quiver filled with arrows on his back. Simple shoulder armor and an arm guard give him a tougher, more battle-ready appearance without making the character overly detailed. His long limbs are designed to work naturally with ragdoll physics, allowing dramatic reactions when hit, knocked back, launched into the air, or thrown from platforms.",
+            "categoria": "Arcade",
+            "id": "utspnilak"
+        },
+        {
+            "titolo": "Stickman Warriors Superhero Fight",
+            "url": "https://html5.gamemonetize.co/ztnooa2wmbczll7r6hd4kj6vyym4z6x6/",
+            "img": "https://img.gamemonetize.com/ztnooa2wmbczll7r6hd4kj6vyym4z6x6/512x384.jpg",
+            "desc": "Stickman Warriors Superhero Fight delivers fast-paced battles where every dodge, combo, and special move creates an exciting action moment. This game brings together intense combat and hero progression, making it a great choice for fans of stickman fighting games. If you enjoy explosive combat, character upgrades, and fast action, this game delivers the excitement fans expect from Superhero action games and intense battle games.",
+            "categoria": "Arcade",
+            "id": "62m19qgvn"
+        },
+        {
+            "titolo": "Stickman Dismounting 2026",
+            "url": "https://html5.gamemonetize.co/3ge66kqdb05b6jorhx47qug2er6ukm8t/",
+            "img": "https://img.gamemonetize.com/3ge66kqdb05b6jorhx47qug2er6ukm8t/512x384.jpg",
+            "desc": "Get ready for the ultimate ragdoll physics experience with Stickman Ragdoll Wreckfest! Control a stickman as you launch him from various vehicles and contraptions, sending him tumbling, crashing, and flailing through intricately designed levels. The goal? To cause as much spectacular damage and create the most creative dismounts possible! Web Dev <a href='https://www.coolcrazygames.com/'>https://www.coolcrazygames.com/</a>",
+            "categoria": "Arcade",
+            "id": "yd32yze6j"
+        },
+        {
+            "titolo": "Stickman Skate City",
+            "url": "https://html5.gamemonetize.co/o6adgrmqifmi7u5tot8cx0540ozca3u6/",
+            "img": "https://img.gamemonetize.com/o6adgrmqifmi7u5tot8cx0540ozca3u6/512x384.jpg",
+            "desc": "Stickman Skate City is an exciting skateboarding action game where players control a nimble stickman character to perform amazing skateboard tricks in a vast urban environment. In this open world, players can freely explore every corner of the city, challenge various obstacles, and complete dazzling 360-degree spins and other high-difficulty stunts.",
+            "categoria": "Arcade",
+            "id": "4ezrgsxig"
+        },
+        {
+            "titolo": "Stickman Huggy 456 Squid",
+            "url": "https://html5.gamemonetize.co/vbm04a9nkapuq4rpyfqxvw1fk3422hdf/",
+            "img": "https://img.gamemonetize.com/vbm04a9nkapuq4rpyfqxvw1fk3422hdf/512x384.jpg",
+            "desc": "The blue monster needs to survive and escape from this horrible prison-like laboratory. Help the blue monster and escape. Collect all the money you find on the way, you need to get rich. Collect all the money and reach the green flag at the end of the laboratory. Make it safely to the finish line. Be very careful, there are spikes and moving sharp gears on the ground.",
+            "categoria": "Arcade",
+            "id": "b47ze2pgh"
+        },
+        {
+            "titolo": "Stickman Collect Run",
+            "url": "https://html5.gamemonetize.co/y5wrz49xk5c5a7c9nbbci64vnc9nyad3/",
+            "img": "https://img.gamemonetize.com/y5wrz49xk5c5a7c9nbbci64vnc9nyad3/512x384.jpg",
+            "desc": "Stickman Collect Run is an exciting parkour adventure where you dash, jump, and slide through a colorful world. Control a stickman as he runs through a vibrant, action-packed platform. Your goal is to keep running, collect as many other colored people as you can, and arrive at the finish line.",
+            "categoria": "Arcade",
+            "id": "xkexwnlb4"
+        },
+        {
+            "titolo": "Run Stickman Run",
+            "url": "https://html5.gamemonetize.co/le7cm6h29gc6gos1ko2r1muclu99smtj/",
+            "img": "https://img.gamemonetize.com/le7cm6h29gc6gos1ko2r1muclu99smtj/512x384.jpg",
+            "desc": "Run Stickman Run is an endless running game packed with speed and excitement. Dash through different environments while avoiding obstacles. Test your reflexes in fast-paced, action-packed gameplay. Jump, slide, and dodge to survive as long as possible. Enjoy smooth controls and dynamic animations. Compete for the highest score and challenge your friends. The difficulty increases the longer you run, making it more thrilling. Play online anytime and see how far you can go. Can you break your record?",
+            "categoria": "Arcade",
+            "id": "qpx8x2q3g"
+        },
+        {
+            "titolo": "Flappy Stickman",
+            "url": "https://html5.gamemonetize.co/ay7vxdk7q5hwgkkkqesarlsav4c5iza2/",
+            "img": "https://img.gamemonetize.com/ay7vxdk7q5hwgkkkqesarlsav4c5iza2/512x384.jpg",
+            "desc": "Flappy Stickman is a thrilling arcade challenge where you guide a stickman through a series of obstacles. Tap to keep him in the air and avoid crashing. Test your reflexes with fast-paced gameplay that gets harder over time. Compete for high scores and challenge your friends. Enjoy a minimalist design with smooth animations and addictive mechanics. Perfect for casual gamers looking for quick fun. Simple to play but hard to master. Endless gameplay ensures hours of entertainment. Play online anytime and improve your tapping skills. Can you achieve the highest score?",
+            "categoria": "Arcade",
+            "id": "mwem4e0t8"
+        },
+        {
+            "titolo": "Stickman Heel Runner",
+            "url": "https://html5.gamemonetize.co/t2i23bz5sk8bqg8h8b4mdgqgrigzi6hy/",
+            "img": "https://img.gamemonetize.com/t2i23bz5sk8bqg8h8b4mdgqgrigzi6hy/512x384.jpg",
+            "desc": "Embark on an adrenaline-pumping adventure in Stickman Heel Runner! Navigate treacherous obstacles, sprint through challenging courses, and dodge pitfalls to reach the finish line. With intuitive controls and dynamic gameplay, test your reflexes as you race against time. Collect power-ups for boosts and unlock new levels filled with thrilling surprises. Are you ready to conquer the track and become the ultimate Stickman Heel Runner champion? Web Dev <a href='https://www.coolcrazygames.com/'>https://www.coolcrazygames.com/</a>",
+            "categoria": "Arcade",
+            "id": "f6v9frtw7"
+        },
+        {
+            "titolo": "Stickman Mass Multiplier",
+            "url": "https://html5.gamemonetize.co/ljqjgj7zs7xx010um4k2nohcm1zise7q/",
+            "img": "https://img.gamemonetize.com/ljqjgj7zs7xx010um4k2nohcm1zise7q/512x384.jpg",
+            "desc": "Stickman Mass Multiplier invites you to lead vast armies of stick figures into epic battles! Strategically multiply your forces, overwhelming enemies with sheer numbers. Navigate through diverse environments, from lush forests to treacherous mountains, as you conquer territories and expand your dominion. With intuitive controls and fast-paced action, this mobile game offers thrilling gameplay for strategy enthusiasts. Dominate the battlefield, unleash chaos, and prove your mastery in Stickman Mass Multiplier! website dev <a href='https://www.freecrazygames.io/'>https://www.freecrazygames.io/</a>",
+            "categoria": "Arcade",
+            "id": "cj0rb5wwm"
+        },
+        {
+            "titolo": "Stickman Color Saw ",
+            "url": "https://html5.gamemonetize.co/vg9plxk4f6yqtofdrqg7j2m9ixjxv1k5/",
+            "img": "https://img.gamemonetize.com/vg9plxk4f6yqtofdrqg7j2m9ixjxv1k5/512x384.jpg",
+            "desc": "Ever wanted to do a cut but like to keep your fingers intact? With Stickman Color Saw, you can do both! Shape your rough blocks into various shapes with all kinds of tools. Cut and smash through countless levels.",
+            "categoria": "Arcade",
+            "id": "vqo0emk9w"
+        },
+        {
+            "titolo": "Stickman Doodle Epic Rage",
+            "url": "https://html5.gamemonetize.co/39619mhrok90ugn1szm24fsvagqqwucc/",
+            "img": "https://img.gamemonetize.com/39619mhrok90ugn1szm24fsvagqqwucc/512x384.jpg",
+            "desc": "Stickman Doodle Epic Rage is fun and addictive beatemup game with realistic physics and hardcore gameplay. With simple controls you can perform amazing stunts and blows to defeat your opponents. Unknown enemies emerge in the city! Our Stick hero continues to fight them off with a wide array of deadly weapons as well as helicopters and robots, who can devastate all enemies at once! The followers of Stickman games still have not forgotten the feeling of tight guillotine and ecstatic graphics of Stickman Brawl of Rage. And what would you expect in a recent version of Stickman fight and this revenge? Whether this revenge will end or not?",
+            "categoria": "Arcade",
+            "id": "efgrizxko"
+        },
+        {
+            "titolo": "Stickman Hook 2",
+            "url": "https://html5.gamemonetize.co/gb4aazkz235kjrfgvy103rjnrhfzq4x1/",
+            "img": "https://img.gamemonetize.com/gb4aazkz235kjrfgvy103rjnrhfzq4x1/512x384.jpg",
+            "desc": "Tap to hook and make incredible jumps; Avoid every obstacle that stands in your way. Can you execute all these acrobatic tricks in a row like a boss? Will you be the first survivor to cross the finish line? In this game, embody the spider stickman. Finish all the levels with the same agility as a spider. For that, you just have to: - Tap to hook and make incredible jumps - Press your screen to hook your stickman with your grapnel and release to let go - Avoid every obstacle that stands in your way - Swing from hook to hook to pass all the levels Thanks to the bumpers and your grapnel, execute acrobatic tricks and show your friends who is t",
+            "categoria": "Arcade",
+            "id": "qac1aecri"
+        },
+        {
+            "titolo": "Stickman vs Noob Hammer",
+            "url": "https://html5.gamemonetize.co/zkaidxdnl3m60vzkuhfefk9n3xaqzqwd/",
+            "img": "https://img.gamemonetize.com/zkaidxdnl3m60vzkuhfefk9n3xaqzqwd/512x384.jpg",
+            "desc": "hey you player! Have you ever moved with a friend using just a hammer? you even have to use a hammer to do it back and forth. Use the hammer to move and reach the lucky box at the end of the level, and when you reach it with your friend, you will have the right to pass to the next level. Don't forget there are obstacles in the game, you have to be very careful.",
+            "categoria": "Arcade",
+            "id": "neu9u5ti6"
+        },
+        {
+            "titolo": "Stickman Jungle Escape",
+            "url": "https://html5.gamemonetize.co/e3ffkxdrwaz3aaka5fcq0bypx4mw1hno/",
+            "img": "https://img.gamemonetize.com/e3ffkxdrwaz3aaka5fcq0bypx4mw1hno/512x384.jpg",
+            "desc": "Stickman tried to escape from the jungle and their enemy don't want him there - he could be stealing all the secrets! His Enemy fires deadly lasers and missiles at him, he puts on a jetpack and shoots into the air, hoping to run away. Control the jetpack, pickup amazing boosters, and help Stickman survive in the Jungle!",
+            "categoria": "Arcade",
+            "id": "hpxzktdus"
+        },
+        {
+            "titolo": "Stickman Fighter : Mega Brawl",
+            "url": "https://html5.gamemonetize.co/7zbsbff0fup5t3onxnj5s4zlnpks3h3v/",
+            "img": "https://img.gamemonetize.com/7zbsbff0fup5t3onxnj5s4zlnpks3h3v/512x384.jpg",
+            "desc": "STICKMAN FIGHTER MEGA BRAWL is the best stickman action game. Fight against other Stickmen, warriors and epic Stick Boss, and try to exterminate them all because there is no mercy for the Stickmen ! You can use tons of super skills, massive weapons, special technics, magic spells and other destructing moves to battle them and kill them",
+            "categoria": "Arcade",
+            "id": "kt001cet2"
+        },
+        {
+            "titolo": "Stickman Slope",
+            "url": "https://html5.gamemonetize.co/9c770qzqna7l7uhtldp12ot1grkd9ovs/",
+            "img": "https://img.gamemonetize.com/9c770qzqna7l7uhtldp12ot1grkd9ovs/512x384.jpg",
+            "desc": "Stickman Slope is a running game set in the streets of a city. To be successful, you have to avoid the obstacles that come your way. There are helpful power-ups and special abilities to help you progress in Stickman Slope. The game contains 8 stickman characters. This 3D running game can be played as a casual game. It is a game that can be played on both pc and mobile devices.",
+            "categoria": "Arcade",
+            "id": "j8ecfjw2t"
+        },
+        {
+            "titolo": "Stickman Huggy 2",
+            "url": "https://html5.gamemonetize.co/1n8ptnixrz2jsxi1aifqr1311lx1y34d/",
+            "img": "https://img.gamemonetize.com/1n8ptnixrz2jsxi1aifqr1311lx1y34d/512x384.jpg",
+            "desc": "Help the cute blue monster huggy cross paths full of obstacles! stickman huggy must cross the obstacles and reach the finish line. Help him and get him to the finish.",
+            "categoria": "Arcade",
+            "id": "60m2eydeq"
+        },
+        {
+            "titolo": "Stickman Huggy",
+            "url": "https://html5.gamemonetize.co/xhecqf5953srm1hgklz4wkv8itdf6lmr/",
+            "img": "https://img.gamemonetize.com/xhecqf5953srm1hgklz4wkv8itdf6lmr/512x384.jpg",
+            "desc": "hey i'm a stickman huggy. you have to help me and i have to pass all the chapters. Try to finish the level by paying attention to the obstacles. Be careful, if you hit the obstacle, you will lose. Reach the flag before the time runs out and move on to the next level. each level is challenging and different from each other.",
+            "categoria": "Arcade",
+            "id": "utja5e3aj"
+        },
+        {
+            "titolo": "Stickman Dismounting 2022",
+            "url": "https://html5.gamemonetize.co/iurxewii8ksjhs53tatgvzvsvmk0qfd7/",
+            "img": "https://img.gamemonetize.com/iurxewii8ksjhs53tatgvzvsvmk0qfd7/512x384.jpg",
+            "desc": "There has been yet another dreary day, and you've had enough. Our door is always open; all you have to do is walk in. Make your virtual stickman suffer while having fun wreaking havoc. Relax and let go of any reluctance by pressing and holding the on-screen button. Map levels and additional props and vehicles can be used to make your party more enjoyable. Is it not to your taste? Take a look at the props that are available. TNT, a gun, and a big gun are all we have. Try a volcano if you still don't like it. Inducing more pain and more amusement Attention. A game is nothing more than a game. Your life is still a work of art if you take care of yourself. Not recommended for children and outside use FEATURES: - A ragdoll physics system that is constantly moving. Crunchy sound effects levels of complexity - A variety of automobiles The ability to customize the level with a variety of props is provided.",
+            "categoria": "Arcade",
+            "id": "82vu5tu2p"
+        },
+        {
+            "titolo": "Stickman Skater",
+            "url": "https://html5.gamemonetize.co/q8sjdgwloik9rsko088mcu3rp2j67v6u/",
+            "img": "https://img.gamemonetize.com/q8sjdgwloik9rsko088mcu3rp2j67v6u/512x384.jpg",
+            "desc": "Get your skateboard ready and join this wonderful Stickman Skate Battle multiplayer game. Challenge your friends or any player from around the world in amazing 1v1 on amazing skateparks. Perform spectacular tricks and combinations to beat your opponent, take his coins and have a chance to participate in the best international competitions. This game offers different modes (daily and weekly tournaments, 1 on 1, freeride, challenges and domination) and many other great features.",
+            "categoria": "Arcade",
+            "id": "238kdyt3i"
+        },
+        {
+            "titolo": "Stickman Army Battle",
+            "url": "https://html5.gamemonetize.co/ma3pk7jwwvge1qd87eiu5m0zkaq7dq6c/",
+            "img": "https://img.gamemonetize.com/ma3pk7jwwvge1qd87eiu5m0zkaq7dq6c/512x384.jpg",
+            "desc": "The most strategic stickman war game is now available. Play now to : \" Stickman Army : Team Battle \". You must lead your stickman army and defeat the enemy ! Up to the victory !!! You are in charge of leading a small group of stickman soldiers. Each of them have different characteristics and weapons. Attack, defense, special tricks... You have a vast variety of strategies to defeat the enemy. Spin the wheel to pop up your stickman soldiers. Each symbol in the wheel will bring special caracteristics to your units. You are in command of a number powerful weapons and soldiers that can stop the ennemies. You can end this war... But this is going to be an epic and amazing battle. Kill the other team. Whatever happens ! Lead your team to the final victory. You have a tons of different weapons available: Every weapon has different characteristics and you have to play wisely to defeat the enemy. Or you will die !!!",
+            "categoria": "Arcade",
+            "id": "3cb68517l"
+        },
+        {
+            "titolo": "Stickman Restaurant Rush Game",
+            "url": "https://html5.gamemonetize.co/vtydh9x25bb30pqyg1lw2t315mj8jnnx/",
+            "img": "https://img.gamemonetize.com/vtydh9x25bb30pqyg1lw2t315mj8jnnx/512x384.jpg",
+            "desc": "Welcome to Stickman Restaurant Rush Game, a fast-paced restaurant management adventure where you serve hungry customers, prepare delicious meals, and grow your dream restaurant! Step into the shoes of a hardworking stickman chef and race against time to take orders, cook tasty food, and deliver meals before customers lose patience. Every level brings exciting challenges that test your speed, strategy, and time management skills. Upgrade your kitchen, unlock new recipes, improve your restaurant, and become the ultimate restaurant tycoon. Keep customers happy, earn bigger tips, and build the busiest restaurant in town!",
+            "categoria": "Hypercasual",
+            "id": "mbftp3okk"
+        },
+        {
+            "titolo": "Stickman Night Survive",
+            "url": "https://html5.gamemonetize.co/zx1x0yknh5emq3mzop2fvbpimsxgpz9h/",
+            "img": "https://img.gamemonetize.com/zx1x0yknh5emq3mzop2fvbpimsxgpz9h/512x384.jpg",
+            "desc": "Now that Halloween is here, the gloomiest day of the year, its time to bring back the courageous white stickman who is an expert at vanquishing monsters. Stop procrastinating and start enjoying Stickman Night Survive right now on your preferred mobile device. Its a fun and free online game. Every living thing on Earth is frightened to death when monsters emerge from their underground lairs on Halloween night.",
+            "categoria": "Hypercasual",
+            "id": "kcxsc426a"
+        },
+        {
+            "titolo": "StickMan Cartoon Balance",
+            "url": "https://html5.gamemonetize.co/y4u47yls2ocwjyh5nods3453r9dd3cd5/",
+            "img": "https://img.gamemonetize.com/y4u47yls2ocwjyh5nods3453r9dd3cd5/512x384.jpg",
+            "desc": "StickMan Cartoon Balance is an addictive game that will test your skill and strategy. As you progress through the levels, you must stack and balance an ever-increasing tower of cartoons. This game is perfect for players of all ages. Play now and see how high you can build your tower!",
+            "categoria": "Hypercasual",
+            "id": "ibx7wsxm8"
+        },
+        {
+            "titolo": "Stickman Cannon Shooter",
+            "url": "https://html5.gamemonetize.co/dbc9hfbe4bzjsqk72vwt3toewhcle393/",
+            "img": "https://img.gamemonetize.com/dbc9hfbe4bzjsqk72vwt3toewhcle393/512x384.jpg",
+            "desc": "strategic prowess with Stickman Cannon Shooter: Mobilize your troops and engage in the ultimate tactical clash! Showcasing captivating gameplay and boundless complexity, this game is designed to push the limits of your strategic acumen. Are you prepared to unleash your leadership skills and guide your forces to triumph? Stickman Cannon Shooter awaits, ready to put your intuitive abilities as a top-tier tactician to the test like never before! Website Developer <a href='https://www.playbestgames.online/'>https://www.playbestgames.online/</a>",
+            "categoria": "Hypercasual",
+            "id": "54cvn652p"
+        },
+        {
+            "titolo": "Stickman Curve City",
+            "url": "https://html5.gamemonetize.co/q890a1f8d0qxuokonpu8xpbx6atyypx7/",
+            "img": "https://img.gamemonetize.com/q890a1f8d0qxuokonpu8xpbx6atyypx7/512x384.jpg",
+            "desc": "Curve City Stickman is a 3D stickman running game and your mission is to reach the finish line without getting hit by obstacles. You move the stickman character to the right and left to move forward. This stickman game has an amazing environment design and also has very dangerous obstacles. A dangerous run awaits you with blades, hammers and guillotines.",
+            "categoria": "Hypercasual",
+            "id": "ssopxo67u"
+        },
+        {
+            "titolo": "Stickman Soccer",
+            "url": "https://html5.gamemonetize.co/y0efnodyebgaivqvz0sypzce51sxufot/",
+            "img": "https://img.gamemonetize.com/y0efnodyebgaivqvz0sypzce51sxufot/512x384.jpg",
+            "desc": "You will play a football match with stickman on a big football field. During this soccer match you will aim and kick the ball. After that, the soccer ball will fly quickly and go to the opponent's goal. You will hear a loud \"GOAL\" sound. The side that attacks the most goals in 90 seconds wins. If you want to play football match with your friend, you can use \"2 PLAYER\" mode.",
+            "categoria": "Hypercasual",
+            "id": "84bwa4i2l"
+        },
+        {
+            "titolo": "Stickman Gradient",
+            "url": "https://html5.gamemonetize.co/s13tjd37buc42sx5q4z3r585y22uz1zl/",
+            "img": "https://img.gamemonetize.com/s13tjd37buc42sx5q4z3r585y22uz1zl/512x384.jpg",
+            "desc": "Stickman Gradient is an amazing stickman running game. Your mission in this game; Avoiding obstacles while running through the city streets. You have to be careful and watch out for obstacles while playing this running game.",
+            "categoria": "Hypercasual",
+            "id": "evs3laekv"
+        },
+        {
+            "titolo": "Count Masters: Stickman Games",
+            "url": "https://html5.gamemonetize.co/cdbqrwl45z3ant14u6re9d4c6cysytk6/",
+            "img": "https://img.gamemonetize.com/cdbqrwl45z3ant14u6re9d4c6cysytk6/512x384.jpg",
+            "desc": "Choose the best gate, pass through it, and bring stickman warriors together to clash with the opposing crowd. Become the crowd master and lead your people through the crowded city till the end of this epic race. Crash obstacles and beat everyone on your way, collect coins and upgrade your levels. Defeat the King-stickman in the final battle and take the castle! Looking for some fun and thrill? Then this 3d running game is just for you. Count Masters is one of the most exciting clash games of all times! You start the battle alone but trust us: there are no chances for you to feel lonely. This city takeover game features fascinating graphics and simple mechanics. You have a chance to get absorbed in the bright world of Count Masters full of gang fights and stickman battles. Get ready to spend hours playing one of the most thrilling running games. We promise: you won’t get bored! FEATURES: Dynamic race. You are not a simple runner but the boss of a whole crowd of stickmen. Gather your gang and lead them to the main clash of their life!",
+            "categoria": "Hypercasual",
+            "id": "agulyg9eq"
+        },
+        {
+            "titolo": "Push the Crazy Crowd : Stickman Clash 3D",
+            "url": "https://html5.gamemonetize.co/91juk8nwy961yt1uu7jloxvwoe3awabu/",
+            "img": "https://img.gamemonetize.com/91juk8nwy961yt1uu7jloxvwoe3awabu/512x384.jpg",
+            "desc": "Push the crazy crowd - stickman clash 3d rush is a fun hyper casual game. Push em all off the platform with just a swipe of a finger. Make your way through crowd rush battling to reach the finishing line as an undefeated master of stickman rush crowd, throwing all off the bridge like ragdoll. Be the crowd pusher and have fun in this epic running game.",
+            "categoria": "Hypercasual",
+            "id": "c62mbbdza"
+        },
+        {
+            "titolo": "Stickman Hook Online",
+            "url": "https://html5.gamemonetize.co/6uuetp7n2ivthzucdwgogd2bfwe36wxc/",
+            "img": "https://img.gamemonetize.com/6uuetp7n2ivthzucdwgogd2bfwe36wxc/512x384.jpg",
+            "desc": "Stickman Hook is a fun game where you can test your skills. You play as a swinging stickman through hundreds of challenging levels. This fun, colorful stickman game offers over 100 challenging levels. Unlock unique characters along the way to switch things up while you swing. Pay attention to the angle and direction of your swing to make it to the finish line! Can you control your swing? In this game, embody the spider stickman. Finish all the levels with the same agility as a spider. For that, you just have to: - Tap to hook and make incredible jumps - Press your screen to hook your stickman with your grapnel and release to let go - Avoid every obstacle that stands in your way - Swing from hook to hook to pass all the levels",
+            "categoria": "Hypercasual",
+            "id": "4mbi0lftc"
+        },
+
+        {
+            "titolo": "Stickman: Hooks",
+            "url": "https://html5.gamemonetize.co/x3axo95l28dooujainl5kfjrib9dklth/",
+            "img": "https://img.gamemonetize.com/x3axo95l28dooujainl5kfjrib9dklth/512x384.jpg",
+            "desc": "Get ready to swing into action with Stickman: Hooks! Tap to hook, make incredible jumps, and execute perfect acrobatic tricks to avoid every obstacle that stands in your way. Master the physics-based gameplay to swing from hook to hook like a pro, building momentum to fly across the finish line. Web Dev <a href='https://www.crazygamesx.com/'>https://www.crazygamesx.com/</a>",
+            "categoria": "Action",
+            "id": "moaige9v7"
+        },
+        {
+            "titolo": "Stickman: Fighter 3D",
+            "url": "https://html5.gamemonetize.co/qvhiwy50v4wsn6vacktj5qjdx59ebcjg/",
+            "img": "https://img.gamemonetize.com/qvhiwy50v4wsn6vacktj5qjdx59ebcjg/512x384.jpg",
+            "desc": "Enter the arena in Hamada Yedrab Stickman Fighter 3D Experience the classic stickman combat you love, now in a stunning 3D world with fluid physics and hard-hitting action. GAME MODES: Arcade Mode: Battle through 15 intense levels against increasingly smart AI opponents. 2-Player Versus: Challenge a friend on the same computer! BATTLE SYSTEM: Unleash combos, perform flying kicks, and dodge attacks in a dynamic 3D arena. POWER-UPS: Watch out for floating orbs that spawn during the fight: Red: Double Damage Blue: Super Speed Green: Health Restore Yellow: Invincibility",
+            "categoria": "Action",
+            "id": "pc0b7xvyx"
+        },
+        {
+            "titolo": "Stickman Dragon Fighting",
+            "url": "https://html5.gamemonetize.co/3qjy06r1j5gwos4zqmqu4w86tn74pq7m/",
+            "img": "https://img.gamemonetize.com/3qjy06r1j5gwos4zqmqu4w86tn74pq7m/512x384.jpg",
+            "desc": "Stickman Dragon Fight is an action-packed game where players control power heroes battling evil. Master dodging, blocking, and advanced skills in three modes: Story, for epic adventures; Versus, for team battles; and Tournament, challenging 15 teams for ultimate victory. Each mode offers thrilling combat and opportunities to uncover secrets while showcasing your skills! Can find more website here on <a href='https://www.bestcrazygames.com/'>https://www.bestcrazygames.com/</a> WASD to move character and attack, pounch can see button in game map",
+            "categoria": "Action",
+            "id": "ia05woy4d"
+        },
+        {
+            "titolo": "StickMan Defense",
+            "url": "https://html5.gamemonetize.co/xnm06hp9o6dt48fua7g3jzoddqnkc5fs/",
+            "img": "https://img.gamemonetize.com/xnm06hp9o6dt48fua7g3jzoddqnkc5fs/512x384.jpg",
+            "desc": "Dive into the thrilling world of StickMan Defense, a captivating game where strategy meets action. In this game, players are tasked with defending their base against waves of incoming enemies, using a variety of stickman warriors. Each level challenges your tactical skills, requiring careful placement of troops and timely upgrades. With intuitive controls and engaging graphics, StickMan Defense offers an immersive experience for both casual and hardcore gamers. Web Dev <a href='https://www.insanegamesonline.com/'>https://www.insanegamesonline.com/</a>",
+            "categoria": "Action",
+            "id": "hxdfn5795"
+        },
+        {
+            "titolo": "Stickman Team Return",
+            "url": "https://html5.gamemonetize.co/ayvxzb2goubgu6h8hr48zqrvrt5lz612/",
+            "img": "https://img.gamemonetize.com/ayvxzb2goubgu6h8hr48zqrvrt5lz612/512x384.jpg",
+            "desc": "Its team time now! Cartoon character The game of Team Detroit is fun to watch. A gang of robbers is threatening the city of Detroit, but three little stick figures will come together to stop them. Take pleasure in killing off enemy stickmen while using any of the three playable characters. Because of their unique abilities and weaponry, each playable character is tailor-made for their specific role.",
+            "categoria": "Action",
+            "id": "nxvdx5yta"
+        },
+        {
+            "titolo": "StickMan Angle Fight ",
+            "url": "https://html5.gamemonetize.co/1r11ygneka6bu6iy7cnhj2x1wqznwree/",
+            "img": "https://img.gamemonetize.com/1r11ygneka6bu6iy7cnhj2x1wqznwree/512x384.jpg",
+            "desc": "Weapons at the ready, and away we go! This is Angle Fight 3D, and it&rsquo;s to you to fight the enemies and win the game. Grab your swords, weapons, and more and strike your best battle pose. Aim right and true, and you will win this fight and beat your enemy. Are you ready to take on the challenge in Angle Fight 3D? We bet you are!",
+            "categoria": "Action",
+            "id": "vz4y446gw"
+        },
+        {
+            "titolo": "Ninja Stickman Warrior HTML5",
+            "url": "https://html5.gamemonetize.co/qkf5109t7ye847az9c0p1jffbq031ikn/",
+            "img": "https://img.gamemonetize.com/qkf5109t7ye847az9c0p1jffbq031ikn/512x384.jpg",
+            "desc": "The Stickman Ninja Warrior game presents a distinctive puzzle-solving experience. In this game, your mission is to liberate prisoners using the limited supply of shurikens at your disposal. Exercise caution and strategic thinking as you navigate through a series of unique and challenging levels. Website Developer <a href='https://www.crazygamesonline.com/'>https://www.crazygamesonline.com/</a>",
+            "categoria": "Action",
+            "id": "k8fcabrni"
+        },
+        {
+            "titolo": "Archer Warrior - Stickman War",
+            "url": "https://html5.gamemonetize.co/afxlp7xk56434s875mplxpn0pr2wi5x5/",
+            "img": "https://img.gamemonetize.com/afxlp7xk56434s875mplxpn0pr2wi5x5/512x384.jpg",
+            "desc": "In this interesting 3D fighting game Archer Warrior, what players need to do is to ride on horseback, improve their skills, fight with their enemies, and release their powerful energy to defeat every bad guy and save the hostages. Have fun in the Archer Warrior!",
+            "categoria": "Action",
+            "id": "mn36c3p2d"
+        },
+        {
+            "titolo": "Stickman Temple Wars",
+            "url": "https://html5.gamemonetize.co/5etwyeyv8eqplry4iq11p130cixiqsbg/",
+            "img": "https://img.gamemonetize.com/5etwyeyv8eqplry4iq11p130cixiqsbg/512x384.jpg",
+            "desc": "Hours of fun begin with the Stickman Temple Duel game. \"Story mode\", \"2Player\" and \"Etc.You can play the game that offers \"bot\" options, whether with friends or against artificial intelligence. Challenging tracks consisting of 40 chapters are waiting for you in story mode in the unblocked shooting game. You will be playing alone in this episode. 2Player and Etc.You will be engaged in a gunfight on the visuals, moving tracks that change in each section of the bot options. The one who grabs the gun first and can hit the opposite side wins. If you want to have an interesting experience where you can find different games in the same place, click here immediately. Have fun!",
+            "categoria": "Action",
+            "id": "ndojbch5w"
+        },
+        {
+            "titolo": "Stickman Army : Resistance",
+            "url": "https://html5.gamemonetize.co/cjhu8u0dp52nqfq6kmhesu09sesrjhnn/",
+            "img": "https://img.gamemonetize.com/cjhu8u0dp52nqfq6kmhesu09sesrjhnn/512x384.jpg",
+            "desc": "A crowd of renegade stickman have started to invade the jungle and kill people. The last hope of the region is its best army team !!! You are a team of 2 super well trained soldiers. You are in command of a number powerfull weapons that can stop the revolutionaries. You can end this war... But this is going to be an epic battle. You must protect your position. Whatever happens !",
+            "categoria": "Action",
+            "id": "4cstgiey5"
+        },
+        {
+            "titolo": "Stickman Squid Games",
+            "url": "https://html5.gamemonetize.co/rxbcgn4p3bv4xkphrm0tpdsvfk76ae4o/",
+            "img": "https://img.gamemonetize.com/rxbcgn4p3bv4xkphrm0tpdsvfk76ae4o/512x384.jpg",
+            "desc": "Stickman squid games is a new survival game. Be as fast as possible. Watch out for the giant doll. That doll shoots anything that moves. - Red Light Green Light - Glass Tiles - Tug of War - Honeycomb and more. - Funny ragdoll physics.",
+            "categoria": "Action",
+            "id": "qrmdinx8l"
+        },
+        {
+            "titolo": "Stickman.io",
+            "url": "https://html5.gamemonetize.co/kadu7xqb5ga8ep9d62i04pse51fdat5r/",
+            "img": "https://img.gamemonetize.com/kadu7xqb5ga8ep9d62i04pse51fdat5r/512x384.jpg",
+            "desc": "Stickman Revenge is back. Continuation of the hit series of Stickman Revenge games In this version, gamers will experience the best RGP game series ever.",
+            "categoria": "Action",
+            "id": "i6047u0mj"
+        }
+    ];
+
+
+</script>
+
+<!-- Il filo che abbiamo appena collegato -->
+<!-- Vedi quel ?v=2 alla fine? Inganna il browser e lo costringe a scaricare il file nuovo! -->
+<script src="https://playcombo.it/js/motore-playcombo.js?v=16"></script>
+
+<script>
+    // E via, si parte!
+    window.inizializzaGiochi();
+</script>
+<script>
+    // La barra ricerca + categoria resta visibile in alto per TUTTA la pagina, footer compreso.
+    // Lo "sticky" dura quanto il contenitore in cui sta: la porto quindi direttamente dentro <body>,
+    // subito prima del contenitore principale della pagina (nel tema e' #page).
+    (function () {
+        function spostaBarra() {
+            var barra = document.querySelector('.barra-fissa-spc');
+            var blocco = document.querySelector('.contenitore-arcade-spc');
+            if (!barra || !blocco || barra.classList.contains('barra-spostata-spc')) return;
+            var alto = blocco;
+            while (alto.parentNode && alto.parentNode !== document.body) alto = alto.parentNode;
+            if (!alto.parentNode) return;
+            document.body.insertBefore(barra, alto);
+            barra.classList.add('barra-spostata-spc');
+        }
+
+        // Quando si apre l'anteprima o il gioco, la barra si nasconde
+        function osservaGioco() {
+            var cornice = document.getElementById('cornice-gioco');
+            if (!cornice || typeof MutationObserver === 'undefined') return;
+            var aggiorna = function () {
+                var aperta = window.getComputedStyle(cornice).display !== 'none';
+                document.documentElement.classList.toggle('gioco-aperto-spc', aperta);
+            };
+            new MutationObserver(aggiorna).observe(cornice, { attributes: true, attributeFilter: ['style', 'class'] });
+            aggiorna();
+        }
+
+        function rilasciaGriglia() {
+            var g = document.querySelector('.griglia-giochi-spc');
+            if (!g) return;
+            var oss;
+            var togli = function () {
+                if (!g.children.length) return;
+                g.classList.remove('griglia-in-attesa');
+                if (oss) oss.disconnect();
+            };
+            if (window.MutationObserver) {
+                oss = new MutationObserver(togli);
+                oss.observe(g, { childList: true });
+            }
+            togli();
+        }
+
+        function avvia() {
+            // spostaBarra();
+            osservaGioco();
+            rilasciaGriglia();
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', avvia);
+        } else {
+            avvia();
+        }
+    })();
+</script>
