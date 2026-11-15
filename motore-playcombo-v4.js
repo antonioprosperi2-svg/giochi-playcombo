@@ -183,18 +183,18 @@ function mostraPagina(pagina) {
 // ===== HOME A RIGHE (stile Poki): attiva solo sulla home e solo senza ricerca =====
 const RIGA_MAX = 30;   // 30 giochi mostrati per ogni riga
 const CATEGORIE_HOME = [
-    { key: 'puzzle', titolo: 'Puzzle', url: 'https://playcombo.it/puzzle/' },
-    { key: 'shooter', titolo: 'Sparabolle', url: 'https://playcombo.it/sparabolle/' },
-    { key: 'arcade', titolo: 'Arcade', url: 'https://playcombo.it/arcade/' },
-    { key: 'match-3', titolo: 'Match-3', url: 'https://playcombo.it/match-3/' },
-    { key: 'memory', titolo: 'Mahjong', url: 'https://playcombo.it/MAHJONG/' },
-    { key: 'trivia', titolo: 'Quizzzz!', url: 'https://playcombo.it/quizzzz/' },
-    { key: 'gamesforgirls', titolo: 'Girls', url: 'https://playcombo.it/GIRLS/' },
-    { key: 'sports', titolo: 'Sport', url: 'https://playcombo.it/SPORT/' },
+    { key: 'puzzle', titolo: 'Giochi Puzzle', url: 'https://playcombo.it/puzzle/' },
+    { key: 'shooter', titolo: 'Giochi Sparabolle', url: 'https://playcombo.it/sparabolle/' },
+    { key: 'arcade', titolo: 'Giochi Arcade', url: 'https://playcombo.it/arcade/' },
+    { key: 'match-3', titolo: 'Giochi Match-3', url: 'https://playcombo.it/match-3/' },
+    { key: 'memory', titolo: 'Giochi Mahjong', url: 'https://playcombo.it/MAHJONG/' },
+    { key: 'trivia', titolo: 'Giochi Quizzzz!', url: 'https://playcombo.it/quizzzz/' },
+    { key: 'gamesforgirls', titolo: 'Giochi Girls', url: 'https://playcombo.it/GIRLS/' },
+    { key: 'sports', titolo: 'Giochi Sport', url: 'https://playcombo.it/SPORT/' },
     { key: 'racing', titolo: 'Giochi di corse', url: 'https://playcombo.it/giochi-di-corse/' },
-    { key: 'card', titolo: 'Carte e memory', url: 'https://playcombo.it/carte-e-memory/' },
+    { key: 'card', titolo: 'Giochi Carte e Memory', url: 'https://playcombo.it/carte-e-memory/' },
     { key: 'adventure', titolo: "Giochi d'avventura", url: 'https://playcombo.it/giochi-davventura/' },
-    { key: 'platformer', titolo: 'Giochi platform', url: 'https://www.playcombo.it/giochi-platform/' },
+    { key: 'platformer', titolo: 'Giochi Platform', url: 'https://www.playcombo.it/giochi-platform/' },
     { key: '2048', titolo: 'Giochi 2048', url: 'https://www.playcombo.it/2048-online-gratis-gioca-subito-su-spc/' },
     { key: 'stickman', titolo: 'Giochi Stickman', url: 'https://www.playcombo.it/giochi-stickman/' }
 ];

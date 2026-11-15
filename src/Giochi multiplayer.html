@@ -1,0 +1,1907 @@
+<style>
+    .spc-css-guard {
+        --spc: 1;
+    }
+
+    .contenitore-arcade-spc {
+        width: 100% !important;
+        margin: 0 auto;
+        padding: 150px 10px 10px 10px !important;
+        box-sizing: border-box;
+        font-family: sans-serif;
+    }
+
+    .sezione-ricerca-spc {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+        padding: 0 10px;
+    }
+
+    .input-ricerca-spc {
+        width: 100% !important;
+        max-width: 500px !important;
+        padding: 14px 20px !important;
+        font-size: 16px !important;
+        border: 2px solid rgba(255, 255, 255, 0.5) !important;
+        border-radius: 50px !important;
+        outline: none !important;
+        background: rgba(255, 255, 255, 0.15) !important;
+        color: #ffffff !important;
+        backdrop-filter: blur(8px) !important;
+        -webkit-backdrop-filter: blur(8px) !important;
+        transition: border-color 0.3s, box-shadow 0.3s !important;
+        box-sizing: border-box !important;
+    }
+
+    .input-ricerca-spc::placeholder {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+
+    .input-ricerca-spc:focus {
+        border-color: #00aaff !important;
+        box-shadow: 0 4px 12px rgba(0, 170, 255, 0.3) !important;
+        background: rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .box-selezione-spc {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+        padding: 0 10px;
+    }
+
+    #select-categoria-spc {
+        width: 100%;
+        max-width: 500px;
+        padding: 14px 20px;
+        font-size: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        border-radius: 50px;
+        outline: none;
+        background: rgba(255, 255, 255, 0.15);
+        background-color: rgba(255, 255, 255, 0.15) !important;
+        color: #ffffff;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        box-sizing: border-box;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    #select-categoria-spc:focus {
+        border-color: #00aaff;
+        box-shadow: 0 4px 12px rgba(0, 170, 255, 0.3);
+    }
+
+    #select-categoria-spc option {
+        background: #1a1a2e;
+        color: #ffffff;
+    }
+
+    /* === GIOSTRA DEI RECENTI === */
+    .sezione-recenti-spc {
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto 25px auto;
+        padding: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        box-sizing: border-box;
+    }
+
+    .titolo-recenti-spc {
+        color: #ffffff;
+        font-size: 15px;
+        margin: 0 0 12px 0;
+        font-weight: bold;
+        text-align: left;
+        opacity: 0.9;
+        letter-spacing: 0.5px;
+    }
+
+    .giostra-recenti-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+    }
+
+    .lista-recenti-scroll {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        flex: 1;
+    }
+
+    .lista-recenti-scroll::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Freccette trasparenti come il resto */
+    .btn-freccia-recenti {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff !important;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        transition: transform 0.2s, background 0.2s, border-color 0.3s;
+        flex-shrink: 0;
+    }
+
+    .btn-freccia-recenti:hover {
+        transform: scale(1.1);
+        background: rgba(255, 255, 255, 0.25);
+        border-color: #00aaff;
+    }
+
+    .nodo-recente-spc {
+        flex: 0 0 75px;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        position: relative;
+    }
+
+    .nodo-recente-spc:hover {
+        transform: scale(1.05);
+    }
+
+    .nodo-recente-spc img {
+        width: 75px;
+        height: 75px;
+        object-fit: cover;
+        border-radius: 14px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        display: block;
+    }
+
+    /* ========================== */
+
+    .griglia-giochi-spc {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)) !important;
+        gap: 10px !important;
+        padding: 10px !important;
+        width: 100% !important;
+        box-sizing: border-box;
+        background-color: transparent !important;
+    }
+
+    /* Solo al primo caricamento, quando la griglia e' ancora vuota: riserva l'altezza
+       della prima pagina (60 schede). Stessa formula della griglia: colonne auto-fill
+       da 100px, gap 10px, padding 10px. 100cqw e' la larghezza del contenitore.
+       Dopo il riempimento la classe viene tolta, cosi' l'ultima pagina e la ricerca
+       restano alte quanto le schede davvero presenti. */
+    .griglia-riserva-spc {
+        container-type: inline-size;
+        width: 100%;
+    }
+
+    .griglia-riserva-spc .griglia-in-attesa {
+        /* Le colonne si ricalcolano da sole: sul PC sono 12 o piu', e la lista
+           ferma a 10 lasciava la griglia troppo alta (il salto da 0,216). */
+        --spc-colonne: max(1, round(down, (100cqw - 10px) / 110px, 1));
+        align-content: start;
+        min-height: calc(10px + round(up, 60 / var(--spc-colonne), 1) * (100cqw - 10px) / var(--spc-colonne));
+    }
+
+    .scheda-gioco-figura {
+        cursor: pointer;
+        position: relative;
+        transition: transform 0.3s ease;
+    }
+
+    .scheda-gioco-figura img {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: 12px;
+        display: block;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .scheda-gioco-figura:hover {
+        transform: translateY(-5px) scale(1.03);
+    }
+
+    .scheda-gioco-figura:hover img {
+        box-shadow: 0 8px 16px rgba(0, 119, 190, 0.3);
+    }
+
+    .paginazione-spc {
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 8px !important;
+        margin: 40px 0 !important;
+        font-family: sans-serif !important;
+        flex-wrap: nowrap !important;
+        width: 100% !important;
+        padding: 0 5px;
+        box-sizing: border-box;
+    }
+
+    .btn-paginazione {
+        background-color: #ff9900 !important;
+        color: white !important;
+        border: none !important;
+        padding: 10px 16px !important;
+        font-size: 14px !important;
+        font-weight: bold !important;
+        border-radius: 50px !important;
+        cursor: pointer !important;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+        transition: transform 0.3s ease, background 0.2s !important;
+        flex-shrink: 0 !important;
+    }
+
+    .btn-paginazione:hover:not(:disabled) {
+        transform: scale(1.05) !important;
+        background-color: #e08800 !important;
+    }
+
+    .btn-paginazione:disabled {
+        background-color: #ccc !important;
+        cursor: not-allowed !important;
+        box-shadow: none !important;
+    }
+
+    #info-pagina {
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 5px !important;
+        flex-wrap: nowrap !important;
+        max-width: 70vw !important;
+    }
+
+    #info-pagina button,
+    #info-pagina strong,
+    #info-pagina span {
+        display: inline-flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        width: 34px !important;
+        height: 34px !important;
+        border-radius: 50% !important;
+        font-size: 14px !important;
+        font-weight: bold !important;
+        font-family: sans-serif !important;
+        margin: 0 !important;
+        transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease !important;
+        box-sizing: border-box !important;
+        flex-shrink: 0 !important;
+    }
+
+    #info-pagina strong,
+    #info-pagina .pagina-attiva {
+        background-color: #ff9900 !important;
+        color: #000000 !important;
+        box-shadow: 0 4px 8px rgba(255, 153, 0, 0.4) !important;
+        cursor: default !important;
+        border: none !important;
+    }
+
+    #info-pagina button,
+    #info-pagina .pagina-button {
+        background-color: rgba(255, 255, 255, 0.2) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        cursor: pointer !important;
+    }
+
+    #info-pagina button:hover,
+    #info-pagina .pagina-button:hover {
+        transform: scale(1.1) !important;
+        background-color: #0077be !important;
+        color: #ffffff !important;
+        border-color: #0077be !important;
+    }
+
+    #info-pagina span.puntini {
+        border: none !important;
+        background: transparent !important;
+        color: rgba(255, 255, 255, 0.6) !important;
+        cursor: default !important;
+        width: auto !important;
+        height: auto !important;
+    }
+
+    /* CORNICE GIOCATORE */
+    #cornice-gioco {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(165deg, rgba(13, 4, 32, 0.94), rgba(26, 11, 53, 0.9));
+        backdrop-filter: blur(18px) saturate(140%);
+        -webkit-backdrop-filter: blur(18px) saturate(140%);
+        z-index: 999999;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    #area-contenuto {
+        flex: 0 1 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        align-self: center;
+        width: calc(100% - 28px);
+        max-width: 560px;
+        margin: 88px auto 28px;
+        padding: 32px 28px;
+        box-sizing: border-box;
+        color: white;
+        text-align: center;
+        background: rgba(22, 8, 40, 0.55);
+        border: 1px solid rgba(255, 45, 214, 0.62);
+        border-radius: 24px;
+        box-shadow: 0 0 16px rgba(255, 45, 214, 0.28), 0 0 32px rgba(168, 85, 247, 0.22);
+        backdrop-filter: blur(16px) saturate(140%);
+        -webkit-backdrop-filter: blur(16px) saturate(140%);
+    }
+
+    #spazio-info {
+        width: 100%;
+    }
+
+    .pulsante-chiudi {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(22, 8, 40, 0.55);
+        color: white;
+        border: 1px solid rgba(192, 132, 252, 0.75);
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        font-size: 28px;
+        cursor: pointer;
+        z-index: 9999999;
+        box-shadow: 0 0 10px rgba(168, 85, 247, 0.35);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        transition: box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .pulsante-chiudi:hover {
+        border-color: #ff2bd6;
+        box-shadow: 0 0 14px rgba(255, 45, 214, 0.65);
+    }
+
+    .btn-gioca {
+        background: linear-gradient(135deg, #ff2bd6, #a855f7);
+        color: white;
+        padding: 16px 42px;
+        border: none;
+        border-radius: 50px;
+        font-size: 18px;
+        font-weight: bold;
+        margin-top: 22px;
+        cursor: pointer;
+        box-shadow: 0 0 16px rgba(255, 45, 214, 0.55), 0 0 28px rgba(168, 85, 247, 0.35);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn-gioca:hover {
+        transform: scale(1.06);
+        box-shadow: 0 0 20px rgba(255, 45, 214, 0.75), 0 0 36px rgba(168, 85, 247, 0.5);
+    }
+
+    #spazio-gioco {
+        width: 100%;
+        height: 100%;
+        background-color: #070214;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    #spazio-gioco iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    #spazio-info h3 {
+        color: #ffffff;
+        font-size: 30px;
+        line-height: 1.2;
+        margin: 0 0 14px 0;
+        font-weight: bold;
+        text-shadow: 0 0 8px rgba(255, 45, 214, 0.5), 0 0 18px rgba(168, 85, 247, 0.4);
+    }
+
+    #box-descrizione {
+        width: 100%;
+        font-size: 15px;
+        line-height: 1.6;
+        color: #d5d0de;
+        max-height: calc(1.6em * 6);
+        overflow-y: auto;
+        margin: 0;
+    }
+
+    .intestazione-categoria-spc {
+        width: 100%;
+        max-width: 640px;
+        margin: 0 auto 16px auto;
+        padding: 0 10px;
+        box-sizing: border-box;
+        text-align: center;
+    }
+
+    #titolo-categoria-spc {
+        color: #ffffff;
+        font-size: 22px;
+        line-height: 1.2;
+        margin: 0 0 8px 0;
+        font-weight: bold;
+    }
+
+    #intro-categoria-spc {
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 15px;
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    /* Neon su tutti i formati: solo colore, bordo e glow. Sul mobile lo spessore resta quello di base. */
+    .input-ricerca-spc {
+        border-color: rgba(255, 45, 214, 0.7) !important;
+        background: rgba(22, 8, 40, 0.38) !important;
+        box-shadow: 0 0 14px rgba(168, 85, 247, 0.28) !important;
+        backdrop-filter: blur(14px) saturate(140%) !important;
+        -webkit-backdrop-filter: blur(14px) saturate(140%) !important;
+    }
+
+    .input-ricerca-spc:focus {
+        border-color: #ff2bd6 !important;
+        box-shadow: 0 0 16px rgba(255, 45, 214, 0.45) !important;
+        background: rgba(22, 8, 40, 0.5) !important;
+    }
+
+    #select-categoria-spc {
+        border-color: rgba(192, 132, 252, 0.7);
+        background: rgba(22, 8, 40, 0.38);
+        background-color: rgba(22, 8, 40, 0.38) !important;
+        box-shadow: 0 0 14px rgba(168, 85, 247, 0.28);
+        backdrop-filter: blur(14px) saturate(140%);
+        -webkit-backdrop-filter: blur(14px) saturate(140%);
+    }
+
+    #select-categoria-spc:focus {
+        border-color: #ff2bd6;
+        box-shadow: 0 0 16px rgba(255, 45, 214, 0.45);
+    }
+
+    #select-categoria-spc option {
+        background: #160828;
+    }
+
+    .sezione-recenti-spc {
+        background: rgba(22, 8, 40, 0.4);
+        border-color: rgba(192, 132, 252, 0.65);
+        box-shadow: 0 0 16px rgba(168, 85, 247, 0.28);
+        backdrop-filter: blur(14px) saturate(140%);
+        -webkit-backdrop-filter: blur(14px) saturate(140%);
+    }
+
+    .btn-freccia-recenti {
+        background: rgba(22, 8, 40, 0.45);
+        border-color: rgba(255, 45, 214, 0.75);
+        box-shadow: 0 0 10px rgba(255, 45, 214, 0.4);
+    }
+
+    .btn-freccia-recenti:hover {
+        background: rgba(168, 85, 247, 0.35);
+        border-color: #ff2bd6;
+        box-shadow: 0 0 14px rgba(255, 45, 214, 0.6);
+    }
+
+    .scheda-gioco-figura:hover img {
+        box-shadow: 0 0 8px rgba(255, 45, 214, 0.85), 0 0 18px rgba(168, 85, 247, 0.75), 0 0 28px rgba(255, 45, 214, 0.35);
+    }
+
+    .btn-paginazione {
+        background: rgba(22, 8, 40, 0.5) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 0 1px rgba(255, 45, 214, 0.8), 0 0 12px rgba(255, 45, 214, 0.4) !important;
+    }
+
+    .btn-paginazione:hover:not(:disabled) {
+        background: rgba(168, 85, 247, 0.4) !important;
+        box-shadow: 0 0 0 1px rgba(255, 45, 214, 0.9), 0 0 16px rgba(192, 132, 252, 0.7) !important;
+    }
+
+    .btn-paginazione:disabled {
+        background: rgba(255, 255, 255, 0.06) !important;
+        color: rgba(255, 255, 255, 0.35) !important;
+        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16) !important;
+    }
+
+    #info-pagina strong,
+    #info-pagina .pagina-attiva {
+        background: linear-gradient(135deg, #ff2bd6, #a855f7) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 12px rgba(255, 45, 214, 0.65) !important;
+    }
+
+    #info-pagina button,
+    #info-pagina .pagina-button {
+        background: rgba(22, 8, 40, 0.45) !important;
+        color: #ffffff !important;
+        border-color: rgba(192, 132, 252, 0.6) !important;
+        box-shadow: 0 0 8px rgba(168, 85, 247, 0.3) !important;
+    }
+
+    #info-pagina button:hover,
+    #info-pagina .pagina-button:hover {
+        background: rgba(168, 85, 247, 0.5) !important;
+        border-color: #ff2bd6 !important;
+        box-shadow: 0 0 12px rgba(255, 45, 214, 0.55) !important;
+    }
+
+    #titolo-categoria-spc {
+        text-shadow: 0 0 8px rgba(255, 45, 214, 0.55), 0 0 18px rgba(168, 85, 247, 0.45);
+    }
+
+    @media (min-width: 768px) {
+
+        .input-ricerca-spc,
+        #select-categoria-spc,
+        .btn-freccia-recenti {
+            border-width: 1px !important;
+        }
+
+        .scheda-gioco-figura:hover {
+            transform: scale(1.05);
+        }
+
+        .btn-paginazione {
+            border: 1px solid rgba(255, 45, 214, 0.8) !important;
+            box-shadow: 0 0 12px rgba(255, 45, 214, 0.4) !important;
+        }
+
+        .btn-paginazione:hover:not(:disabled) {
+            box-shadow: 0 0 16px rgba(192, 132, 252, 0.7) !important;
+        }
+
+        .btn-paginazione:disabled {
+            border: 1px solid rgba(255, 255, 255, 0.16) !important;
+            box-shadow: none !important;
+        }
+    }
+
+    /* === BARRA RICERCA + CATEGORIA FLUTTUANTE (FIXED PURO CSS FINO AL FOOTER, CLS ZERO) === */
+    .barra-fissa-spc {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        right: 12px;
+        z-index: 900;
+        /* sotto l'anteprima/gioco (999999) e sotto la barra di WordPress */
+        max-width: 540px;
+        margin: 0 auto;
+        padding: 8px 0 8px 0;
+        border-radius: 22px;
+        background: linear-gradient(180deg, rgba(16, 6, 30, 0.82), rgba(16, 6, 30, 0.7));
+        backdrop-filter: blur(14px) saturate(140%);
+        -webkit-backdrop-filter: blur(14px) saturate(140%);
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+    }
+
+    body.admin-bar .barra-fissa-spc {
+        top: 44px;
+    }
+
+    @media (max-width: 782px) {
+        body.admin-bar .barra-fissa-spc {
+            top: 58px;
+        }
+    }
+
+    .barra-fissa-spc .sezione-ricerca-spc {
+        margin-bottom: 8px;
+    }
+
+    .barra-fissa-spc .box-selezione-spc {
+        margin-bottom: 0;
+    }
+
+    /* Dopo lo spostamento (vedi script in fondo) la barra sta direttamente nel body:
+       li' lo sticky dura per tutta la pagina, footer compreso. */
+    .barra-spostata-spc {
+        width: 100%;
+        margin: 0 auto 14px auto;
+    }
+
+    /* Quando e' aperta l'anteprima o il gioco la barra si nasconde (lo spazio resta, niente salti) */
+    .gioco-aperto-spc .barra-fissa-spc {
+        visibility: hidden;
+    }
+
+    /* campo di ricerca con il tasto "Articoli" dentro */
+    .campo-ricerca-wrap-spc {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .campo-ricerca-wrap-spc .input-ricerca-spc {
+        padding-right: 98px !important;
+    }
+
+    .btn-articoli-spc {
+        position: absolute;
+        top: 50%;
+        right: 6px;
+        transform: translateY(-50%);
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        height: 36px;
+        padding: 0 12px;
+        border-radius: 50px;
+        background: linear-gradient(135deg, #ff2bd6, #a855f7);
+        color: #ffffff !important;
+        font-family: Arial, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1;
+        text-decoration: none !important;
+        box-shadow: 0 0 12px rgba(255, 45, 214, 0.5);
+        transition: box-shadow 0.2s, transform 0.2s;
+    }
+
+    .btn-articoli-spc:hover,
+    .btn-articoli-spc:focus-visible {
+        box-shadow: 0 0 18px rgba(255, 45, 214, 0.8);
+        transform: translateY(-50%) scale(1.04);
+    }
+</style>
+
+<div class="contenitore-arcade-spc">
+
+    <div class="barra-fissa-spc">
+
+        <div class="sezione-ricerca-spc">
+            <div class="campo-ricerca-wrap-spc">
+                <input type="text" id="campoRicerca" class="input-ricerca-spc" placeholder="🔍 Cerca tra i giochi..."
+                    oninput="window.filtraGiochi()">
+                <a class="btn-articoli-spc" href="https://www.playcombo.it/?s=" title="Cerca negli articoli"
+                    aria-label="Cerca negli articoli"
+                    onclick="this.href='https://www.playcombo.it/?s='+encodeURIComponent(document.getElementById('campoRicerca').value.trim())">Articoli
+                    ›</a>
+            </div>
+        </div>
+
+        <div class="box-selezione-spc">
+            <select id="select-categoria-spc" aria-label="Seleziona la categoria"
+                onchange="if (this.value) location = this.value;">
+                <option value="">Seleziona la categoria</option>
+                <option value="https://playcombo.it">SPC</option>
+                <option value="https://playcombo.it/puzzle/">PUZZLE</option>
+                <option value="https://playcombo.it/sparabolle/">SPARABOLLE</option>
+                <option value="https://playcombo.it/arcade/">ARCADE</option>
+                <option value="https://playcombo.it/match-3/">MATCH-3</option>
+                <option value="https://playcombo.it/MAHJONG/">MAHJONG</option>
+                <option value="https://playcombo.it/quizzz/">QUIZZZ!</option>
+                <option value="https://playcombo.it/GIRLS/">GIRLS</option>
+                <option value="https://playcombo.it/SPORT/">SPORT</option>
+                <option value="https://playcombo.it/giochi-di-corse/">GIOCHI DI CORSE</option>
+                <option value="https://playcombo.it/carte-e-memory/">CARTE E MEMORI</option>
+                <option value="https://playcombo.it/super-bubble-shot/">SUPER BUBBLE SHOT</option>
+                <option value="https://playcombo.it/giochi-davventura/">GIOCHI D'AVVENTURA</option>
+                <option value="https://www.playcombo.it/giochi-platform//">GIOCHI PLATFORM</option>
+                <option value="https://www.playcombo.it/2048-online-gratis-gioca-subito-su-spc/">GIOCHI 2048</option>
+                <option value="https://www.playcombo.it/giochi-stickman/">GIOCHI STICKMAN</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div id="blocco-recenti-spc" class="sezione-recenti-spc" style="display: none;">
+        <p class="titolo-recenti-spc">🎮 Ultimi giocati in questa pagina:</p>
+        <div class="giostra-recenti-wrapper">
+            <button id="freccia-sx-recenti" class="btn-freccia-recenti" onclick="scorriMieiRecenti(-1)"
+                aria-label="Scorri a sinistra">◀</button>
+            <div id="lista-recenti-spc" class="lista-recenti-scroll"></div>
+            <button id="freccia-dx-recenti" class="btn-freccia-recenti" onclick="scorriMieiRecenti(1)"
+                aria-label="Scorri a destra">▶</button>
+        </div>
+    </div>
+
+    <div class="intestazione-categoria-spc">
+        <h1 id="titolo-categoria-spc">Giochi SPC</h1>
+        <p id="intro-categoria-spc">Il catalogo PlayCombo: giochi gratis nel browser, senza installazione.</p>
+    </div>
+
+    <div class="griglia-riserva-spc">
+        <div class="griglia-giochi-spc griglia-in-attesa"></div>
+    </div>
+
+    <div class="paginazione-spc">
+        <button id="btn-precedente" class="btn-paginazione" onclick="window.cambiaPagina(-1)">◀</button>
+        <span id="info-pagina"></span>
+        <button id="btn-successiva" class="btn-paginazione" onclick="window.cambiaPagina(1)">▶</button>
+    </div>
+
+    <div id="cornice-gioco">
+        <button class="pulsante-chiudi" onclick="window.chiudiGiocatore()">×</button>
+        <div id="area-contenuto">
+            <div id="spazio-info"></div>
+            <button id="btn-avvia" class="btn-gioca" onclick="window.avviaGioco()" style="display:none;">GIOCA
+                ORA</button>
+        </div>
+        <div id="spazio-gioco"></div>
+    </div>
+
+</div>
+
+<script>
+    // Funzione per estrarre la categoria dal URL
+    function ottieniCategoriaDalURL() {
+        const pathSegments = window.location.pathname.split('/').filter(s => s);
+        if (pathSegments.length > 0 && pathSegments[0] !== 'page') {
+            return pathSegments[0]; // 'puzzle', 'sparabolle', 'arcade', ecc.
+        }
+        return 'spc'; // categoria default (home)
+    }
+
+    function testoCategoria(slug) {
+        const testi = {
+            spc: {
+                titolo: "Giochi SPC",
+                testo: "Il catalogo PlayCombo: giochi gratis nel browser, senza installazione."
+            },
+            puzzle: {
+                titolo: "Giochi Puzzle",
+                testo: "Rompicapo e giochi di logica da risolvere con calma, gratis nel browser."
+            },
+            sparabolle: {
+                titolo: "Sparabolle",
+                testo: "Mira, scoppia le bolle e libera il campo in questi livelli gratis."
+            },
+            arcade: {
+                titolo: "Giochi Arcade",
+                testo: "Riflessi, punteggi e classici arcade da giocare subito."
+            },
+            "match-3": {
+                titolo: "Match-3",
+                testo: "Allinea tre o più tessere, combina le mosse e svuota la griglia."
+            },
+            mahjong: {
+                titolo: "Giochi Mahjong",
+                testo: "Tessere e combinazioni: le sfide di Mahjong, gratis online."
+            },
+            quizzzz: {
+                titolo: "Giochi Quizzz!",
+                testo: "Domande, risposte e sfide a tempo per mettere alla prova quello che sai."
+            },
+            girls: {
+                titolo: "Giochi Girls",
+                testo: "Stile, creatività e storie: i giochi della categoria Girls."
+            },
+            sport: {
+                titolo: "Giochi Sport",
+                testo: "Calcio, gare e sfide sportive da giocare al volo nel browser."
+            },
+            "giochi-di-corse": {
+                titolo: "Giochi di corse",
+                testo: "Mettiti al volante, supera gli avversari e taglia il traguardo."
+            },
+            "carte-e-memory": {
+                titolo: "Giochi Carte e memory",
+                testo: "Carte, memoria e abbinamenti: partite rapide da rifare subito."
+            },
+            "super-bubble-shot": {
+                titolo: "Giochi Super Bubble Shot",
+                testo: "Mira e spara alle bolle per svuotare lo schermo."
+            },
+            "giochi-davventura": {
+                titolo: "Giochi d'avventura",
+                testo: "Esplora e porta avanti la storia in queste avventure gratis."
+            },
+            "giochi-platform": {
+                titolo: "Giochi platform",
+                testo: "Corri, salta e supera i livelli in questi platform gratis."
+            },
+            "2048-online-gratis-gioca-subito-su-spc": {
+                titolo: "Giochi 2048",
+                testo: "Unisci le tessere, arriva a 2048 e batti il tuo record."
+            },
+            "giochi-stickman": {
+                titolo: "Giochi Stickman",
+                testo: "Salta, combatti e sopravvivi con gli omini stilizzati più pazzi del web."
+            }
+        };
+        return testi[(slug || "spc").toLowerCase()] || testi.spc;
+    }
+
+    // Scorrimento freccette
+    window.scorriMieiRecenti = function (direzione) {
+        const lista = document.getElementById('lista-recenti-spc');
+        if (lista) {
+            lista.scrollLeft += (direzione * 160);
+        }
+    };
+
+    // Al caricamento della pagina
+    document.addEventListener("DOMContentLoaded", function () {
+        const categoria = ottieniCategoriaDalURL();
+        const chiaveStorage = 'recenti_playcombo_' + categoria;
+        const testo = testoCategoria(categoria);
+        const titoloCategoria = document.getElementById('titolo-categoria-spc');
+        const introCategoria = document.getElementById('intro-categoria-spc');
+        if (titoloCategoria) titoloCategoria.textContent = testo.titolo;
+        if (introCategoria) introCategoria.textContent = testo.testo;
+
+        // RENDER BLOCCO RECENTI
+        try {
+            let recenti = JSON.parse(localStorage.getItem(chiaveStorage)) || [];
+            const container = document.getElementById('blocco-recenti-spc');
+            const listaRecenti = document.getElementById('lista-recenti-spc');
+            const fSx = document.getElementById('freccia-sx-recenti');
+            const fDx = document.getElementById('freccia-dx-recenti');
+
+            if (recenti.length > 0 && container && listaRecenti) {
+                container.style.display = 'block';
+                listaRecenti.innerHTML = '';
+
+                // Freccette visibili solo se più di 5 giochi salvati
+                if (recenti.length > 5 && fSx && fDx) {
+                    fSx.style.display = 'flex';
+                    fDx.style.display = 'flex';
+                }
+
+                recenti.forEach(function (gioco) {
+                    const div = document.createElement('div');
+                    div.className = 'nodo-recente-spc';
+                    div.title = gioco.titolo || 'Gioca';
+
+                    const img = document.createElement('img');
+                    img.src = gioco.img || '';
+                    img.alt = gioco.titolo || 'Gioco';
+
+                    div.onclick = function () {
+                        if (typeof window.apriAnteprima === 'function') {
+                            window.apriAnteprima(gioco);
+                        }
+                    };
+
+                    div.appendChild(img);
+                    listaRecenti.appendChild(div);
+                });
+            }
+        } catch (e) {
+            console.error("Errore render recenti:", e);
+        }
+
+        // SALVATAGGIO QUANDO SI AVVIA UN GIOCO (funziona con e senza id)
+        const btnAvvia = document.getElementById('btn-avvia');
+        if (btnAvvia) {
+            btnAvvia.addEventListener('click', function () {
+                try {
+                    const g = window.giocoCorrente;
+                    if (!g) return;
+                    const chiave = function (x) { return x.id || x.url || x.titolo; };
+                    const k = chiave(g);
+                    if (!k) return;
+
+                    let recenti = JSON.parse(localStorage.getItem(chiaveStorage)) || [];
+                    recenti = recenti.filter(function (x) { return chiave(x) !== k; });
+                    recenti.unshift({ id: g.id || '', titolo: g.titolo, img: g.img, url: g.url, desc: g.desc || '' });
+                    if (recenti.length > 20) recenti.length = 20;
+                    localStorage.setItem(chiaveStorage, JSON.stringify(recenti));
+                } catch (e) {
+                    console.error("Errore salvataggio recenti:", e);
+                }
+            }, { passive: true });
+        }
+    });
+</script>
+<script>
+    // La tua lista dei giochi
+    var listaGiochi = [
+
+
+
+        {
+            "titolo": "Bunny Boy Online",
+            "url": "https://play.gamepix.com/bunny-boy-online/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/bunny-boy-online/icon/bunny-boy-online.png?w=105",
+            "desc": "Bunny Boy Online delivers heart-pounding action with global multiplayer showdowns. Strategize across diverse maps, mastering a variety of powerful weapons and unique game modes. Team up with friends or go solo as you dodge and outmaneuver opponents, all while climbing the leaderboards for ultimate bragging rights.",
+            "categoria": "multiplayer",
+            "id": "si5z0f3ug"
+        },
+        {
+            "titolo": "Run Guys: Knockout Royale",
+            "url": "https://play.gamepix.com/run-guys-knockout-royale/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/run-guys-knockout-royale/icon/run-guys-knockout-royale.png?w=105",
+            "desc": "Dive into chaotic fun with Run Guys: Knockout Royale! Dash through dizzying obstacles, keep your balance on seesaws, and race to victory, all while avoiding knockout. Strive to be first, reaching new heights and claiming the crown. Precision and speed are key in this thrilling multiplayer race!",
+            "categoria": "multiplayer",
+            "id": "4yj42n34q"
+        },
+        {
+            "titolo": "Kingdom of Pixels",
+            "url": "https://play.gamepix.com/kingdom-of-pixels/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/kingdom-of-pixels/icon/kingdom-of-pixels.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "multiplayer",
+            "id": "g4rybym0w"
+        },
+        {
+            "titolo": "Tanknarok",
+            "url": "https://play.gamepix.com/tanknarok/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/tanknarok/icon/tanknarok.png?w=105",
+            "desc": "Dive into Tanknarok, where explosive top-down battles and rapid-fire chaos await. Engage in thrilling multiplayer arena duels directly in your browser, with no cumbersome downloads. Unleash your strategic prowess in this vibrant, competitive showdown filled with high-speed action and endless destruction. Perfect for your adrenaline-fueled gaming fix.",
+            "categoria": "multiplayer",
+            "id": "s9vf43ig8"
+        },
+        {
+            "titolo": "Jurex FPS",
+            "url": "https://play.gamepix.com/jurex-fps/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/jurex-fps/icon/jurex-fps.png?w=105",
+            "desc": "Dive into electrifying battles where every second counts. Customize your gear, hone your skills, and engage in heart-pounding firefights against fierce competitors. Whether going solo or teaming up, challenge your instincts and strategies to claim victory in vibrant, immersive arenas. Ready to assert your dominance?",
+            "categoria": "multiplayer",
+            "id": "kcbgextrr"
+        },
+        {
+            "titolo": "MultiPlayer Pong",
+            "url": "https://play.gamepix.com/multiplayer-pong/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/multiplayer-pong/icon/multiplayer-pong.png?w=105",
+            "desc": "Dive into the classic Pong experience reimagined with modern multiplayer fun. Create private matches with friends or join dynamic public games, and enjoy fast-paced paddle action with seamless online play at your fingertips.",
+            "categoria": "multiplayer",
+            "id": "liif7w0qb"
+        },
+        {
+            "titolo": "TDP4 - Team Battle",
+            "url": "https://play.gamepix.com/tdp4-team-battle/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/tdp4-team-battle/icon/tdp4-team-battle.png?w=105",
+            "desc": "Dive into exhilarating 2D multiplayer chaos with TDP4 - Team Battle! Master various game modes, wield a vast arsenal, and refine your skills to dominate the leaderboards. Join forces in clans, earn medals, and claim victory in this fast-paced, action-packed platformer shooter.",
+            "categoria": "multiplayer",
+            "id": "5078clz3z"
+        },
+        {
+            "titolo": "Blast Frenzy Bomber Clash",
+            "url": "https://play.gamepix.com/blast-frenzy-bomber-clash/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/blast-frenzy-bomber-clash/icon/blast-frenzy-bomber-clash.png?w=105",
+            "desc": "Dive into the chaotic battlefield of Blast Frenzy: Bomber Clash, where explosive strategy meets lightning-fast reflexes. Unleash bombs, dodge blasts, and outwit rivals in thrilling multiplayer arenas. With vivid animations and electrifying effects, this game promises endless fun for retro enthusiasts and newcomers alike.",
+            "categoria": "multiplayer",
+            "id": "2tubszzsy"
+        },
+        {
+            "titolo": "Mage Royale",
+            "url": "https://play.gamepix.com/mage-royale/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/mage-royale/icon/mage-royale.png?w=105",
+            "desc": "Engage in spellbinding battles in Mage Royale's vibrant online arena. Outsmart rivals with strategic spellcasting, showcasing unique mage abilities. Master movement and precision to dominate the leaderboards. With heart-pounding action and colorful visuals, experience the thrill of becoming the ultimate mage champion in this sorcery-packed adventure.",
+            "categoria": "multiplayer",
+            "id": "pmyr3joqb"
+        },
+        {
+            "titolo": "Jetpack Apocalypse",
+            "url": "https://play.gamepix.com/jetpack-apocalypse/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/jetpack-apocalypse/icon/jetpack-apocalypse.png?w=105",
+            "desc": "Jetpack Apocalypse hurls you into frenetic local multiplayer battles where up to four contenders soar with jetpacks, dodging attacks while collecting powerful items. Engage in vibrant arenas with automatic shooting, focusing on evasive maneuvers and tactical play to outwit opponents and become the ultimate jetpacking victor.",
+            "categoria": "multiplayer",
+            "id": "bmk64jwy4"
+        },
+        {
+            "titolo": "Arena",
+            "url": "https://play.gamepix.com/arena/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/arena/icon/arena.png?w=105",
+            "desc": "Dive into Arena's lightning-fast combat and dynamic platforming as you battle through electrifying arenas. Equip a variety of weapons, adapt your strategy, and outsmart opponents with strategic thinking and agile moves. Experience the thrill of victory in beautifully crafted environments, perfect for both newcomers and seasoned warriors.",
+            "categoria": "multiplayer",
+            "id": "gvbqq5rsn"
+        },
+        {
+            "titolo": "Two Hands of Satan",
+            "url": "https://play.gamepix.com/two-hands-of-satan/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/two-hands-of-satan/icon/two-hands-of-satan.png?w=105",
+            "desc": "Step into a gritty urban battlefield where donkeys and elephants clash in a relentless war. Armed with guns, choose your side and strategize to lead your team to victory. Experience intense first-person shooting dynamics, where precision and teamwork are your key assets in this thrilling multiplayer showdown.",
+            "categoria": "multiplayer",
+            "id": "mbkmzvgp7"
+        },
+        {
+            "titolo": "1 2 3 4 Player Tank Game 2D",
+            "url": "https://play.gamepix.com/1-2-3-4-player-tank-game-2d/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/1-2-3-4-player-tank-game-2d/icon/1-2-3-4-player-tank-game-2d.png?w=105",
+            "desc": "Command your tank and outwit your adversaries in intense, strategic battles. Whether teaming up or battling solo, master unique controls for each tank type, exploit terrain, and anticipate enemy moves. Only the sharpest strategist will emerge victorious in this thrilling, explosive multiplayer warfare arena.",
+            "categoria": "multiplayer",
+            "id": "zqj19av7v"
+        },
+
+        {
+            "titolo": "Paint Drive IO",
+            "url": "https://html5.gamemonetize.co/rfvf4nek738ypuke2jtjsxp4it2dzwgc/",
+            "img": "https://img.gamemonetize.com/rfvf4nek738ypuke2jtjsxp4it2dzwgc/512x384.jpg",
+            "desc": "Paint Drive IO is a fast-paced .io style arcade racer where you drive a car around an open arena, leaving a colored trail that claims territory as you go. Close your loop to paint the ground your color and grow your zone, while rival cars try to cut you off first. Race against opponents, dodge collisions, climb the leaderboard, and paint the biggest area to win! Web Dev h<a href='https://www.poki.com.es/'>https://www.poki.com.es/</a>",
+            "categoria": "Racing",
+            "id": "y77wjmqjc"
+        },
+        {
+            "titolo": "snake eat food game ",
+            "url": "https://html5.gamemonetize.co/bwpzprwsx24h3n2uanhr5kl7qxqz9m5n/",
+            "img": "https://img.gamemonetize.com/bwpzprwsx24h3n2uanhr5kl7qxqz9m5n/512x384.jpg",
+            "desc": ": Classic Snake, Modern Fun! Guide the rainbow serpent, eat apples, and aim for the high score. Simple, addictive, and colorful! Relive the arcade classic! Eat, grow, and survive as the Rainbow Snake. How long can you last? The ultimate HTML5 Snake challenge! Smooth controls, vibrant visuals, and classic addictive gameplay. Get your high score!",
+            "categoria": "Racing",
+            "id": "1h7368pf6"
+        },
+        {
+            "titolo": "Driver fast",
+            "url": "https://html5.gamemonetize.co/1c3ko6qs3plggl0a3cy9abpj0hmlk8lw/",
+            "img": "https://img.gamemonetize.com/1c3ko6qs3plggl0a3cy9abpj0hmlk8lw/512x384.jpg",
+            "desc": "A car game, in development, for now it only has 1 car and a limited map, this will change on March 3, 2025, hugs!",
+            "categoria": "Racing",
+            "id": "svu5x8vv3"
+        },
+        {
+            "titolo": "Easy Ludo Game",
+            "url": "https://play.gamepix.com/easy-ludo-game/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/easy-ludo-game/icon/easy-ludo-game.png?w=105",
+            "desc": "Gather your friends and family for Easy Ludo Game, where a mix of strategy and luck keeps the excitement high. Roll animated dice, outsmart opponents, and race to the center triangle. Enjoy both multiplayer and solo modes in this accessible and engaging twist on the classic board game.",
+            "categoria": "multiplayer",
+            "id": "f3xly25sx"
+        },
+        {
+            "titolo": "Ludo Multiplayer",
+            "url": "https://play.gamepix.com/ludo-multiplayer/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/ludo-multiplayer/icon/ludo-multiplayer.png?w=105",
+            "desc": "Dive into the nostalgic thrill of Ludo Multiplayer, where vibrant colors and strategy collide in a lively online space. Roll the dice, race your tokens to victory, and engage with friends or global players in a captivating blend of luck and tactics, complete with lively interactions.",
+            "categoria": "multiplayer",
+            "id": "x0gpq3wkv"
+        },
+
+        {
+            "titolo": "Rocketcar Cup",
+            "url": "https://html5.gamemonetize.co/y771xcn0bnakil1525c08uyvt7mfqv9l/",
+            "img": "https://img.gamemonetize.com/y771xcn0bnakil1525c08uyvt7mfqv9l/512x384.jpg",
+            "desc": "Rocketcar Cup is a fast-paced 2D arcade soccer game where rocket-powered cars battle for victory. Boost, jump, flip, and master aerial moves to score incredible goals in exciting one-on-one or team matches. Use skill, timing, and strategy to outplay your opponents, defend your goal, and become the ultimate champion. Easy to learn, challenging to master, and packed with non-stop action for players of all ages.",
+            "categoria": "2 Player",
+            "id": "s8y5uym4r"
+        },
+        {
+            "titolo": "Bitcoin Mining Simulator X",
+            "url": "https://html5.gamemonetize.co/glarfn6gagok3igj8v2mqz5h9isrm7v3/",
+            "img": "https://img.gamemonetize.com/glarfn6gagok3igj8v2mqz5h9isrm7v3/512x384.jpg",
+            "desc": "Bitcoin mining simulator game. Build up your bitcoin balance and get rich. Buy different pcs to keeps getting richer and build up your bitcoin empire. [This game does not give bitcoin]",
+            "categoria": "2 Player",
+            "id": "z86gaouog"
+        },
+        {
+            "titolo": "Knight Coin Crew",
+            "url": "https://play.gamepix.com/knight-coin-crew/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/knight-coin-crew/icon/knight-coin-crew.png?w=105",
+            "desc": "Band together in Knight Coin Crew, a retro co-op platformer. Leap across vibrant levels, collect shiny coins, and outsmart quirky enemies. Ideal for friends and family, this multiplayer adventure embraces teamwork and strategy in a charming pixel-art quest. Dive into the coin-collecting frenzy today!",
+            "categoria": "multiplayer",
+            "id": "ojzikyjjr"
+        },
+        {
+            "titolo": "Bounce Path Multiplayer",
+            "url": "https://play.gamepix.com/bounce-path-multiplayer/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/bounce-path-multiplayer/icon/bounce-path-multiplayer.png?w=105",
+            "desc": "Dive into Bounce Path Multiplayer, where strategic obstacle placement meets thrilling competition. Collaborate or challenge friends to guide a bouncing ball to victory using clever timing and physics-based mechanics. With vibrant visuals and intuitive controls, this addictive multiplayer puzzle game promises endless fun and excitement on any device.",
+            "categoria": "multiplayer",
+            "id": "ovn8ptqny"
+        },
+        {
+            "titolo": "Bounces",
+            "url": "https://play.gamepix.com/ball-bounces/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/ball-bounces/icon/ball-bounces.png?w=105",
+            "desc": "Bounces delivers vibrant, addictive fun as you master the art of timed jumps to collect stars while dodging barriers. Challenge yourself solo or enjoy a competitive session with friends or AI rivals, honing your precision and strategy to outscore and outwit opponents in adrenaline-fueled gameplay.",
+            "categoria": "multiplayer",
+            "id": "7p8r1j2cn"
+        },
+        {
+            "titolo": "Tumblefluff",
+            "url": "https://play.gamepix.com/tumblefluff/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/tumblefluff/icon/tumblefluff.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "multiplayer",
+            "id": "wco0dn5sx"
+        },
+        {
+            "titolo": "GORILGO FPS Online Shooter",
+            "url": "https://play.gamepix.com/gorilgo-fps-online-shooter/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/gorilgo-fps-online-shooter/icon/gorilgo-fps-online-shooter.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "multiplayer",
+            "id": "0aajvcbem"
+        },
+        {
+            "titolo": "Gif Game",
+            "url": "https://play.gamepix.com/gif-game/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/gif-game/icon/gif-game.png?w=105",
+            "desc": "del gioco completa",
+            "categoria": "multiplayer",
+            "id": "cix9fjbqg"
+        },
+        {
+            "titolo": "Worlds 4",
+            "url": "https://play.gamepix.com/worlds-4-a-multiplayer-platformer/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/worlds-4-a-multiplayer-platformer/icon/worlds-4-a-multiplayer-platformer.png?w=105",
+            "desc": "Embark on an epic adventure in Worlds 4, navigating diverse landscapes from icy tundras to sweet candy realms. Gather coins and special items to unlock hidden doors and unleash unique abilities, all while searching for the elusive lost star. Can you conquer each realm and complete your mission?",
+            "categoria": "multiplayer",
+            "id": "grgxi5w40"
+        },
+        {
+            "titolo": "Rage Jump Multiplayer Physics Frenzy",
+            "url": "https://play.gamepix.com/rage-jump-multiplayer-physics-frenzy/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/rage-jump-multiplayer-physics-frenzy/icon/rage-jump-multiplayer-physics-frenzy.png?w=105",
+            "desc": "Dive into the chaotic fun of Rage Jump, where vibrant pixel-art and unpredictable physics collide. Leap through dynamic levels with friends or foes, mastering risky jumps and dodging traps. Embrace the laughter and frustration as you outsmart opponents and claim victory in this exhilarating multiplayer adventure.",
+            "categoria": "multiplayer",
+            "id": "lx0lcbd6w"
+        },
+
+        {
+            "titolo": "Warrior Way",
+            "url": "https://html5.gamemonetize.co/1rqt7kg9a4rrykj10kerloclbsvwlvg4/",
+            "img": "https://img.gamemonetize.com/1rqt7kg9a4rrykj10kerloclbsvwlvg4/512x384.jpg",
+            "desc": "Warrior Way: Enter a chaotic wilderness arena where only the strongest survive! Warrior Way is a 2D topdown survival brawler with intense melee combat. Choose your warrior and leap into the fray against dozens of ruthless rivals. Swing your sharp axe to defeat enemies, dodge incoming strikes, and outplay your opponents. Gather gold, crystals and experience orbs scattered across the map to grow stronger and boost your power. Every battle is a fight for survival. Hold your ground",
+            "categoria": "AI",
+            "id": "j1hcyb2he"
+        },
+
+        {
+            "titolo": "Mini Heads Fun",
+            "url": "https://play.gamepix.com/mini-heads-fun/embed?sid=NNO65",
+            "img": "https://img.gamepix.com/games/mini-heads-fun/icon/mini-heads-fun.png?w=105",
+            "desc": " Embrace the chaos of Mini Heads Fun, a vibrant collection of quirky mini-games. Whether you're chasing chickens or serving dishes, the unpredictable twists and fast-paced rounds keep you on your toes. Dive solo or challenge a friend locally, all from your PC or mobile for endless amusement.",
+            "categoria": "multiplayer",
+            "id": "6hin5i3sn"
+        },
+
+
+        {
+            "titolo": "imposter Duck : Online",
+            "url": "https://html5.gamemonetize.co/mucxqqhaoah9q6mt60k70clzjzesy1cc/",
+            "img": "https://img.gamemonetize.com/mucxqqhaoah9q6mt60k70clzjzesy1cc/512x384.jpg",
+            "desc": "Imposter Duck : Online is an online multiplayer social deduction game where every match is different.You and the other ducks are trapped inside a high-tech space station. Most players are innocent crew members working together to complete missions and keep the station operational. However, one or more players secretly become the Imposter.The Imposter blends in with the crew while sabotaging systems, creating chaos, and eliminating players one by one. Crew members must stay alert, cooperate, and identify suspicious behavior before its too late.",
+            "categoria": "Multiplayer",
+            "id": "i06jn6a7n"
+        },
+        {
+            "titolo": "Speen",
+            "url": "https://html5.gamemonetize.co/fwiozook1vr9lw7duxy81zup5676u7bj/",
+            "img": "https://img.gamemonetize.com/fwiozook1vr9lw7duxy81zup5676u7bj/512x384.jpg",
+            "desc": "Swing one circle around the other, plant a leg to switch which ones spinning, and use momentum as your only weapon. Collect glowing pickups to fill your meters, smash through spike balls and rival spinners with a charged leg, and take down a boss bumper to unlock home decoration. Then head into the shared multiplayer world &mdash; paint your territory, duel other players, and chase a set of achievements as you go. Simple to pick up, with a genuinely different feel than anything else in the genre.",
+            "categoria": "Multiplayer",
+            "id": "xj41ntks7"
+        },
+        {
+            "titolo": "Castle Wars: Legacy",
+            "url": "https://html5.gamemonetize.co/f6ung9e7lfninu1957spejeihzprdusb/",
+            "img": "https://img.gamemonetize.com/f6ung9e7lfninu1957spejeihzprdusb/512x384.jpg",
+            "desc": "Castle Wars: Legacy is a tactical multiplayer card game where you build your deck, defend your castle, and break through enemy walls. Stack resources, summon armies, cast spells, and outsmart your opponent in fast-paced strategic duels. Battle friends online, climb daily tournaments, conquer the campaign, or fight AI in quick matches. Collect dozens of unique cards, build custom decks, and unlock new castle skins. Easy to learn, deep to master.",
+            "categoria": "Multiplayer",
+            "id": "jltm4kgtg"
+        },
+        {
+            "titolo": "Guardz IO",
+            "url": "https://html5.gamemonetize.co/f1e896emfy104h8j8higjjdkcqeqvtau/",
+            "img": "https://img.gamemonetize.com/f1e896emfy104h8j8higjjdkcqeqvtau/512x384.jpg",
+            "desc": "Guardz.io is a free medieval knight .io game with fast-paced multiplayer sword combat. Start as a humble Page and evolve through 12 ranks &mdash; Squire, Knight, Templar, Paladin &mdash; up to the Kings Champion. Slay enemies, collect XP orbs, and climb the global leaderboard. No download needed &mdash; play instantly in your browser and become the ultimate knight in this free-for-all deathmatch!",
+            "categoria": "Multiplayer",
+            "id": "gw5ww6xg9"
+        },
+        {
+            "titolo": "blockscape.io",
+            "url": "https://html5.gamemonetize.co/z41q0ycg5i8u33rqy7sfjcedpak3e7zz/",
+            "img": "https://img.gamemonetize.com/z41q0ycg5i8u33rqy7sfjcedpak3e7zz/512x384.jpg",
+            "desc": "Blockscape.io is a free browser-based voxel MMO. Mine ores, chop trees, fight monsters, and smith powerful weapons as you train 4 skills and level up. Collect rare gems, trade with other players, and explore a 3D multiplayer world &mdash; no download required.",
+            "categoria": "Multiplayer",
+            "id": "ir89br2ge"
+        },
+        {
+            "titolo": "Quiz Runner.io",
+            "url": "https://html5.gamemonetize.co/o265mdiouhnx82t87q3p0t5jgspwsdoy/",
+            "img": "https://img.gamemonetize.com/o265mdiouhnx82t87q3p0t5jgspwsdoy/512x384.jpg",
+            "desc": "Quiz Runner.io &ndash; Trivia &amp; Multiplayer Quiz Battle Think fast, play smart, and rule the leaderboard in Quiz Runner.io, the ultimate online quiz game! Enjoy solo quiz mode to improve knowledge, custom quizzes to test your favorite topics, or upload your notes and PDFs to play interactive learning games. Join real-time multiplayer quiz battles, friend duels, and tournaments to compete globally. Track progress with levels, achievements, and power-ups. With daily quiz challenges, fast-paced timed games, smooth addictive gameplay, and support for 12+ languages, Quiz Runner.io is perfect for students, teachers, and trivia lovers worldwide!",
+            "categoria": "Multiplayer",
+            "id": "gmwp2r53t"
+        },
+        {
+            "titolo": "Tung Sahur IO",
+            "url": "https://html5.gamemonetize.co/oddet3vf59i0den8dikuc3us81aby79z/",
+            "img": "https://img.gamemonetize.com/oddet3vf59i0den8dikuc3us81aby79z/512x384.jpg",
+            "desc": "Join up to 100 players in this hilarious viral meme-inspired multiplayer mayhem! Start as an innocent school kid, but watch out, the legendary Tung Sahur infection is spreading fast! Experience tiktoks most beloved bombardino crocodilo and tung tung tung sahur memes come to life in an epic infection game that will have you laughing and screaming at the same time along with your friends. Play as a school kid trying to survive the chaos, or get infected and join the Tung Sahur army to hunt down your former classmates.",
+            "categoria": "Multiplayer",
+            "id": "5a3013bcg"
+        },
+        {
+            "titolo": "Snake War Multiplayer",
+            "url": "https://html5.gamemonetize.co/qf4hzartah4bf6ewbpelfx4dmz1qql4a/",
+            "img": "https://img.gamemonetize.com/qf4hzartah4bf6ewbpelfx4dmz1qql4a/512x384.jpg",
+            "desc": "Enter the arena in Slither Battle: Snake War, the ultimate snake survival game! Start as a small slither and eat glowing orbs to grow larger. Outsmart other snakes, trap them, and collect everything they drop. But be careful, one wrong move and it&rsquo;s game over! Whether youre a casual player or competitive survivor, this addictive snake war will test your reflexes, strategy, and speed! Key Features: - Eat and grow to dominate &bull; Outsmart and trap enemy snakes &bull; Simple, smooth controls &bull; Fast-paced slither gameplay &bull; Offline mode and daily rewards &bull; No time limits &ndash; play your way!",
+            "categoria": "Multiplayer",
+            "id": "aljt1xp3l"
+        },
+        {
+            "titolo": "Greedy Snake Multiplayer Duel",
+            "url": "https://html5.gamemonetize.co/fzxidkarnp7ykiii4mot05y6nfwt8h3w/",
+            "img": "https://img.gamemonetize.com/fzxidkarnp7ykiii4mot05y6nfwt8h3w/512x384.jpg",
+            "desc": "This is a very classic and fun Snake game. With Q Mengs lovely cartoon style, players can experience new interfaces and new Snake game playing methods, more vivid and interesting snake shapes and more mode levels. You can play anytime, anywhere. Its very suitable for killing time. Dont miss it!",
+            "categoria": "Multiplayer",
+            "id": "b1s1wh69o"
+        },
+        {
+            "titolo": "Survev.io",
+            "url": "https://html5.gamemonetize.co/q9xrmuceu30pey8llzop5cr0p1p2fbx9/",
+            "img": "https://img.gamemonetize.com/q9xrmuceu30pey8llzop5cr0p1p2fbx9/512x384.jpg",
+            "desc": "Survev.io Battle Royale is a thrilling multiplayer game where you fight to be the last character standing on a shrinking island. Start with nothing but your fists, scavenge for weapons and supplies, and stay within the safe zone. Choose between solo, duo, or squad modes, and use strategy and skills to outlast up to 50 opponents.",
+            "categoria": "Multiplayer",
+            "id": "4qp6dkq7s"
+        },
+        {
+            "titolo": "Battle Jitsu",
+            "url": "https://html5.gamemonetize.co/cxu4dpr5uspgzim70lf6t4p6milazwr0/",
+            "img": "https://img.gamemonetize.com/cxu4dpr5uspgzim70lf6t4p6milazwr0/512x384.jpg",
+            "desc": "In Battle Jitsu, you enter intense multiplayer online battles where strategy is everything. Carefully choose your cards and play the right element to beat your opponent. Fire, water, and ice face each other in a fast and dynamic duel. Master the elements, predict your opponents movements and prove yourself to be the true master of Battle Jitsu!",
+            "categoria": "Multiplayer",
+            "id": "jg338d1my"
+        },
+        {
+            "titolo": "Color Path IO",
+            "url": "https://html5.gamemonetize.co/993brpbfu5u9o090ik0khqjsgf8t0kg6/",
+            "img": "https://img.gamemonetize.com/993brpbfu5u9o090ik0khqjsgf8t0kg6/512x384.jpg",
+            "desc": "Welcome to Color Path.io! Get ready to run and draw your color path to claim the biggest area. Strategize by drawing paths around your opponents to trap them and secure your victory. Can you outsmart and outmaneuver your rivals to become the ultimate champion?",
+            "categoria": "Multiplayer",
+            "id": "67c6723x2"
+        },
+        {
+            "titolo": "a survival legend ",
+            "url": "https://html5.gamemonetize.co/r2h0vobvk4ih705otem8f4vb2v58hf2r/",
+            "img": "https://img.gamemonetize.com/r2h0vobvk4ih705otem8f4vb2v58hf2r/512x384.jpg",
+            "desc": "Fight to survive in a city overrun by zombies. Move fast, collect coins, upgrade your skills, and power up your weapons as endless waves close in from every side. With simple controls, intense battles, and constant pressure, every run is a test of timing and strategy. Choose smart upgrades, survive longer, revive at the right moment, and push your best score higher. Climb the leaderboard and prove you are the last survivor.",
+            "categoria": "Cooking",
+            "id": "kh6cqpsvg"
+        },
+        {
+            "titolo": "Neck Stack Rush",
+            "url": "https://html5.gamemonetize.co/da91ozg3wbzs01514505puzfnmw0zl62/",
+            "img": "https://img.gamemonetize.com/da91ozg3wbzs01514505puzfnmw0zl62/512x384.jpg",
+            "desc": "Neck Stack Rush is a fun and addictive hyper-casual running game where you collect neck pieces, stack them up, and grow taller to overcome obstacles and reach the finish line. The higher your stack, the easier it becomes to cross walls, gaps, and tricky paths. But be careful&mdash;wrong moves can reduce your stack and make the journey harder! Test your timing, reflexes, and strategy as you run through exciting levels filled with challenges and surprises. Simple one-touch controls make it easy to play, but mastering the perfect run is the real challenge. Perfect for quick play sessions, Neck Stack Rush delivers nonstop fun, satisfying stacking mec",
+            "categoria": "Action",
+            "id": "sk7q972fy"
+        },
+        {
+            "titolo": "Snake 2048: Cube Merge",
+            "url": "https://html5.gamemonetize.co/nkjtibnj0tezzvci3owaf2dtff3hvfvq/",
+            "img": "https://img.gamemonetize.com/nkjtibnj0tezzvci3owaf2dtff3hvfvq/512x384.jpg",
+            "desc": "This game is an exciting combination of the classic Snake mechanics and the popular 2048 puzzle. Your goal is to control the snake and absorb cubes with a smaller or equal value. Each absorbed cube increases your mass, making the snake longer and stronger. But be careful &mdash; colliding with a larger cube will result in defeat. The game offers a unique gameplay experience that blends fast-paced action with strategic thinking. You must plan your path carefully, avoid dangerous cubes, survive as long as possible, and score the highest number of points. The controls are simple and intuitive: on PC, the snake follows your cursor, while on mobile de",
+            "categoria": "Action",
+            "id": "2nmeu0z0g"
+        },
+        {
+            "titolo": "Survivor.io Battle",
+            "url": "https://html5.gamemonetize.co/g2yx03az6bsx6sekkut63069587y5ads/",
+            "img": "https://img.gamemonetize.com/g2yx03az6bsx6sekkut63069587y5ads/512x384.jpg",
+            "desc": "Dangerous zombies have overrun the city, pushing humanity to the brink of extinction! The streets are in chaos, and survival is the only option left. Awakened by fate, you step forward as a lone warrior with unlimited potential. In Survivor.io Battle, one player must face endless waves of ruthless zombies and fight for survival. Armed with powerful weapons, you must move smartly, attack strategically, and avoid being surrounded by the overwhelming horde. Collect mystery boxes scattered across the city to unlock upgrades, boost your abilities, and gain powerful weapons that turn the tide of battle.",
+            "categoria": "Action",
+            "id": "upk6ao5x0"
+        },
+        {
+            "titolo": "Ants io",
+            "url": "https://html5.gamemonetize.co/padkimfk900lo640e7v8dm70zuqacvpv/",
+            "img": "https://img.gamemonetize.com/padkimfk900lo640e7v8dm70zuqacvpv/512x384.jpg",
+            "desc": "Ants io is a fast-paced .io-style arena game where you control a battle-hardened ant fighting for the top spot in the jungle. Move around the map, hunt enemies, and use your unique special ability to outplay other ants. Each ant type comes with its own special skill and playstyle, and you can unlock many more in the in-game shop. Choose from four different game modes to test your skills, and pick from three random skills during the run to build powerful combos. Survive, grow stronger, and be the last ant standing to claim first place on the leaderboard.",
+            "categoria": "Action",
+            "id": "fkpioknbp"
+        },
+        {
+            "titolo": "SquidGame Multiplayer",
+            "url": "https://html5.gamemonetize.co/yui95x7so3o70xphcge1hqh4adlsgqzg/",
+            "img": "https://img.gamemonetize.com/yui95x7so3o70xphcge1hqh4adlsgqzg/512x384.jpg",
+            "desc": "Engage in free multiplayer survival! Compete in 7-minute minigames against 30 rivals. Based on the hit Netflix show, test your skills and strategy. Fail a challenge, get eliminated by Pink Soldiers! Adapt and outmaneuver to survive. Will you be the last one standing?",
+            "categoria": "Action",
+            "id": "h7tmuvzzs"
+        },
+        {
+            "titolo": "tinywar.io",
+            "url": "https://html5.gamemonetize.co/fpegl6hk176yz1w1suj7fkw8g2ifi86o/",
+            "img": "https://img.gamemonetize.com/fpegl6hk176yz1w1suj7fkw8g2ifi86o/512x384.jpg",
+            "desc": "Tinywar.io throws you into a ruthless sword-fighting free-for-all where a single hit means defeat. Fight to unlock all 10 character evolutions and boost your speed with each upgrade. Can you dominate the leaderboard and survive the longest?",
+            "categoria": "Action",
+            "id": "lg48q9psp"
+        },
+        {
+            "titolo": "Bridge Fun Race",
+            "url": "https://html5.gamemonetize.co/d55mz3ys0ne1682kzxj5v9maq8grsuy9/",
+            "img": "https://img.gamemonetize.com/d55mz3ys0ne1682kzxj5v9maq8grsuy9/512x384.jpg",
+            "desc": "Bridge Fun Race is an IO battle arcade game like Mr Bean series. With 3D cute roles, you can join different knockout battles with several AI opponents. Only the first 3 places players can win and join into the next battle. In Racing levels, you need to collect items and push the obstacles to the finish line. In Survival levels, you need to roll and launch snowballs to hit the other players onto the platform in a limited time.",
+            "categoria": "Action",
+            "id": "y8hga2564"
+        },
+        {
+            "titolo": "King of Crabs",
+            "url": "https://html5.gamemonetize.co/7qd3n9dqksf5kv9melr3cx96oo8rmjws/",
+            "img": "https://img.gamemonetize.com/7qd3n9dqksf5kv9melr3cx96oo8rmjws/512x384.jpg",
+            "desc": "Easy to operate the krab,The Shell Gallery will show each roles armor, speed, skill, and pelt,The Equipment shop sells 5 Claws, 5 Bodies, and 5 Legs, Claim extra claw coins in the Sign and Spin,The Quick Match will make a fight with 24 players.The Ultimate Guide to Winning Tactics and Tips,Find a shell first. Collect and eat fish on the ground to grow up, Attack the weaker opponents.",
+            "categoria": "Action",
+            "id": "o7ac8ejdc"
+        },
+
+        {
+            "titolo": "Obby Swim for Egg",
+            "url": "https://html5.gamemonetize.co/uj2dbz892pmiysv3l0pynv59jm3bw7bx/",
+            "img": "https://img.gamemonetize.com/uj2dbz892pmiysv3l0pynv59jm3bw7bx/512x384.jpg",
+            "desc": "Walk up the highway into the flooded aquarium and swim: every biome holds a boss guarding a nest of eggs. Steal an egg, carry it home past the boss and hatch it on your farm. Creatures earn money: buy upgrades and treadmills, swim deeper into rarer biomes, fill your Codex and play online with others.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "+1 Wings Keyboard Speed",
+            "url": "https://html5.gamemonetize.co/dnogptr1qkafwhhcq3qltxve9oz0iwxs/",
+            "img": "https://img.gamemonetize.com/dnogptr1qkafwhhcq3qltxve9oz0iwxs/512x384.jpg",
+            "desc": "Run down the giant keyboard highway: every key you step on trains your Speed. Jump, flap your wings and glide as far as you can, then land on a trophy pad to win trophies. Pads further out over the water pay much more. Buy wings, auras and trails, rebirth and race other players online.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Obby Sail for Egg",
+            "url": "https://html5.gamemonetize.co/qpe5ipzu617h0zb7cr6mytacz2ar0dvj/",
+            "img": "https://img.gamemonetize.com/qpe5ipzu617h0zb7cr6mytacz2ar0dvj/512x384.jpg",
+            "desc": "Sail your boat from the harbour to ten islands: the further out, the rarer the eggs. Steal an egg from each island nest, outrun the hunter ship on the way home and hatch it into a pet that earns money. Buy faster boats and upgrades, fill your Codex and sail with other captains online.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Obby Snow Shoveling",
+            "url": "https://html5.gamemonetize.co/08oj8rboxptylyp86aze0cvgpp9cn4cg/",
+            "img": "https://img.gamemonetize.com/08oj8rboxptylyp86aze0cvgpp9cn4cg/512x384.jpg",
+            "desc": "Shovel snow to grow stronger and dig up treasures frozen in the drifts. Sell them for cash, buy better shovels and auras, and push into nine snowy biomes where the snow is tougher and the treasure rarer. Rebirth for bigger rewards and play online with other shovelers.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Obby +1 Roll Ice Cream",
+            "url": "https://html5.gamemonetize.co/kixbn3kfldjpagkyfbmvsvzu9mk5b7qw/",
+            "img": "https://img.gamemonetize.com/kixbn3kfldjpagkyfbmvsvzu9mk5b7qw/512x384.jpg",
+            "desc": "Push your scoop over the ice cream fields: every fresh tile rolls onto your giant ice cream roll. Run down the Sweet Road where each biome has a buyer who chases you down; the deeper they catch you, the more cash they pay for your roll. Buy better scoops, flavors and pets, rebirth and play online with others.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "FPS Block Strike Dust2",
+            "url": "https://html5.gamemonetize.co/09injp4gn3ewindof0o3jf5jrx6apcij/",
+            "img": "https://img.gamemonetize.com/09injp4gn3ewindof0o3jf5jrx6apcij/512x384.jpg",
+            "desc": "Experience a classic team-based FPS battle in a block-style world with FPS Block Strike Dust2! Choose your team and fight in intense battles between Terrorists and Counter-Terrorists. Equip your weapon, move quickly through the Dust2-themed arena, take the right positions, and work together with your teammates to defeat the opposing team. Use your reflexes, aim carefully, and develop your strategy during competitive firefights. Enter the arena, ready your weapon, and join the action-packed FPS battle!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Ligmar Online",
+            "url": "https://html5.gamemonetize.co/dp44mvajt7c6ceztkawj2i4orpo7frto/",
+            "img": "https://img.gamemonetize.com/dp44mvajt7c6ceztkawj2i4orpo7frto/512x384.jpg",
+            "desc": "Ligmar Online brings together what we loved about old-school browser MMORPGs: leveling, rare loot, dungeons, and PvP. There&rsquo;s always someone to beat or a piece of gear worth chasing. But it&rsquo;s the people that make it stick. You find your regular group, get to know your rivals, and fight for territory with your guild. And when something good drops, guild chat hears about it first. All with vibrant graphics, right in your browser. No client to download. Just open the game, and you&rsquo;re in.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Super Chop: Forest Hero",
+            "url": "https://html5.gamemonetize.co/3upalp17wivdlvvxawpjpnjpkz5gcgla/",
+            "img": "https://img.gamemonetize.com/3upalp17wivdlvvxawpjpnjpkz5gcgla/512x384.jpg",
+            "desc": "Pull the Hero Axe out of the old stump and become the mightiest lumberjack in the forest! Chop trees, fill your backpack with logs and fly them to the truck to sell for coins. Buy stronger tools, from Twin Axes and Power Gauntlets to the Hero Saw, Thunder Axe and Plasma Cutter, and upgrade your strength, backpack, speed and Hero Flight. Unlock six forest zones, from Oak Woods to the Redwood Giants, where every tree is worth more. Battle the giant Elder Trees, smash the rot rigs of Baron Blight, clear monster dens for rare materials and relics, rescue forest animals and rebuild the village to earn a beaver helper, a frost pup and a double jump. Plant rare seeds in your own grove, dig up buried treasure and collect new hero gloves. Play solo or online with up to 8 heroes!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Build a Keycap Pyramid",
+            "url": "https://html5.gamemonetize.co/djrwlkwff95gb0ezfz6zrvk8rot2omnr/",
+            "img": "https://img.gamemonetize.com/djrwlkwff95gb0ezfz6zrvk8rot2omnr/512x384.jpg",
+            "desc": "Build a Keycap Pyramid is a satisfying 3D building game where every keycap counts. Scoop up keycaps by the hundreds, carry a wobbling tower of them on your head and watch your pyramid rise layer by layer. Every finished pyramid is saved to your plot with your name on top, and the next one is even bigger! Chain combos and hunt for gold (x10) and rainbow (x50) keycaps. Get stronger on benches and treadmills: type the letter that pops up for a perfect rep. Hatch 15 Keycap Pets that boost your keys, cash and training. Defend your pyramid from Glitch raiders by throwing keycaps, and type the word to break the shield of their boss. Make it yours with 5 pyramid shapes, 10 color palettes and your name in keycaps on top. Share a live world with up to 3 other builders and cheer with emotes. Builder bots keep earning while you are away, and there are daily challenges and a 7-day reward calendar.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Online KitPvP : 50vs50",
+            "url": "https://html5.gamemonetize.co/2ipfjlhx61qegnkn7ldkh2gig46ytn1z/",
+            "img": "https://img.gamemonetize.com/2ipfjlhx61qegnkn7ldkh2gig46ytn1z/512x384.jpg",
+            "desc": "Join exciting battles against real players in Online Kit PvP! Enter the arena, choose the kit that suits you, and fight against your opponents. Use different equipment and abilities to define your playstyle, move quickly, and work together with your teammates to defeat the opposing team. Strategy, reflexes, and choosing the right equipment will be the keys to victory. Survive the arena, defeat your opponents, and lead your team to victory. Join the Online Kit PvP battle and show your skills!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "GORILGO FPS : Online Shooter",
+            "url": "https://html5.gamemonetize.co/hoex3mtd9ybmhmz4t057b6i1u25l38qo/",
+            "img": "https://img.gamemonetize.com/hoex3mtd9ybmhmz4t057b6i1u25l38qo/512x384.jpg",
+            "desc": "Experience relentless, fast paced 3D first person shooter action where every battle feels chaotic and intense. Arm yourself with a diverse arsenal of powerful guns and engage enemies in high speed combat, then unleash the ultimate advantage by transforming into a mighty gorilla at any moment. In human form you rely on firepower and precision shooting, while gorilla form gives you raw close combat strength and brutal melee attacks. Switch seamlessly between ranged weapons and primal strength to dominate the battlefield and surprise opponents with unpredictable playstyles. Master both shooting tactics and gorilla power to defeat rivals, control",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Best_Buds",
+            "url": "https://html5.gamemonetize.co/0i4a9uxyfmwckruzewntiaou0kogo51p/",
+            "img": "https://img.gamemonetize.com/0i4a9uxyfmwckruzewntiaou0kogo51p/512x384.jpg",
+            "desc": "tep into the colorful world of Best Buds, the ultimate dress-up game where you style two best friends for every occasion! Mix and match trendy outfits, cute accessories, stylish hairstyles, and fabulous shoes to create the perfect look for each bud. Whether it&rsquo;s a beach day, a magical party, or just hanging out in the park, you decide how your best buds express their personalities through fashion. Snap photos of your favorite looks and share them with your friends!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Obby: Lucky Block Heist",
+            "url": "https://html5.gamemonetize.co/ewnvpyog4cz5pd8fexlrkw1eqaxzzx49/",
+            "img": "https://img.gamemonetize.com/ewnvpyog4cz5pd8fexlrkw1eqaxzzx49/512x384.jpg",
+            "desc": "Build the ultimate base in this action-packed 3D Obby! Collect rare Brainrot items to generate passive income and grow your empire. Want the best loot? Sneak into heavily guarded zones to steal legendary Lucky Blocks! But beware: if the patrolling enemies catch you, youll be blasted back! Upgrade your speed and jump height to outmaneuver guards, and use the rebirth system to unlock insane multi-jumps. Can you steal the rarest blocks, max out your stats, and become the richest player?",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Magic Battle Online",
+            "url": "https://html5.gamemonetize.co/vt29kl2z0scmm21nkza8gybmw7spclgn/",
+            "img": "https://img.gamemonetize.com/vt29kl2z0scmm21nkza8gybmw7spclgn/512x384.jpg",
+            "desc": "Magic Battle Online is an epic online battle with different elements and abilities! Choose an element: fire, water, wind, earth, ice, lightning, light, darkness, crystals, void, and time. Each has its own unique spells and combat abilities! Up to 10 real players can fight in the arena simultaneously. The map changes every five minutes! Level up your elemental mastery from Apprentice to Alpha, increase your spell ranks, forge runes, and fuse them into more powerful ones! Challenge your friends to a duel and participate in events! Can you become the most powerful mage in this cubic world?",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Obby +1 Double Jump",
+            "url": "https://html5.gamemonetize.co/leq21bg4jnulanqjqs9usx3cnia6l8f9/",
+            "img": "https://img.gamemonetize.com/leq21bg4jnulanqjqs9usx3cnia6l8f9/512x384.jpg",
+            "desc": "Jump, dash, and race against others in this fast-paced platformer! Conquer 10+ thrilling stages to earn Wins and unlock epic custom trails and skins&mdash;including the legendary Tung-Tung-Tung Sahur. Do you have what it takes to master the obby?",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Obby Tsunami Runner",
+            "url": "https://html5.gamemonetize.co/fvy4egxh3t3yfkzbb6dueku1mef5e8rh/",
+            "img": "https://img.gamemonetize.com/fvy4egxh3t3yfkzbb6dueku1mef5e8rh/512x384.jpg",
+            "desc": "Run from the tsunami in Obby Tsunami Runner &mdash; a multiplayer browser game where every wave brings new danger. Dodge, survive, and earn wins to unlock characters and trails. Play as the legendary Tung-Tung-Tung Sahur! Compete with friends, push your limits, and see how far you can go. No downloads, just survival. Run. Unlock. Survive.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Paint or Seek: Chameleon Hide Online",
+            "url": "https://html5.gamemonetize.co/v0dttala92gaiw3uw6r1vh8p3da3ev2l/",
+            "img": "https://img.gamemonetize.com/v0dttala92gaiw3uw6r1vh8p3da3ev2l/512x384.jpg",
+            "desc": "Paint or Seek is a original hide and seek action game where you can paint your character, blend into the environment, and avoid being discovered by Seekers. As a Hider, your goal is to avoid being found. Paint your character to match nearby walls, objects, patterns, and decorations, then choose a good hiding spot and stay hidden until the timer ends. The better your camouflage, the harder it will be for the Seeker to notice you. As a Seeker, your goal is to find every hidden player before time runs out. Search the entire map, look carefully for characters blending into the environment, and catch all Hiders before they survive the round.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "MINE BLADE Online KitPvP",
+            "url": "https://html5.gamemonetize.co/6yovkiqs7z78ayor7opo2dr2c931qmsu/",
+            "img": "https://img.gamemonetize.com/6yovkiqs7z78ayor7opo2dr2c931qmsu/512x384.jpg",
+            "desc": "Mine Blade Online KitPvP is a fast-paced and exciting PvP battle game where players fight against each other to prove who is the strongest! Fight against other players! Earn money by defeating your opponents! Buy new costumes with your earnings! Try to become the strongest warrior! Enter the arena, equip your sword, and battle against your opponents. Every victory earns you money. Use your earnings to purchase different costumes and customize your character! Move quickly, time your attacks, and defeat your opponents! Mine Blade Online KitPvP &mdash; Equip your sword, win battles, earn money, and create your own style!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Brush Cat Challenge",
+            "url": "https://html5.gamemonetize.co/odelq0qdc12p5bftdafkq6l2u3gkj2un/",
+            "img": "https://img.gamemonetize.com/odelq0qdc12p5bftdafkq6l2u3gkj2un/512x384.jpg",
+            "desc": "Brush Cat Challenge brings a funny and unpredictable cat care adventure where every gentle brush stroke can change the mood of your furry friend! This funny cat game experience combines cute animals, quick reactions, and careful timing. This playful cat grooming simulator tests your observation skills and timing ability.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "imposter Duck : Online",
+            "url": "https://html5.gamemonetize.co/mucxqqhaoah9q6mt60k70clzjzesy1cc/",
+            "img": "https://img.gamemonetize.com/mucxqqhaoah9q6mt60k70clzjzesy1cc/512x384.jpg",
+            "desc": "Imposter Duck : Online is an online multiplayer social deduction game where every match is different.You and the other ducks are trapped inside a high-tech space station. Most players are innocent crew members working together to complete missions and keep the station operational. However, one or more players secretly become the Imposter.The Imposter blends in with the crew while sabotaging systems, creating chaos, and eliminating players one by one. Crew members must stay alert, cooperate, and identify suspicious behavior before its too late.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Speen",
+            "url": "https://html5.gamemonetize.co/fwiozook1vr9lw7duxy81zup5676u7bj/",
+            "img": "https://img.gamemonetize.com/fwiozook1vr9lw7duxy81zup5676u7bj/512x384.jpg",
+            "desc": "Swing one circle around the other, plant a leg to switch which ones spinning, and use momentum as your only weapon. Collect glowing pickups to fill your meters, smash through spike balls and rival spinners with a charged leg, and take down a boss bumper to unlock home decoration. Then head into the shared multiplayer world &mdash; paint your territory, duel other players, and chase a set of achievements as you go. Simple to pick up, with a genuinely different feel than anything else in the genre.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Music Night Battle: Rhythm Game",
+            "url": "https://html5.gamemonetize.co/gpnthl10ris6862m1lrywpqk8gc4zk4v/",
+            "img": "https://img.gamemonetize.com/gpnthl10ris6862m1lrywpqk8gc4zk4v/512x384.jpg",
+            "desc": "Music Night Battle is a fast rhythm battle game where you tap arrows in time with the beat and fight in music duels. Play solo or compete in online multiplayer matches, improve your timing skills, build combos, and climb the leaderboard. Enjoy neon arcade visuals, fast reaction gameplay, and addictive rhythm challenges with arrow-based music mechanics. Defeat opponents, unlock new challenges, and test your reflexes in competitive rhythm battles designed for casual and hardcore players.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Stickman Trivia Fall IO",
+            "url": "https://html5.gamemonetize.co/cybh6ym22ww2ehlpu23d6azrudls31ar/",
+            "img": "https://img.gamemonetize.com/cybh6ym22ww2ehlpu23d6azrudls31ar/512x384.jpg",
+            "desc": "Stickman Trivia Fall io takes your trivia skills to the next level! Challenge your brain and reflexes as you compete against friends and players worldwide. Test your knowledge in Solo Mode, progress through fun quests, and beat the Boss to earn rewards. Love multiplayer? Jump into the Arena to battle up to four players, climb leaderboards, and score big! Play Classic one-on-one matches, enjoy weekly and monthly special quizzes, and customize your stickman avatar. Hundreds of trivia questions across multiple categories make this the ultimate addictive quiz &amp; trivia game!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Castle Wars: Legacy",
+            "url": "https://html5.gamemonetize.co/f6ung9e7lfninu1957spejeihzprdusb/",
+            "img": "https://img.gamemonetize.com/f6ung9e7lfninu1957spejeihzprdusb/512x384.jpg",
+            "desc": "Castle Wars: Legacy is a tactical multiplayer card game where you build your deck, defend your castle, and break through enemy walls. Stack resources, summon armies, cast spells, and outsmart your opponent in fast-paced strategic duels. Battle friends online, climb daily tournaments, conquer the campaign, or fight AI in quick matches. Collect dozens of unique cards, build custom decks, and unlock new castle skins. Easy to learn, deep to master.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Guardz IO",
+            "url": "https://html5.gamemonetize.co/f1e896emfy104h8j8higjjdkcqeqvtau/",
+            "img": "https://img.gamemonetize.com/f1e896emfy104h8j8higjjdkcqeqvtau/512x384.jpg",
+            "desc": "Guardz.io is a free medieval knight .io game with fast-paced multiplayer sword combat. Start as a humble Page and evolve through 12 ranks &mdash; Squire, Knight, Templar, Paladin &mdash; up to the Kings Champion. Slay enemies, collect XP orbs, and climb the global leaderboard. No download needed &mdash; play instantly in your browser and become the ultimate knight in this free-for-all deathmatch!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "blockscape.io",
+            "url": "https://html5.gamemonetize.co/z41q0ycg5i8u33rqy7sfjcedpak3e7zz/",
+            "img": "https://img.gamemonetize.com/z41q0ycg5i8u33rqy7sfjcedpak3e7zz/512x384.jpg",
+            "desc": "Blockscape.io is a free browser-based voxel MMO. Mine ores, chop trees, fight monsters, and smith powerful weapons as you train 4 skills and level up. Collect rare gems, trade with other players, and explore a 3D multiplayer world &mdash; no download required.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Quiz Runner.io",
+            "url": "https://html5.gamemonetize.co/o265mdiouhnx82t87q3p0t5jgspwsdoy/",
+            "img": "https://img.gamemonetize.com/o265mdiouhnx82t87q3p0t5jgspwsdoy/512x384.jpg",
+            "desc": "Quiz Runner.io &ndash; Trivia &amp; Multiplayer Quiz Battle Think fast, play smart, and rule the leaderboard in Quiz Runner.io, the ultimate online quiz game! Enjoy solo quiz mode to improve knowledge, custom quizzes to test your favorite topics, or upload your notes and PDFs to play interactive learning games. Join real-time multiplayer quiz battles, friend duels, and tournaments to compete globally. Track progress with levels, achievements, and power-ups. With daily quiz challenges, fast-paced timed games, smooth addictive gameplay, and support for 12+ languages, Quiz Runner.io is perfect for students, teachers, and trivia lovers worldwide!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Santa Matching Game",
+            "url": "https://html5.gamemonetize.co/7zwgvkvq609jq0jk7tpfe10bncofyj5o/",
+            "img": "https://img.gamemonetize.com/7zwgvkvq609jq0jk7tpfe10bncofyj5o/512x384.jpg",
+            "desc": "Xmas Matching is a delightful, holiday-themed memory puzzle game designed for friends and family to enjoy together. Set against a snowy winter night, players take turns flipping cards to find matching pairs of iconic Christmas symbols, including Santa Claus, warm cocoa, festive candles, and gingerbread cookies. Challenge your brain across multiple levels of increasing difficulty. Whether you are playing solo to beat your best score or competing in the Battle Mode with up to 4 players, the goal remains the same: remember the positions, find the matches, and clear the board to become the ultimate Holiday Match Master!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Brainrot Bridge Race 3D",
+            "url": "https://html5.gamemonetize.co/e27ezlhh5edki5wv0aad96d8w3g1l1bf/",
+            "img": "https://img.gamemonetize.com/e27ezlhh5edki5wv0aad96d8w3g1l1bf/512x384.jpg",
+            "desc": "This is not just a simple running and racing game. It&rsquo;s a brainrot-style 3D battle where speed and strategy collide! Your goal is to collect as many bananas as possible while sprinting through hilarious obstacle courses. Collect more bananas to evolve your form.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "carrom pro",
+            "url": "https://html5.gamemonetize.co/ts6iu4xqkctvpkau5yk4hwdkr3nwbsn7/",
+            "img": "https://img.gamemonetize.com/ts6iu4xqkctvpkau5yk4hwdkr3nwbsn7/512x384.jpg",
+            "desc": "Experience the ultimate digital adaptation of the classic Carrom board game! Carrom Pro blends realistic physics with modern arcade aesthetics for a smooth, competitive experience. Game Modes: Classic Carrom: Traditional rules with the Queen. Disc Pool: Fast-paced action, clear your pucks first. Freestyle: Point-based arcade scoring. Features: Global Arenas: Progress from Dhaka to NYC. Realistic Physics: Smooth controls and collisions. Pass &amp; Play: Offline local multiplayer. Daily Rewards: Lucky spins and quests. Leaderboards: Climb the ranks! Download Carrom Pro now and become the King of the Board!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "WHOT The Ultimate Nigerian Card Game",
+            "url": "https://html5.gamemonetize.co/at7gjto5axuv0mv7m4ain5pll3qmutcz/",
+            "img": "https://img.gamemonetize.com/at7gjto5axuv0mv7m4ain5pll3qmutcz/512x384.jpg",
+            "desc": "Experience the classic African card game WHOT! Play solo against AI or challenge friends in real-time multiplayer. Features stunning neon graphics, background music, and smooth gameplay. Free to play! GAMEPLAY: 1. On your turn, play a card that matches either: - The SHAPE of the top card (circle, triangle, cross, square, star) - The NUMBER of the top card 2. If you cant play, draw one card from the pile - If the drawn card is playable, you may play it - Otherwise, click SKIP TURN 3. WHOT cards (20) are wild - play them anytime and choose any shape",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Clonium",
+            "url": "https://html5.gamemonetize.co/cx9ykv4xl6wlfq6vd9odkn68e6zenz7s/",
+            "img": "https://img.gamemonetize.com/cx9ykv4xl6wlfq6vd9odkn68e6zenz7s/512x384.jpg",
+            "desc": "Capture your opponents cells, think through every move, and use strategy to be the last one standing. The more explosions, the more spectacular the game! Simple rules, but an endless number of combinations and tactics make Clonium incredibly addictive.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Fall Guys Unblocked Web Multiplayer",
+            "url": "https://html5.gamemonetize.co/7o8qtn59e5ejushl2s6bp52nbcgiu44x/",
+            "img": "https://img.gamemonetize.com/7o8qtn59e5ejushl2s6bp52nbcgiu44x/512x384.jpg",
+            "desc": "Fall Guys Unblocked Web Multiplayer drops you into fast, chaotic obstacle courses right in your browser, no installs. Built with WebGL, it runs smoothly on modern devices while you dodge swinging hammers, tilting platforms, and grabby beans. Web Dev <a href='https://www.crazygamesfree.com/.'>https://www.crazygamesfree.com/.</a> Jump in solo or queue with friends, race, survive, and outlast the crowd across bite-size rounds. Quick matches, bright physics, and hilarious wipeouts make it perfect for study breaks, school Chromebooks, or evenings.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Battle SWAT vs Mercenary Remaster",
+            "url": "https://html5.gamemonetize.co/np11v2111dvriy3bgljgr99a8qo2l8vi/",
+            "img": "https://img.gamemonetize.com/np11v2111dvriy3bgljgr99a8qo2l8vi/512x384.jpg",
+            "desc": "Battle SWAT vs Mercenary throws you into intense first-person shooter action where you pick a side and fight for dominance. Choose to fight as a skilled SWAT soldier or a ruthless mercenary in thrilling multiplayer battles. The game also features a zombie mode, where you can rise from the dead and hunt down your enemies. With fast-paced combat and diverse modes, every match is packed with adrenaline and chaos. Web Dev <a href='https://www.crazygamesx.com/.'>https://www.crazygamesx.com/.</a> Mouse to aim, shooting, change gun, Tab for menu, WASD to walk-run.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "PGA Toons",
+            "url": "https://html5.gamemonetize.co/gw00mqn2tqrl78k76v4bug5o2ho9qng8/",
+            "img": "https://img.gamemonetize.com/gw00mqn2tqrl78k76v4bug5o2ho9qng8/512x384.jpg",
+            "desc": "Lock and load in a vibrant voxel world where every corner is a playground and every jump can win the round. PGA Toons blends classic arena shooting with modern movement and snappy controls. Parkour across rooftops, slide through alleys, bounce off jump pads, and jetpack into mid-air duels. Web Dev <a href='https://www.poki76.com/'>https://www.poki76.com/</a> .Whether you&rsquo;re clutching a round in Team Deathmatch or snatching the flag with a last-second dash, the action stays tight, readable, and gloriously cartoonish.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "PGA3 Zombie",
+            "url": "https://html5.gamemonetize.co/tg44gsgkrah9ash957sdnj6jg2oeyn75/",
+            "img": "https://img.gamemonetize.com/tg44gsgkrah9ash957sdnj6jg2oeyn75/512x384.jpg",
+            "desc": "PGA3 Zombie Mode: hold the line or join the horde. Survive endless voxel hordes in solo or 4-player co-op&mdash;board up, upgrade guns, trigger traps, and drop bosses. Web Dev <a href='https://www.crazygamesonline.com/'>https://www.crazygamesonline.com/</a> Wave-based zombie chaos with fast rounds, cash-for-perks, craftable gear, deadly map traps, and escalating boss fights. How long can you last?",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Paws Off My Clues!",
+            "url": "https://html5.gamemonetize.co/u1n5ttd87g2a326o5b2pn1wb9ntpx33f/",
+            "img": "https://img.gamemonetize.com/u1n5ttd87g2a326o5b2pn1wb9ntpx33f/512x384.jpg",
+            "desc": "Explore unique locations filled with hidden objects and unexpected mysteries. From sunny beaches to the ancient ruins of Persia, every corner of this fluffy world comes to life as you hunt for hidden treasures. Watch as the cats go about their lives, adding charm and humor to the atmosphere, while you search through their delightful mess. Solve puzzles, progress through levels, and become the ultimate hidden object master!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Tic tac toe   with AI and multiplayer",
+            "url": "https://html5.gamemonetize.co/yek6als54qfbxd4vx2h26nuq55rt7gt8/",
+            "img": "https://img.gamemonetize.com/yek6als54qfbxd4vx2h26nuq55rt7gt8/512x384.jpg",
+            "desc": "Tic Tac Toe is a classic strategy-based HTML5 game built with pure HTML5, CSS3, and JavaScript, designed for desktop and mobile browsers. This lightweight game is responsive, fast-loading, and fully customizable, making it perfect for websites, blogs, and game portals. Players can challenge the computer (AI) or play with a friend in 2-player mode. The game features clean UI, smooth animations, and modern design, ensuring a great user experience across all devices. Whether you&rsquo;re a developer, game publisher, or looking to add engagement to your site, this Tic Tac Toe game is an easy-to-integrate, monetizable, and timeless classic.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Iron Legion",
+            "url": "https://html5.gamemonetize.co/gkeofcoqengjzxlw0b09f2qrng35egbi/",
+            "img": "https://img.gamemonetize.com/gkeofcoqengjzxlw0b09f2qrng35egbi/512x384.jpg",
+            "desc": "Iron Legion Dive into epic tank battles of the modern era! Iron Legion is an exciting online action game where you become the commander of a formidable combat vehicle. Game features: * More than 10 models of legendary classic tanks * Unique maps with detailed terrain * Vehicle development and upgrade system with realistic damage mechanics * Team battles for up to 20 players in real time Gameplay: * Choose your path - from light reconnaissance vehicles to heavy assault tanks * Complete exciting combat missions and tasks",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "super sprunki adventure game",
+            "url": "https://html5.gamemonetize.co/yh0n2bobl4i5wdm0z43l7rhow2nk62qy/",
+            "img": "https://img.gamemonetize.com/yh0n2bobl4i5wdm0z43l7rhow2nk62qy/512x384.jpg",
+            "desc": "super sprunki adventure game - Jungle Adventure - Classic Run Game gives you the chance to step back in time to your childhood. Bobby World has been nothing but empties since the Princess got kidnapped into the jungle. But then, the adventure begins! Your task is to help Bobby run through the mysterious jungle, jump over the obstacles, and super evil monsters save the beautiful Princess at the final destination of the adventure. This Game is free, and you can play Bob offline! [Features]: + More than 240 levels. + Challenging boss fights + Beautiful high-resolution graphics, drawn in a modern style mixed with a bit of classic. + Smooth us",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Tung Sahur IO",
+            "url": "https://html5.gamemonetize.co/oddet3vf59i0den8dikuc3us81aby79z/",
+            "img": "https://img.gamemonetize.com/oddet3vf59i0den8dikuc3us81aby79z/512x384.jpg",
+            "desc": "Join up to 100 players in this hilarious viral meme-inspired multiplayer mayhem! Start as an innocent school kid, but watch out, the legendary Tung Sahur infection is spreading fast! Experience tiktoks most beloved bombardino crocodilo and tung tung tung sahur memes come to life in an epic infection game that will have you laughing and screaming at the same time along with your friends. Play as a school kid trying to survive the chaos, or get infected and join the Tung Sahur army to hunt down your former classmates.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Ludo King   offline Ludo Game",
+            "url": "https://html5.gamemonetize.co/e8vfdarke5qjx5uemefer4jtnbo3dc01/",
+            "img": "https://img.gamemonetize.com/e8vfdarke5qjx5uemefer4jtnbo3dc01/512x384.jpg",
+            "desc": "Dive into the world of Ludo Super, an all-in-one board game experience featuring Ludo, Bead 16, Tic Tac Toe, and Snakes &amp; Ladders! Connect with friends and family from around the globe, and engage in real-time voice chats for a truly interactive gaming experience. Whether youre a fan of classic board games or looking to make new friends through gaming, Ludo Super has something for everyone.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Snake War Multiplayer",
+            "url": "https://html5.gamemonetize.co/qf4hzartah4bf6ewbpelfx4dmz1qql4a/",
+            "img": "https://img.gamemonetize.com/qf4hzartah4bf6ewbpelfx4dmz1qql4a/512x384.jpg",
+            "desc": "Enter the arena in Slither Battle: Snake War, the ultimate snake survival game! Start as a small slither and eat glowing orbs to grow larger. Outsmart other snakes, trap them, and collect everything they drop. But be careful, one wrong move and it&rsquo;s game over! Whether youre a casual player or competitive survivor, this addictive snake war will test your reflexes, strategy, and speed! Key Features: - Eat and grow to dominate &bull; Outsmart and trap enemy snakes &bull; Simple, smooth controls &bull; Fast-paced slither gameplay &bull; Offline mode and daily rewards &bull; No time limits &ndash; play your way!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Gorilla Multiplayer",
+            "url": "https://html5.gamemonetize.co/i5povrpxi9gwdyq2d9zr1haw3cm0il6h/",
+            "img": "https://img.gamemonetize.com/i5povrpxi9gwdyq2d9zr1haw3cm0il6h/512x384.jpg",
+            "desc": "Gorilla Multiplayer Unleash your inner primate in Gorilla Multiplayer, an exhilarating online adventure! Join players worldwide in dynamic, fast-paced environments where agility, strategy, and teamwork reign supreme. Climb, swing, and jump your way through challenging terrains, all while competing or collaborating with friends. With customizable avatars, thrilling game modes, and a lively community, the jungle has never been this fun. Are you ready to go bananas?",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Turkish draughts",
+            "url": "https://html5.gamemonetize.co/d2gokou3otdsj4x3y2l09gxx4ktk1okw/",
+            "img": "https://img.gamemonetize.com/d2gokou3otdsj4x3y2l09gxx4ktk1okw/512x384.jpg",
+            "desc": "The main feature is that moves and captures with checkers are made horizontally and vertically, and not diagonally, as in most popular types of checkers. Accordingly, the initial arrangement of checkers is different. On a 64-cell board, opponents place their 16 checkers on all cells of the second and third horizontals. You can play the game with artificial intelligence, with another person on one device, or with an opponent online in multiplayer mode. You can also watch other players play, act as a spectator, or suggest your own version of the next move to the player by making it on the board.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Sunny Fields",
+            "url": "https://html5.gamemonetize.co/6677ao3k189n72jdo2h94kdvvkmo6c72/",
+            "img": "https://img.gamemonetize.com/6677ao3k189n72jdo2h94kdvvkmo6c72/512x384.jpg",
+            "desc": "Welcome to a vibrant farming adventure! Build and expand your own farm by purchasing animals and structures. Produce goods like milk and eggs with cows and chickens, then pack and sell them to earn coins. Test your skills by completing matching levels or by efficiently packaging products. Beware of spoiled items &ndash; discard them for bonuses or risk losing gold. Exchange collected goods for coins and climb the competitive leaderboards, tracking your wealth. Upgrade your farm, unlock new animals, and become the top producer. The more you play, the more you grow! Dive into this relaxing farm journey, earn rewards, and see how high you can rise!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Jump Race",
+            "url": "https://html5.gamemonetize.co/iquipc0k9ijyjxw1pxc0q271kxb4t7gn/",
+            "img": "https://img.gamemonetize.com/iquipc0k9ijyjxw1pxc0q271kxb4t7gn/512x384.jpg",
+            "desc": "Race against other players in the room and be the first to get to the finish line. Be careful with many obstacles down the road, it will hurt you and will reset your position to the start.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Dominoes classic duel",
+            "url": "https://html5.gamemonetize.co/l3njgmefn0e3h9ih3zyhyctgjj2jlpsv/",
+            "img": "https://img.gamemonetize.com/l3njgmefn0e3h9ih3zyhyctgjj2jlpsv/512x384.jpg",
+            "desc": "A board game in which a chain of dominoes (bones, stones) is built, touching halves with the same number of dots indicating the number of points. You can play the game with artificial intelligence or with an opponent online in multiplayer mode. A classic set has 28 dominoes, they are also called stones or bones. These rectangles are divided into 2 parts, each with dots from 0 to 6. Two players play the game. At the beginning of the game, 7 bones are dealt to each player. The remaining ones are kept aside in reserve, with the clean side up (on the market). The player who has a double 6-6 starts, he puts up a bone. The next players place",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "popaloon",
+            "url": "https://html5.gamemonetize.co/l28ng8jar2mopyfsls1ufwi7zm9ml4zi/",
+            "img": "https://img.gamemonetize.com/l28ng8jar2mopyfsls1ufwi7zm9ml4zi/512x384.jpg",
+            "desc": "POP-A-LOON is an addictive shooter-style game with a limited violence cartoon vibe.Tired of games where your favorite stuff isn&rsquo;t viable? In POP-A-LOON, each weapon has its own challenges, strengths, weaknesses, and silly lore. All weapons are unique and viable depending on your objective. Need loot? Use Clover. Want to taste latex? Try Fork. Struggling with bosses? Use Slowleak. Enjoy skill and timing? There&rsquo;s Pen and many more! Each balloon brings a new challenge, with some trading health for speed and others the opposite.Try quickmatch for nonstop action, VIB mode to put your memory/reflexes to the test, and many other unique modes!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Greedy Snake Multiplayer Duel",
+            "url": "https://html5.gamemonetize.co/fzxidkarnp7ykiii4mot05y6nfwt8h3w/",
+            "img": "https://img.gamemonetize.com/fzxidkarnp7ykiii4mot05y6nfwt8h3w/512x384.jpg",
+            "desc": "This is a very classic and fun Snake game. With Q Mengs lovely cartoon style, players can experience new interfaces and new Snake game playing methods, more vivid and interesting snake shapes and more mode levels. You can play anytime, anywhere. Its very suitable for killing time. Dont miss it!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Survev.io",
+            "url": "https://html5.gamemonetize.co/q9xrmuceu30pey8llzop5cr0p1p2fbx9/",
+            "img": "https://img.gamemonetize.com/q9xrmuceu30pey8llzop5cr0p1p2fbx9/512x384.jpg",
+            "desc": "Survev.io Battle Royale is a thrilling multiplayer game where you fight to be the last character standing on a shrinking island. Start with nothing but your fists, scavenge for weapons and supplies, and stay within the safe zone. Choose between solo, duo, or squad modes, and use strategy and skills to outlast up to 50 opponents.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Battle Jitsu",
+            "url": "https://html5.gamemonetize.co/cxu4dpr5uspgzim70lf6t4p6milazwr0/",
+            "img": "https://img.gamemonetize.com/cxu4dpr5uspgzim70lf6t4p6milazwr0/512x384.jpg",
+            "desc": "In Battle Jitsu, you enter intense multiplayer online battles where strategy is everything. Carefully choose your cards and play the right element to beat your opponent. Fire, water, and ice face each other in a fast and dynamic duel. Master the elements, predict your opponents movements and prove yourself to be the true master of Battle Jitsu!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Color Path IO",
+            "url": "https://html5.gamemonetize.co/993brpbfu5u9o090ik0khqjsgf8t0kg6/",
+            "img": "https://img.gamemonetize.com/993brpbfu5u9o090ik0khqjsgf8t0kg6/512x384.jpg",
+            "desc": "Welcome to Color Path.io! Get ready to run and draw your color path to claim the biggest area. Strategize by drawing paths around your opponents to trap them and secure your victory. Can you outsmart and outmaneuver your rivals to become the ultimate champion?",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Billiard Champion",
+            "url": "https://html5.gamemonetize.co/6plitwan0l11bxzub092x7uqcwh4h5ix/",
+            "img": "https://img.gamemonetize.com/6plitwan0l11bxzub092x7uqcwh4h5ix/512x384.jpg",
+            "desc": "Бильярд - одна из самых популярных игр в мире, она может развить у людей способность к логическому мышлению и хорошо тренировать их зрение, а также может тренировать терпение и способность к спокойному мышлению.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Board Kings Board Dice",
+            "url": "https://html5.gamemonetize.co/qylq7h9zvv6fm2qrr9e8yprpc0opdhjd/",
+            "img": "https://img.gamemonetize.com/qylq7h9zvv6fm2qrr9e8yprpc0opdhjd/512x384.jpg",
+            "desc": "Board Kings: Board Dice is a classic multiplayer strategy board game. Do you like to play Monopoly,Board Kings: Board Dice is similar to Monopoly. Become the real Board King by building and upgrading your empire with dice points, building and upgrading your board, or infiltrating other players boards and attacking their buildings. This is a game where luck and strength go hand in hand to win,how is your luck today? Join us for more surprises waiting to be unlocked!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Jungle Fight",
+            "url": "https://html5.gamemonetize.co/xhx7z1mr85op97320i18awkx4837z316/",
+            "img": "https://img.gamemonetize.com/xhx7z1mr85op97320i18awkx4837z316/512x384.jpg",
+            "desc": "In Jungle Fight players control an army of animals to overpower the opposing players forces. The goal is to deplete the opponents health by strategically using the unique abilities of various animals in combat. Players must navigate the jungle environment, making tactical decisions to ensure their army dominates the battlefield and emerges victorious.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "HOLDEM CARD GAME",
+            "url": "https://html5.gamemonetize.co/sue3asusesjn6i2ty9ljk20yfqmbrs8k/",
+            "img": "https://img.gamemonetize.com/sue3asusesjn6i2ty9ljk20yfqmbrs8k/512x384.jpg",
+            "desc": "** HOLDEM CARD GAME is A FREE-TO-PLAY ONLINE H5 GAME. * HOLDEM CARD GAME is the online Texas Holdem game that allows you to play poker games with millions of real players, on the most fun and exciting play money poker game out there. * Texas Hold&rsquo;em poker is one of the most popular poker variants in the world. Despite its relative simplicity, Texas Hold&rsquo;em has the potential to be played with a seemingly infinite variety of strategies and tactics. ** HOLDEM CARD GAME lets you: * PLAY CARD GAME ONLINE WITH MILLIONS OF REAL PLAYERS ~ Play online poker games with the world&rsquo;s largest community of real poker players.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "SEVEN CARD GAME",
+            "url": "https://html5.gamemonetize.co/9ozup2d4051p0km7zna0749e6q2nvdqt/",
+            "img": "https://img.gamemonetize.com/9ozup2d4051p0km7zna0749e6q2nvdqt/512x384.jpg",
+            "desc": "** SEVEN CARD GAME is A FREE-TO-PLAY ONLINE H5 GAME. * SEVEN CARD GAME, which is called SEVEN CARD STUD, is a classic poker game which can take a lifetime to master. ** SEVEN CARD GAME lets you: * PLAY CARD GAME ONLINE WITH MILLIONS OF REAL PLAYERS ~ SEVEN CARD GAME is essentially seven card stud. This is a betting game with a 52-card deck. ~ In SEVEN CARD GAME, players are individually dealt seven cards throughout the course of the hand, but only the best five-card poker hand possible for each player is used to determine the winner.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Ballon Race 3D",
+            "url": "https://html5.gamemonetize.co/kicr33skk5upsp3fd7njzieeapg3ytc3/",
+            "img": "https://img.gamemonetize.com/kicr33skk5upsp3fd7njzieeapg3ytc3/512x384.jpg",
+            "desc": "In Balloon Race 3D, race against other players in a whimsical world where collecting balloons makes you fly! Start on the ground and gather as many balloons as you can to lift off and speed towards the finish line. The more balloons you collect, the higher and faster you soar. Aim to outmaneuver your rivals and be the first to cross the finish line in this thrilling airborne adventure! Collect coins to unclock new skins. Enjoy!",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "SEOTDA CARD GAME",
+            "url": "https://html5.gamemonetize.co/q2tbi1xfufzvpp6d43h07gdnsanwlqpt/",
+            "img": "https://img.gamemonetize.com/q2tbi1xfufzvpp6d43h07gdnsanwlqpt/512x384.jpg",
+            "desc": "** SEOTDA CARD GAME is FREE-TO-PLAY ONLINE H5 GAME. * SEOTDA CARD GAME is a Korean card game using 20 Hwatu (hereinafter Card) in which players bet on the value of their dealt cards across multiple rounds, similar to other showdown games like Poker. ** SEOTDA CARD GAME lets you: * PLAY CARD GAME ONLINE WITH MILLIONS OF REAL PLAYERS ~ SEOTDA CARD GAME is essentially 2 card stud. This is a betting game, and while it uses the card deck, its assembled differently, only using 20 cards. ~ These cards are often adorned with floral designs and various symbols representing different months and seasons. The game is usually played by 2 to 5 player.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Badugi Card Game",
+            "url": "https://html5.gamemonetize.co/gxn1j2wtbx6e1j6yhlzg5wws69p9v2t8/",
+            "img": "https://img.gamemonetize.com/gxn1j2wtbx6e1j6yhlzg5wws69p9v2t8/512x384.jpg",
+            "desc": "Experience the best online card game with BADUGI. Join players worldwide in this exciting BADUGI Card Game experience. Play Now! Show your skills! ** BADUGI CARD GAME IS A FREE-TO-PLAY ONLINE GAME. * BADUGI originated in Korea and is a variant of draw poker. Its a card game using a poker card, but maybe not as you know it. It shares many similarities with Lowball, as it&rsquo;s the lowest hand that wins. It differs significantly from most popular poker variants because the hand ranking system is different. The strongest hands are those that have no pairs and four low cards, one of each suit.",
+            "categoria": "Multiplayer"
+        },
+        {
+            "titolo": "Math challenge online",
+            "url": "https://html5.gamemonetize.co/h9f5jfuk4rfcf8hnypmhsh8fkhezdu7t/",
+            "img": "https://img.gamemonetize.com/h9f5jfuk4rfcf8hnypmhsh8fkhezdu7t/512x384.jpg",
+            "desc": "Math Challenge is an exciting and educational game where you can test your arithmetic skills in a fun and competitive setting. At the start of each round, a mathematical equation appears at the top of the screen, involving any of the four basic operations: addition, subtraction, multiplication, or division. The game board is a grid filled with various numbers. You must control your avatar, navigating the grid to land on the number that solves the displayed equation. Quick thinking and swift movements are crucial, as each round has a limited time for you to position your avatar on the correct answer. Points are awarded for correct answers, an",
+            "categoria": "Multiplayer"
+        },
+
+        {
+            "titolo": "Bike Stunt Master Mini Rush  ",
+            "url": "https://html5.gamemonetize.co/9m7b1g3apiu7nazxcn863ymcmga4ud3y/",
+            "img": "https://img.gamemonetize.com/9m7b1g3apiu7nazxcn863ymcmga4ud3y/512x384.jpg",
+            "desc": "Get ready for an exciting motorcycle racing adventure in Rush to Crush! Race through challenging tracks, dodge obstacles, perform amazing stunts, crush fruits and boxes, and compete against rival riders. Choose from a wide range of bikes, upgrade your ride, collect power-ups, and master different racing modes. Explore dynamic environments including beaches, jungles, deserts, and night tracks. Complete challenging levels, earn rewards, unlock new bikes, and test your racing skills in exciting competitions. With fast-paced gameplay, thrilling challenges, and plenty of bikes to customize, Rush to Crush is ready for your next racing adventure!",
+            "categoria": "Racing"
+        },
+        {
+            "titolo": "Robot Astro Party",
+            "url": "https://html5.gamemonetize.co/iv0siadzdl75mq4brnh2p63bjdomi3jt/",
+            "img": "https://img.gamemonetize.com/iv0siadzdl75mq4brnh2p63bjdomi3jt/512x384.jpg",
+            "desc": "In the Robot Astro Party, the fast-paced multiplayer running game puts you in hilarious and unpredictable scenarios. Each match is a new adventure. Master different strategies for each racing and running map.",
+            "categoria": "Racing"
+        },
+        {
+            "titolo": "Balloon Heroes Run and Rise",
+            "url": "https://html5.gamemonetize.co/vlhloqzu0cvn1apzoyq9vwycgddt3fxn/",
+            "img": "https://img.gamemonetize.com/vlhloqzu0cvn1apzoyq9vwycgddt3fxn/512x384.jpg",
+            "desc": "Balloon Heroes: Run &amp; Rise is a fast-paced racing game where you compete in thrilling obstacle courses. Collect balloons to power high jumps, avoid falling into water, and race to the finish line ahead of rivals. Earn coins to unlock skins and customize your hero. With tons of challenging levels, this game offers nonstop action, strategy, and fun as you run, jump, and outsmart opponents to claim victory!",
+            "categoria": "Racing"
+        },
+        {
+            "titolo": "Run Guys: Knockout Royale",
+            "url": "https://html5.gamemonetize.co/bivqu9s6efq0gk7rknnqlad3qw0ncizt/",
+            "img": "https://img.gamemonetize.com/bivqu9s6efq0gk7rknnqlad3qw0ncizt/512x384.jpg",
+            "desc": "Enjoy chaos, laughter, and action in Run Guys: Knockout Royale. A running and multiplayer royale game. In seesaw mode, run over one seesaw after another, keep balance and rush to the finish line. Racing at breakneck speeds through spinning wooden columns, trap floors and trap obstacles. Each level will knock out the slowest players. In mountain climbing, be the first to reach the summit and jump onto the crown.",
+            "categoria": "Racing"
+        },
+        {
+            "titolo": "Online Cats Multiplayer Park",
+            "url": "https://html5.gamemonetize.co/2zzd4eaozs2hipxphec84xoac3sagofk/",
+            "img": "https://img.gamemonetize.com/2zzd4eaozs2hipxphec84xoac3sagofk/512x384.jpg",
+            "desc": "Come to run, jump, guess, and race as a cute but competitive kitty in Online Cats - Multiplayer Park. It&rsquo;s a real-time multiplayer chaos arena. Here are seven modes you can choose from. In Grab A Shabby Ball, for example, you will have to compete with your opponents and try to touch the ball to get points.",
+            "categoria": "Racing"
+        },
+        {
+            "titolo": "Free Rally: Vice",
+            "url": "https://html5.gamemonetize.co/dx1obtwhyn14plnk6inxzny5295onzl5/",
+            "img": "https://img.gamemonetize.com/dx1obtwhyn14plnk6inxzny5295onzl5/512x384.jpg",
+            "desc": "Free Rally: Vice is a modification of the Free Rally multiplayer series. In this mode, new cars and a huge city are added. Also made a view from the third person. You can control your car as a driver and get into someones car as a passenger. There are also places on the map where you can call a helicopter, as well as some garages to repair cars.",
+            "categoria": "Racing"
+        },
+        {
+            "titolo": "Sprunki Drift Multiplayer",
+            "url": "https://html5.gamemonetize.co/c8p1307f1u9vsd1njv8qswqfomtayqgl/",
+            "img": "https://img.gamemonetize.com/c8p1307f1u9vsd1njv8qswqfomtayqgl/512x384.jpg",
+            "desc": "Sprunki Drift Multiplayer is a car-driving game with fantastic races, epic stunts, and awesome supercars. Gear up for heart-pounding races and wild challenges that will test your skills! Rack up cash as you speed through the tracks and use it to upgrade to flashy, jaw-dropping cars. Whether you&rsquo;re showing off your racing skills in epic two-player mode or going for solo glory, the trophy is yours for the taking. So buckle up, race hard, and let everyone know you&rsquo;re the ultimate speed demon!",
+            "categoria": "Racing"
+        },
+        {
+            "titolo": "SnowBall Speed",
+            "url": "https://html5.gamemonetize.co/2s2r5zow54mknn8hnm5chims2cbpaeld/",
+            "img": "https://img.gamemonetize.com/2s2r5zow54mknn8hnm5chims2cbpaeld/512x384.jpg",
+            "desc": "Welcome to SnowBall Speed Winter Racing 3D Game! Tap or mouse click to start racing with your Snow Ball against other players. Slide left and right to dodge obstacles to reach the finish line before others. Good Luck!",
+            "categoria": "Racing"
+        }
+    ];
+
+
+</script>
+
+<!-- Il filo che abbiamo appena collegato -->
+<!-- Vedi quel ?v=2 alla fine? Inganna il browser e lo costringe a scaricare il file nuovo! -->
+<script src="https://playcombo.it/js/motore-playcombo.js?v=16"></script>
+
+<script>
+    // E via, si parte!
+    window.inizializzaGiochi();
+</script>
+<script>
+    // La barra ricerca + categoria resta visibile in alto per TUTTA la pagina, footer compreso.
+    // Lo "sticky" dura quanto il contenitore in cui sta: la porto quindi direttamente dentro <body>,
+    // subito prima del contenitore principale della pagina (nel tema e' #page).
+    (function () {
+        function spostaBarra() {
+            var barra = document.querySelector('.barra-fissa-spc');
+            var blocco = document.querySelector('.contenitore-arcade-spc');
+            if (!barra || !blocco || barra.classList.contains('barra-spostata-spc')) return;
+            var alto = blocco;
+            while (alto.parentNode && alto.parentNode !== document.body) alto = alto.parentNode;
+            if (!alto.parentNode) return;
+            document.body.insertBefore(barra, alto);
+            barra.classList.add('barra-spostata-spc');
+        }
+
+        // Quando si apre l'anteprima o il gioco, la barra si nasconde
+        function osservaGioco() {
+            var cornice = document.getElementById('cornice-gioco');
+            if (!cornice || typeof MutationObserver === 'undefined') return;
+            var aggiorna = function () {
+                var aperta = window.getComputedStyle(cornice).display !== 'none';
+                document.documentElement.classList.toggle('gioco-aperto-spc', aperta);
+            };
+            new MutationObserver(aggiorna).observe(cornice, { attributes: true, attributeFilter: ['style', 'class'] });
+            aggiorna();
+        }
+
+        function rilasciaGriglia() {
+            var g = document.querySelector('.griglia-giochi-spc');
+            if (!g) return;
+            var oss;
+            var togli = function () {
+                if (!g.children.length) return;
+                g.classList.remove('griglia-in-attesa');
+                if (oss) oss.disconnect();
+            };
+            if (window.MutationObserver) {
+                oss = new MutationObserver(togli);
+                oss.observe(g, { childList: true });
+            }
+            togli();
+        }
+
+        function avvia() {
+            // spostaBarra();
+            osservaGioco();
+            rilasciaGriglia();
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', avvia);
+        } else {
+            avvia();
+        }
+    })();
+</script>
